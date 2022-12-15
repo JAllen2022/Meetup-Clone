@@ -4,6 +4,9 @@ const express = require('express')
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
 
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
+
 const router = express.Router();
 
 // Restore session user
@@ -16,11 +19,30 @@ router.get( '/', restoreUser, (req, res) => {
         });
       } else return res.json({ user: null });
     }
-  );
+);
+
+//validateLogin that will check these keys and validate them
+// The POST /api/session login route will expect the body of the
+// request to have a key of credential with either the username or email of a user and a key of password with the password of the user.
+
+
+//The validateLogin middleware is composed of the check and handleValidationErrors middleware. It checks to see whether or not req.body.credential and req.body.password are empty. If one of them is empty, then an error will be returned as the response.
+const validateLogin = [
+check('credential')
+    .exists({ checkFalsy: true })
+    .notEmpty()
+    .withMessage('Please provide a valid email or username.'),
+check('password')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a password.'),
+handleValidationErrors
+];
+
+
 
 // Log in
 // POST /api/session
-router.post('/', async (req, res, next) => {
+router.post('/', validateLogin, async (req, res, next) => {
       const { credential, password } = req.body;
 
       const user = await User.login({ credential, password });
