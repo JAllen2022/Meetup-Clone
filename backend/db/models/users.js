@@ -1,15 +1,18 @@
 'use strict';
 const { Model, Validator } = require('sequelize');
 const bcrypt = require('bcryptjs');
+const { Sequelize } = require('.');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static async signup({ username, email, password }) {
+    static async signup({ username, email, password, firstName, lastName }) {
       const hashedPassword = bcrypt.hashSync(password);
       const user = await User.create({
         username,
         email,
-        hashedPassword
+        hashedPassword,
+        firstName,
+        lastName
       });
       return await User.scope('currentUser').findByPk(user.id);
     }
@@ -34,8 +37,8 @@ module.exports = (sequelize, DataTypes) => {
       return bcrypt.compareSync(password, this.hashedPassword.toString());
     }
     toSafeObject() {
-      const { id, username, email } = this; // context will be the User instance
-      return { id, username, email };
+      const { id, username, email, firstName, lastName } = this; // context will be the User instance
+      return { id, username, email, firstName, lastName };
     }
     static associate(models) {
       // define association here
@@ -63,6 +66,14 @@ module.exports = (sequelize, DataTypes) => {
           len: [3, 256],
           isEmail: true
         }
+      },
+      firstName:{
+        type: DataTypes.STRING,
+        allowNull:false
+      },
+      lastName:{
+        type: DataTypes.STRING,
+        allowNull:false
       },
       hashedPassword: {
         type: DataTypes.STRING.BINARY,
