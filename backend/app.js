@@ -6,6 +6,10 @@ const cors = require('cors');
 const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const routes = require('./routes');
+
+const { ValidationError } = require('sequelize');
+
 
 // Check to see if we're in a production environment or not
 // Is production checking enviro key in config file backend/config/index.js
@@ -52,7 +56,6 @@ csurf({
 
 
 // backend/app.js
-const routes = require('./routes');
 
 // ...
 app.use(routes); // Connect all the routes
@@ -67,7 +70,6 @@ app.use((_req, _res, next) => {
     next(err);
   });
 
-  const { ValidationError } = require('sequelize');
 
 // ...
 

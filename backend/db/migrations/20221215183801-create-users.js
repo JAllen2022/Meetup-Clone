@@ -1,5 +1,7 @@
 'use strict';
 
+// MAKE SURE to include this in all migrations/seeders
+// Make sure to include options as well as it is done bellow
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
