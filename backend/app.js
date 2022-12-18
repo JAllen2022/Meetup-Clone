@@ -58,8 +58,14 @@ csurf({
 // backend/app.js
 
 // ...
+
 app.use(routes); // Connect all the routes
 
+app.get('/',(req,res,next)=>{
+  res.json({
+    message:'success'
+  })
+})
 
 // Catch unhandled requests and forward to error handler.
 app.use((_req, _res, next) => {
