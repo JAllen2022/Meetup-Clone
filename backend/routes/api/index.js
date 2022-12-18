@@ -13,6 +13,11 @@ router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
 
+router.get('/',(req,res,next)=>{
+  res.json({
+    message:'success'
+  })
+})
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
