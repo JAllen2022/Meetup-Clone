@@ -28,9 +28,44 @@ module.exports = {
     },{
       email:'fakeUser2@user.io',
       username:'FakeUser2',
-      hashedPassword: bcrypt.hashSync('password2'),
+      hashedPassword: bcrypt.hashSync('password3'),
       firstName:'User3',
       lastName:'User3'
+    },
+    {
+      email:'yaboi39@user.io',
+      username:'yaboi39',
+      hashedPassword: bcrypt.hashSync('password4'),
+      firstName:'Jake',
+      lastName:'Carlton'
+    },
+    {
+      email:'feltGem@user.io',
+      username:'gemcollector',
+      hashedPassword: bcrypt.hashSync('password5'),
+      firstName:'Herald',
+      lastName:'Arren'
+    },
+    {
+      email:'callofdutyslayer@user.io',
+      username:'helloworld',
+      hashedPassword: bcrypt.hashSync('password6'),
+      firstName:'Kale',
+      lastName:'Salad'
+    },
+    {
+      email:'jambajuicelover@user.io',
+      username:'jambaJuice',
+      hashedPassword: bcrypt.hashSync('password7'),
+      firstName:'Jeremy',
+      lastName:'Clarkson'
+    },
+    {
+      email:'argentinaFifa2022@user.io',
+      username:'iOnlyWin',
+      hashedPassword: bcrypt.hashSync('password8'),
+      firstName:'Lionel',
+      lastName:'Messi'
     }
    ])
   },
