@@ -11,12 +11,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Attendance.hasMany(models.Event,{foreignKey:'eventId'});
+      Attendance.hasMany(models.User,{foreignKey:'userId'})
     }
   }
   Attendance.init({
-    eventId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    status: DataTypes.ENUM
+    eventId: {
+      type:DataTypes.INTEGER,
+      allowNull:false
+    },
+    userId: {
+      type:DataTypes.INTEGER,
+      allowNull:false
+    },
+    status: {
+      type:DataTypes.ENUM,
+      allowNull:false,
+      validate:{
+        isIn:[['member','waitlist','pending']]
+      }
+    }
   }, {
     sequelize,
     modelName: 'Attendance',
