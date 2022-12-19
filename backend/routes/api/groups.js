@@ -43,7 +43,7 @@ router.get('/current', async (req,res,next)=>{
 
     // Requires User to be logged in
     // Status - 401. Message:"Authentication required"
-    if()
+    // if()
 
 
 
