@@ -17,11 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   GroupImage.init({
     groupId: {
       type:DataTypes.INTEGER,
-      allowNull:false,
-      validate:{
-        // "message": "Event couldn't be found",? do we need to validate here
-        // ~~~~ check on this ~~~~~
-      }
+      allowNull:false
     },
     url: {
       type:DataTypes.STRING,

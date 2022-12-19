@@ -1,10 +1,12 @@
 'use strict';
 
+const { Op } = require('sequelize');
+
 const options={};
 options.tableName='Groups';
 if(process.env.NODE_ENV ==='production'){
   options.schema = process.env.SCHEMA;
-}
+};
 
 const demo_groups = [
   {
@@ -47,14 +49,13 @@ const demo_groups = [
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-
-    await queryInterface.bulkInsert(options,demo_groups)
+    await queryInterface.bulkInsert(options,demo_groups);
   },
 
   async down (queryInterface, Sequelize) {
     const groupNames = demo_groups.map(ele=>ele.name);
     await queryInterface.bulkDelete(options,{
       name:{[Op.in]:groupNames}
-    })
+    });
   }
 };

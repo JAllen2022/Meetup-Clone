@@ -33,11 +33,7 @@ module.exports = {
         allowNull:false
       },
       type: {
-        type: Sequelize.ENUM,
-        values:[
-          'Online',
-          'In person'
-        ],
+        type: Sequelize.STRING(10),
         defaultValue:'Online',
         allowNull:false
       },

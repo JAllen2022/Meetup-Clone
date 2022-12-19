@@ -31,15 +31,17 @@ module.exports = {
         }
       },
       status: {
-        type: Sequelize.ENUM,
+        type: Sequelize.STRING,
         allowNull:false,
-        values:[
-          'attending',
-          'pending',
-          'waitlist',
-          'member'
-        ],
-        defaultValue:'pending'
+        defaultValue:'pending',
+        validate:{
+          isIn:[[
+            'attending',
+            'pending',
+            'waitlist',
+            'member'
+          ]]
+        }
       },
       createdAt: {
         allowNull: false,

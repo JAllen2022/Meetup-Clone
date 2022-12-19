@@ -24,18 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   Event.init({
     venueId: {
       type:DataTypes.INTEGER,
-      allowNull:false,
-      validate:{
-        // Validate that the venue exists
-        async venueExists(value){
-          const venue = await Venue.findByPk(value);
-
-          //If not found, throw an error
-          if(!venue) {
-            throw new Error('Venue does not exist')
-          }
-        }
-      }
+      allowNull:false
     },
     groupId: {
       type:DataTypes.INTEGER,
@@ -58,11 +47,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     type: {
-      type:DataTypes.ENUM('Online','In person'),
+      type:DataTypes.STRING(10),
       allowNull:false,
       validate:{
         //Validate that the type of event must be 'Online' or 'In person'
-        isIn:['Online','In person'] // do we need to do this if it is enum above?
+        isIn:['Online','In person']
       }
     },
     capacity: {
