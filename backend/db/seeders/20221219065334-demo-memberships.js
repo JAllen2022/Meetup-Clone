@@ -58,6 +58,21 @@ const demo_memberships = [
     userId:7,
     groupId:3,
     status:'pending',
+  },
+  {
+    userId:1,
+    groupId:2,
+    status:'member',
+  },
+  {
+    userId:1,
+    groupId:3,
+    status:'member',
+  },
+  {
+    userId:1,
+    groupId:4,
+    status:'pending',
   }
 ];
 
@@ -67,7 +82,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    const userIds = demo_memberships(ele=>ele.userId);
+    const userIds = demo_memberships.map(ele=>ele.userId);
     await queryInterface.bulkDelete(options,{
       userId:{[Op.in]:userIds}
     });

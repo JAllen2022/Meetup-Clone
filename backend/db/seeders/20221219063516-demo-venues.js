@@ -50,9 +50,9 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    const venueNames = demo_venues.map(ele=>ele.name)
+    const venueAddress = demo_venues.map(ele=>ele.address)
     await queryInterface.bulkDelete(options,{
-      name:{[Op.in]:venueNames}
+      address:{[Op.in]:venueAddress}
     });
 
   }
