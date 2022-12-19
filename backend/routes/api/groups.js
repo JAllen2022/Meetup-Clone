@@ -24,7 +24,7 @@ router.get('/', async (req,res,next)=>{
         ],
         attributes: {
             include:[
-                [sequelize.fn('COUNT', sequelize.col('userId')),"numMembers"],
+                [sequelize.fn('COUNT', sequelize.col('Memberships.userId')),"numMembers"],
                 [sequelize.col('url'),'previewImgage']
             ]
         },
@@ -37,16 +37,34 @@ router.get('/', async (req,res,next)=>{
 
 // GET /api/groups/current
 // Get all groups joined or organized by the current user
-router.get('/current', async (req,res,next)=>{
+    // Requires Authentication through 'requireAuth' middleware
+router.get('/current', requireAuth, async (req,res,next)=>{
 
-    // Requires Authentication
+    const groups = await Group.findAll({
+        // where:{
+        //     organizerId:req.user.id
+        // },
+        include:[{
+            model:Membership,
+            attributes:[],
+            where:{
+                userId:req.user.id
+            }
+        },
+        {
+            model:GroupImage,
+            attributes:[]
+        }],
+        attributes: {
+            include:[
+                [sequelize.fn('COUNT', sequelize.col('userId')),"numMembers"],
+                [sequelize.col('url'),'previewImgage']
+            ]
+        },
+        group:['Group.id']
+    })
 
-    // Requires User to be logged in
-    // Status - 401. Message:"Authentication required"
-    // if()
-
-
-
+    res.json({Groups:groups})
 })
 
 
