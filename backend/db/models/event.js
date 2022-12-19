@@ -24,18 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   Event.init({
     venueId: {
       type:DataTypes.INTEGER,
-      allowNull:false,
-      validate:{
-        // Validate that the venue exists
-        async venueExists(value){
-          const venue = await Venue.findByPk(value);
-
-          //If not found, throw an error
-          if(!venue) {
-            throw new Error('Venue does not exist')
-          }
-        }
-      }
+      allowNull:false
     },
     groupId: {
       type:DataTypes.INTEGER,

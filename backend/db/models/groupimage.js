@@ -17,31 +17,27 @@ module.exports = (sequelize, DataTypes) => {
   GroupImage.init({
     groupId: {
       type:DataTypes.INTEGER,
-      allowNull:false,
-      validate:{
-        // "message": "Event couldn't be found",? do we need to validate here
-        // ~~~~ check on this ~~~~~
-      }
+      allowNull:false
     },
     url: {
       type:DataTypes.STRING,
       allowNull:false,
-      validate:{
-        //Validate that input is a URL
-        isUrl:true
-      }
+      // validate:{
+      //   //Validate that input is a URL
+      //   isUrl:true
+      // }
     },
     preview: {
       type:DataTypes.BOOLEAN,
       allowNull:false,
-      validate:{
-        //Validate that it is a boolean value
-        validateBoolean(value) {
-          if(typeof value !=='boolean'){
-            throw new Error('Input for preview must be a boolean true/false value')
-          }
-        }
-      }
+      // validate:{
+      //   //Validate that it is a boolean value
+      //   validateBoolean(value) {
+      //     if(typeof value !=='boolean'){
+      //       throw new Error('Input for preview must be a boolean true/false value')
+      //     }
+      //   }
+      // }
     },
   }, {
     sequelize,
