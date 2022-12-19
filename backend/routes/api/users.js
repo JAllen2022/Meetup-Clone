@@ -40,10 +40,19 @@ const validateSignup = [
 
 // Sign up
 //POST /api/users
-router.post( '/', validateSignup,  async (req, res) => {
+router.post( '/', validateSignup,  async (req, res,next) => {
       const { email, password, username, firstName, lastName } = req.body;
-      const user = await User.signup({ email, username, password, firstName, lastName });
 
+      // Special case to handle unique email constraint
+      try{
+        const user = await User.signup({ email, username, password, firstName, lastName });
+      } catch(err){
+        const emailErr = new Error('User already exists');
+        emailErr.status = 403;
+        emailErr.title = 'User Signup Failed - Accound already exists';
+        emailErr.errors=['Provided email is already in use.']
+        next(emailErr);
+      }
       await setTokenCookie(res, user);
 
       return res.json({
