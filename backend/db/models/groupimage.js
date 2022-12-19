@@ -22,22 +22,22 @@ module.exports = (sequelize, DataTypes) => {
     url: {
       type:DataTypes.STRING,
       allowNull:false,
-      // validate:{
-      //   //Validate that input is a URL
-      //   isUrl:true
-      // }
+      validate:{
+        //Validate that input is a URL
+        isUrl:true
+      }
     },
     preview: {
       type:DataTypes.BOOLEAN,
       allowNull:false,
-      // validate:{
-      //   //Validate that it is a boolean value
-      //   validateBoolean(value) {
-      //     if(typeof value !=='boolean'){
-      //       throw new Error('Input for preview must be a boolean true/false value')
-      //     }
-      //   }
-      // }
+      validate:{
+        //Validate that it is a boolean value
+        validateBoolean(value) {
+          if(typeof value !=='boolean'){
+            throw new Error('Input for preview must be a boolean true/false value')
+          }
+        }
+      }
     },
   }, {
     sequelize,

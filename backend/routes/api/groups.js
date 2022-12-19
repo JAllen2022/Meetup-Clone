@@ -19,15 +19,13 @@ router.get('/', async (req,res,next)=>{
         },
         {
             model:GroupImage,
-            attributes:{
-                include:[['url','previewImage']]
-            }
-
+            attributes:[]
         }
         ],
         attributes: {
             include:[
                 [sequelize.fn('COUNT', sequelize.col('userId')),"numMembers"],
+                [sequelize.col('url'),'previewImgage']
             ]
         },
         group:['Group.id']
@@ -36,6 +34,22 @@ router.get('/', async (req,res,next)=>{
     res.json({Groups})
 
 })
+
+// GET /api/groups/current
+// Get all groups joined or organized by the current user
+router.get('/current', async (req,res,next)=>{
+
+    // Requires Authentication
+
+    // Requires User to be logged in
+    // Status - 401. Message:"Authentication required"
+    if()
+
+
+
+})
+
+
 
 // GET /api/groups/:groupId
 // Returns the details of a group specified by its id.
