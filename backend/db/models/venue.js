@@ -10,18 +10,51 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Venue.hasMany(models.Event,{foreignKey:'venueId'});
+      Venue.belongsTo(models.Group,{foreignKey:'groupId'});
     }
   }
   Venue.init({
-    groupId: DataTypes.INTEGER,
-    address: DataTypes.STRING,
-    city: DataTypes.STRING,
-    state: DataTypes.STRING,
-    lat: DataTypes.DECIMAL,
-    lng: DataTypes.DECIMAL
+    groupId: {
+      type:DataTypes.INTEGER,
+    },
+    address: {
+      type:DataTypes.STRING(100),
+      allowNull:false
+    },
+    city: {
+      type:DataTypes.STRING(50),
+      allowNull:false
+    },
+    state: {
+      type:DataTypes.STRING(30),
+      allowNull:false
+    },
+    lat: {
+      type:DataTypes.DECIMAL,
+      allowNull:false,
+      validate:{
+        min:-90,
+        max:90
+      }
+    },
+    lng: {
+      type:DataTypes.DECIMAL,
+      allowNull:false,
+      validate:{
+        min:-180,
+        max:180
+      }
+    },
   }, {
     sequelize,
+    validate:{
+      bothCoordsOrNone(){
+        if((this.lat === null)|| (this.lng===null)){
+          throw new Error('Must have both latitude and longitude values')
+        }
+      }
+    },
     modelName: 'Venue',
   });
   return Venue;

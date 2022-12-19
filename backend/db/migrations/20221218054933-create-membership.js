@@ -1,8 +1,9 @@
 'use strict';
 
-const options={};
-if(production.env.NODE_ENV === 'production'){
-  options.schema = production.env.SCHEMA;
+
+const options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
 module.exports = {
@@ -15,23 +16,40 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false,
+        references:{
+          model:'Users',
+          key:'id'
+        }
       },
       groupId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false,
+        references:{
+          model:'Groups',
+          key:'id'
+        }
       },
       status: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM,
+        allowNull:false,
+        values:[
+          'member',
+          'pending',
+          'co-host'
+        ],
+        defaultValue:'pending'
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue:Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        ç
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },

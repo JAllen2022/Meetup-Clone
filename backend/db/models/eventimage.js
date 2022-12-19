@@ -2,32 +2,28 @@
 const {
   Model
 } = require('sequelize');
-const {Group} = require('./index')
 module.exports = (sequelize, DataTypes) => {
-  class GroupImage extends Model {
+  class EventImage extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-     GroupImage.belongsTo(models.Group,{foreignKey:'groupId'});
+      // define association here
+      EventImage.belongsTo(models.Event,{foreignKey:'eventId'});
     }
   }
-  GroupImage.init({
-    groupId: {
+  EventImage.init({
+    eventId: {
       type:DataTypes.INTEGER,
-      allowNull:false,
-      validate:{
-        // "message": "Event couldn't be found",? do we need to validate here
-        // ~~~~ check on this ~~~~~
-      }
+      allowNull:false
     },
     url: {
       type:DataTypes.STRING,
       allowNull:false,
       validate:{
-        //Validate that input is a URL
+        // Validate that input is a URL
         isUrl:true
       }
     },
@@ -35,17 +31,17 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.BOOLEAN,
       allowNull:false,
       validate:{
-        //Validate that it is a boolean value
-        validateBoolean(value) {
-          if(typeof value !=='boolean'){
-            throw new Error('Input for preview must be a boolean true/false value')
+        // Validate that input is a boolean
+        validateBoolean (value){
+          if(typeof value !== 'boolean'){
+            throw new Error('Input value for preview must be a boolean')
           }
         }
       }
     },
   }, {
     sequelize,
-    modelName: 'GroupImage',
+    modelName: 'EventImage',
   });
-  return GroupImage;
+  return EventImage;
 };

@@ -2,7 +2,7 @@
 
 // MAKE SURE to include this in all migrations/seeders
 // Make sure to include options as well as it is done bellow
-let options = {};
+const options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
@@ -17,25 +17,41 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       organizerId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false,
+        references:{
+          model:'Users',
+          key:'id'
+        }
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(60),
+        allowNull:false
       },
       about: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull:false
       },
       type: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM,
+        values:[
+          'Online',
+          'In person'
+        ],
+        defaultValue:'Online',
+        allowNull:false
       },
       private: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull:false
       },
       city: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(100),
+        allowNull:false
       },
       state: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(30),
+        allowNull:false
       },
       createdAt: {
         allowNull: false,

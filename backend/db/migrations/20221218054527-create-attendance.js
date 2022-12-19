@@ -1,13 +1,13 @@
 'use strict';
 
-let options = {};
+const options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('EventImages', {
+    await queryInterface.createTable('Attendances', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,13 +15,31 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       eventId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false,
+        references:{
+          model:'Events',
+          key:'id'
+        }
       },
-      url: {
-        type: Sequelize.STRING
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull:false,
+        references:{
+          model:'Users',
+          key:'id'
+        }
       },
-      preview: {
-        type: Sequelize.BOOLEAN
+      status: {
+        type: Sequelize.ENUM,
+        allowNull:false,
+        values:[
+          'attending',
+          'pending',
+          'waitlist',
+          'member'
+        ],
+        defaultValue:'pending'
       },
       createdAt: {
         allowNull: false,
@@ -31,12 +49,12 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue:Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    options.tableName='EventImages'
+    options.tableName='Attendances'
     await queryInterface.dropTable(options);
   }
 };

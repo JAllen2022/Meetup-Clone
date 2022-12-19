@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Event.hasMany(models.EventImage,{foreignKey:'eventId'});
+      Event.hasMany(models.Attendance,{foreignKey:'eventId'});
+
+      Event.belongsTo(models.Venue,{foreignKey:'venueId'});
+      Event.belongsTo(models.Group,{foreignKey:'groupId'});
     }
   }
   Event.init({
@@ -37,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     name: {
-      type:DataTypes.STRING,
+      type:DataTypes.STRING(100),
       allowNull:false,
       validate:{
         //Input string must be at least 5 characters
@@ -53,18 +58,18 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     type: {
-      type:DataTypes.ENUM,
+      type:DataTypes.ENUM('Online','In person'),
       allowNull:false,
       validate:{
         //Validate that the type of event must be 'Online' or 'In person'
-        isIn:['Online','In person']
+        isIn:['Online','In person'] // do we need to do this if it is enum above?
       }
     },
     capacity: {
       type:DataTypes.INTEGER,
     },
     price:{
-      type:DataTypes.INTEGER,
+      type:DataTypes.DECIMAL(10,2),
       allowNull:false
     },
     startDate: {
