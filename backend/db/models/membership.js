@@ -21,19 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     groupId: {
       type:DataTypes.INTEGER,
-      allowNull:false,
-      validate:{
-        // Group couldn't be found?
-      }
+      allowNull:false
     },
     status: {
-      type:DataTypes.ENUM('member','pending','co-host'),
-      defaultValue:'pending',
-      validate:{
-        // Current User already has a pending membership for the group,
-        // Current User already accepted member
-        // Cannot change memberhsip status to pending
-      }
+      type:DataTypes.STRING(10),
+      defaultValue:'pending'
     },
   }, {
     sequelize,

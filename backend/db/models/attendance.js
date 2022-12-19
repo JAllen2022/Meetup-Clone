@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     status: {
-      type:DataTypes.ENUM('attending','pending','waitlist','member'),
+      type:DataTypes.STRING(10),
       default:'pending',
       allowNull:false,
       validate:{

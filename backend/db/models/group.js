@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     type: {
-      type:DataTypes.ENUM,
+      type:DataTypes.STRING(10),
       allowNull:false,
       validate:{
         //Validate that type of event is either online or in person

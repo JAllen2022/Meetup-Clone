@@ -58,11 +58,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     type: {
-      type:DataTypes.ENUM('Online','In person'),
+      type:DataTypes.STRING(10),
       allowNull:false,
       validate:{
         //Validate that the type of event must be 'Online' or 'In person'
-        isIn:['Online','In person'] // do we need to do this if it is enum above?
+        isIn:['Online','In person']
       }
     },
     capacity: {
