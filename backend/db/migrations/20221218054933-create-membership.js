@@ -1,8 +1,9 @@
 'use strict';
 
-const options={};
-if(production.env.NODE_ENV === 'production'){
-  options.schema = production.env.SCHEMA;
+
+const options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
 module.exports = {
@@ -24,20 +25,23 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
+        allowNull:false,
         values:[
-          'member','pending','co-host'
+          'member',
+          'pending',
+          'co-host'
         ],
         defaultValue:'pending'
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue:Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        ç
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
