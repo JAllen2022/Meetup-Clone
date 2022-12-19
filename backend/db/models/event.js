@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     name: {
-      type:DataTypes.STRING,
+      type:DataTypes.STRING(100),
       allowNull:false,
       validate:{
         //Input string must be at least 5 characters
@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.INTEGER,
     },
     price:{
-      type:DataTypes.INTEGER,
+      type:DataTypes.DECIMAL(10,2),
       allowNull:false
     },
     startDate: {

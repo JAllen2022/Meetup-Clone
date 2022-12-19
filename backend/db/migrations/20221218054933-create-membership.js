@@ -15,13 +15,19 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false
       },
       groupId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false
       },
       status: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM,
+        values:[
+          'member','pending','co-host'
+        ],
+        defaultValue:'pending'
       },
       createdAt: {
         allowNull: false,

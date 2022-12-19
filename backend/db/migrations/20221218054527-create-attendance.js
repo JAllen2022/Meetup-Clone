@@ -15,13 +15,23 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       eventId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false
       },
       status: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM,
+        allowNull:false,
+        values:[
+          'attending',
+          'pending',
+          'waitlist',
+          'member'
+        ],
+        defaultValue:'pending'
       },
       createdAt: {
         allowNull: false,
