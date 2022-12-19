@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      EventImage.hasMany(models.Event,{foreignKey:'eventId'});
+      EventImage.belongsTo(models.Event,{foreignKey:'eventId'});
     }
   }
   EventImage.init({
@@ -21,11 +21,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     url: {
       type:DataTypes.STRING,
-      allowNull:false
+      allowNull:false,
+      validate:{
+        // Validate that input is a URL
+        isUrl:true
+      }
     },
     preview: {
       type:DataTypes.BOOLEAN,
-      allowNull:false
+      allowNull:false,
+      validate:{
+        // Validate that input is a boolean
+        validateBoolean (value){
+          if(typeof value !== 'boolean'){
+            throw new Error('Input value for preview must be a boolean')
+          }
+        }
+      }
     },
   }, {
     sequelize,

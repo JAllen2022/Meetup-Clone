@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Group.belongsTo(models.Event,{foreignKey:'groupId'});
-      Group.belongsTo(models.Venue,{foreignKey:'groupId'});
-      Group.belongsTo(models.GroupImage,{foreignKey:'groupId'});
-      Group.belongsTo(models.Membership,{foreignKey:'groupId'});
+      Group.hasMany(models.Event,{foreignKey:'groupId'});
+      Group.hasMany(models.Venue,{foreignKey:'groupId'});
+      Group.hasMany(models.GroupImage,{foreignKey:'groupId'});
+      Group.hasMany(models.Membership,{foreignKey:'groupId'});
 
-      Group.hasMany(models.User,{foreignKey:'organizerId'});
+      Group.belongsTo(models.User,{foreignKey:'organizerId'});
     }
   }
   Group.init({

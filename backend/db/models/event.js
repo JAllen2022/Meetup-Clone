@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Event.belongsTo(models.EventImage,{foreignKey:'eventId'});
-      Event.belongsTo(models.Attendance,{foreignKey:'eventId'});
+      Event.hasMany(models.EventImage,{foreignKey:'eventId'});
+      Event.hasMany(models.Attendance,{foreignKey:'eventId'});
 
-      Event.hasMany(models.Venue,{foreignKey:'venueId'});
-      Event.hasMany(models.Group,{foreignKey:'groupId'});
+      Event.belongsTo(models.Venue,{foreignKey:'venueId'});
+      Event.belongsTo(models.Group,{foreignKey:'groupId'});
     }
   }
   Event.init({
@@ -58,11 +58,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     type: {
-      type:DataTypes.ENUM,
+      type:DataTypes.ENUM('Online','In person'),
       allowNull:false,
       validate:{
         //Validate that the type of event must be 'Online' or 'In person'
-        isIn:['Online','In person']
+        isIn:['Online','In person'] // do we need to do this if it is enum above?
       }
     },
     capacity: {

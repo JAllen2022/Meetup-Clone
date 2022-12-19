@@ -41,7 +41,10 @@ module.exports = (sequelize, DataTypes) => {
       return { id, username, email, firstName, lastName };
     }
     static associate(models) {
-      // define association here
+      User.hasMany(models.Group,{foreignKey:'organizerId'});
+      User.hasMany(models.Attendance, {foreignKey:'userId'});
+      User.hasMany(models.Membership,{foreignKey:'userId'});
+
     }
   };
 
