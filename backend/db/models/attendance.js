@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     status: {
-      type:DataTypes.STRING(10),
+      type:DataTypes.STRING,
       // default:'pending',
       allowNull:false,
       validate:{

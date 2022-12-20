@@ -39,7 +39,7 @@ module.exports = {
         allowNull:false
       },
       type: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING,
         allowNull:false,
         // defaultValue:'Online',
         allowNull:false

@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     type: {
-      type:DataTypes.STRING(10),
+      type:DataTypes.STRING,
       allowNull:false,
       validate:{
         //Validate that the type of event must be 'Online' or 'In person'

@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     type: {
-      type:DataTypes.STRING(10),
+      type:DataTypes.STRING,
       allowNull:false,
       validate:{
         //Validate that type of event is either online or in person
