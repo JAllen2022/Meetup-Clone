@@ -37,13 +37,13 @@ router.get('/', async (req,res,next)=>{
         // Not creating another returnArray and return the OG group
     for(let i=0;i<groups.length;i++){
         const group = groups[i].toJSON();
-        console.log('checking group',group)
+        // console.log('checking group',group)
         const  memberCount = await Membership.count({
             where:{
                 groupId:group.id
             }
         })
-        console.log('checking numMembers',memberCount);
+        // console.log('checking numMembers',memberCount);
         group.numMembers=memberCount;
         // console.log('checking group end', group) // this doesn't update the OG group value returned
         returnArray.push(group)
@@ -216,7 +216,7 @@ router.post('/', requireAuth, validateGroup, async (req,res,next)=>{
         status:'host'
     })
 
-    console.log('checking host', host)
+    // console.log('checking host', host)
 
     res.json(newGroup)
 
@@ -283,7 +283,7 @@ router.delete('/:groupId', requireAuth, requireUserAuth, async (req,res,next)=>{
 
     // Invalid group numbers handled in requireUserAuth
     const deleteGroup = await Group.findByPk(req.params.groupId);
-    console.log('delete this group',deleteGroup)
+    // console.log('delete this group',deleteGroup)
 
     await deleteGroup.destroy();
 
