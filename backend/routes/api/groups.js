@@ -219,6 +219,20 @@ router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserA
 
 });
 
+router.get('/:groupId/venues', checkForInvalidGroups, async (req,res,next)=>{
+
+    const venues = await Venue.findAll({
+        attributes:{
+            exclude:['createdAt','updatedAt']
+        },
+        where:{
+            groupId:req.params.groupId
+        }
+    })
+
+    res.json({Venues:venues})
+})
+
 
 // GET
 // /api/groups/:groupId/events
