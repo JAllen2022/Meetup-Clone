@@ -244,7 +244,26 @@ router.post('/:groupId/images', requireAuth, requireUserAuth, validateGroupImage
 
 });
 
+// PUT /api/groups/:groupId
+// Updates and returns an existing group
+router.put('/:groupId', requireAuth, requireUserAuth, validateGroup, async (req,res,next)=>{
 
+    const { name, about, type, private, city, state } = req.body;
+
+    const getGroup = await Group.findByPk(req.params.groupId);
+
+    getGroup.name = name;
+    getGroup.about = about;
+    getGroup.type = type;
+    getGroup.private = private;
+    getGroup.city = city;
+    getGroup.city = state;
+
+    const returnedGroup = await getGroup.save();
+
+    res.json(returnedGroup)
+
+});
 
 
 
