@@ -3,12 +3,12 @@ const express = require('express');
 const router = express.Router();
 
 const { requireAuth, requireUserAuth } = require ("../../utils/auth");
-const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage} = require('../../db/models');
+const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage, sequelize} = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors, checkForInvalidGroups } = require('../../utils/validation');
 
-const currentDate = new Date();
+
 
 // GET /api/groups
 // Get all groups
@@ -107,12 +107,54 @@ router.get('/current', requireAuth, async (req,res,next)=>{
     res.json({Groups:returnArray})
 });
 
+
+
 // Values to validate values to create an event
 // Need to check that venue exists
+const validateFutureDate = (req,res,next)=>{
+    const { startDate, endDate } = req.body;
+
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+
+    if(startDateObj > endDateObj){
+        const err = new Error('End date is less than start date');
+        err.status=400;
+        err.title='End date is less than start date';
+        err.errors=['Invalid end date'];
+        return next(err);
+    }
+
+    next();
+}
+const validateVenue = async (req,res,next)=>{
+
+    const venue= await Venue.findByPk(req.body.venueId)
+    // Check to make sure venue exists
+    if(!venue){
+        const err = new Error('Venue does not exist');
+        err.status=400;
+        err.title='Invalid Venue Id';
+        err.errors=['Invalid venue id'];
+        return next(err);
+    }
+
+    // Check to make sure venue belongs to group
+    if(venue.groupId != req.params.groupId){
+        const err = new Error('Venue does belong to the group');
+        err.status=400;
+        err.title='Invalid Venue Id and Group Id';
+        err.errors=['Invalid venue id'];
+        return next(err);
+    }
+
+    next();
+}
 const validateEvent=[
     check('venueId')
         .exists({checkFalsy:true})
         .withMessage('Venue Id required'),
+    validateVenue,
     check('name')
         .exists({checkFalsy:true})
         .isLength({min:5})
@@ -134,21 +176,47 @@ const validateEvent=[
         .withMessage('Description is required'),
     check('startDate')
         .exists({checkFalsy:true})
-        .isAfter(currentDate)
+        .custom((value=>{
+            const inputDate= new Date(value);
+            const currentDate = new Date();
+            if(inputDate<currentDate){
+                throw new Error('Start date must be in the future')
+            }
+            else return true
+        }))
         .withMessage('Start date must be in the future'),
-    check('endDate')
-        .exists({checkFalsy:true})
-        .isAfter('startDate')
-        .withMessage('End date is less than start date'),
+    validateFutureDate,
     handleValidationErrors
 ]
-
 
 // POST /api/groups/:groupId/events
 // Creates and returns a new Event for a group specified by its id
 router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserAuth, validateEvent, async(req,res,next)=>{
 
- // Paused until routes for Venues are added
+    // Paused until routes for Venues are added
+    const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
+    console.log('checking we made it here')
+    console.log(req.params.groupId, venueId, name, type, capacity, price, description, startDate, endDate)
+
+    const newEvent = await Event.create({
+        venueId,
+        groupId:req.params.groupId,
+        name,
+        type,
+        capacity,
+        price,
+        description,
+        startDate,
+        endDate
+    })
+
+    const returnedEvent = await Event.findByPk(newEvent.id,{
+        attributes:{
+            exclude:['createdAt','updatedAt']
+        }
+    })
+
+    res.json(returnedEvent)
 
 });
 

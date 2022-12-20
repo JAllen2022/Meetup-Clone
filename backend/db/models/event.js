@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     name: {
-      type:DataTypes.STRING(100),
+      type:DataTypes.STRING,
       allowNull:false,
       validate:{
         //Input string must be at least 5 characters
@@ -62,24 +62,10 @@ module.exports = (sequelize, DataTypes) => {
     startDate: {
       type:DataTypes.DATE,
       allowNull:false,
-      validate:{
-        //Validate that the start date is in the future
-        dateInFuture(value){
-          const currentDate= new Date();
-          const checkDate = new Date(value);
-          if(currentDate>checkDate){
-            throw new Error('Start date must be in the future')
-          }
-        }
-      }
     },
     endDate: {
       type:DataTypes.DATE,
       allowNull:false,
-      validate: {
-        //Validate that the end date is not less than the start date
-        isAfter:this.startDate
-      }
     }
   }, {
     // defaultScope:{
