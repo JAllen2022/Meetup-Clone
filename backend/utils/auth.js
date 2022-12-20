@@ -1,7 +1,7 @@
 // backend/utils/auth.js
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Group } = require('../db/models');
+const { User, Group, Membership } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
@@ -70,7 +70,14 @@ const requireAuth = function (req, _res, next) {
 const requireUserAuth = async function ( req, _res, next) {
 
   const group = await Group.findByPk(req.params.groupId,{raw:true});
-
+  const membership = await Membership.findOne({
+    where:{
+      groupId:group.id,
+      userId:req.user.id,
+    },
+    raw:true
+  })
+  console.log('MEMBERSHIP ~~~~~~~~~~~~~~ ', membership.status)
   // If group is not found with a valid groupId number
   if(!group){
     const err = new Error(`Group couldn't be found`);
@@ -79,9 +86,8 @@ const requireUserAuth = async function ( req, _res, next) {
     err.status=404;
     return next(err);
   }
-
-  // If a group organizer is not equal to the user Id
-  if(group.organizerId !== req.user.id){
+  // If a group organizer is not equal to the user Id, or they are not co-host or host
+  if(group.organizerId !== req.user.id && !(membership.status==='co-host' || membership.status ==='host')){
     const err = new Error('Forbidden');
     err.title = 'Forbidden access';
     err.errors=['Forbidden acccess'];

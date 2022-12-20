@@ -129,11 +129,13 @@ const validateFutureDate = (req,res,next)=>{
 }
 const validateVenue = async (req,res,next)=>{
 
+    if(req.body.venueId === null ) return next();
+
     const venue= await Venue.findByPk(req.body.venueId)
     // Check to make sure venue exists
     if(!venue){
         const err = new Error('Venue does not exist');
-        err.status=400;
+        err.status=404;
         err.title='Invalid Venue Id';
         err.errors=['Invalid venue id'];
         return next(err);
@@ -151,9 +153,6 @@ const validateVenue = async (req,res,next)=>{
     next();
 }
 const validateEvent=[
-    check('venueId')
-        .exists({checkFalsy:true})
-        .withMessage('Venue Id required'),
     validateVenue,
     check('name')
         .exists({checkFalsy:true})
