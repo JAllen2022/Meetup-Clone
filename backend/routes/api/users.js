@@ -44,8 +44,9 @@ router.post( '/', validateSignup,  async (req, res,next) => {
       const { email, password, username, firstName, lastName } = req.body;
 
       // Special case to handle unique email constraint
+      let user;
       try{
-        const user = await User.signup({ email, username, password, firstName, lastName });
+        user = await User.signup({ email, username, password, firstName, lastName });
       } catch(err){
         const emailErr = new Error('User already exists');
         emailErr.status = 403;
