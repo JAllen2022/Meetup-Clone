@@ -8,6 +8,8 @@ const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage} = r
 const { check } = require('express-validator');
 const { handleValidationErrors, checkForInvalidGroups } = require('../../utils/validation');
 
+const currentDate = new Date();
+
 // GET /api/groups
 // Get all groups
 router.get('/', async (req,res,next)=>{
@@ -105,6 +107,52 @@ router.get('/current', requireAuth, async (req,res,next)=>{
     res.json({Groups:returnArray})
 });
 
+// Values to validate values to create an event
+// Need to check that venue exists
+const validateEvent=[
+    check('venueId')
+        .exists({checkFalsy:true})
+        .withMessage('Venue Id required'),
+    check('name')
+        .exists({checkFalsy:true})
+        .isLength({min:5})
+        .withMessage('Name must be at least 5 characters'),
+    check('type')
+        .exists({checkFalsy:true})
+        .isIn(['Online','In person'])
+        .withMessage('Type must be Online or In person'),
+    check('capacity')
+        .exists({checkFalsy:true})
+        .isInt()
+        .withMessage('Capacity must be an integer'),
+    check('price')
+        .exists({checkFalsy:true})
+        .isDecimal()
+        .withMessage('Price is invalid'),
+    check('description')
+        .exists({checkFalsy:true})
+        .withMessage('Description is required'),
+    check('startDate')
+        .exists({checkFalsy:true})
+        .isAfter(currentDate)
+        .withMessage('Start date must be in the future'),
+    check('endDate')
+        .exists({checkFalsy:true})
+        .isAfter('startDate')
+        .withMessage('End date is less than start date'),
+    handleValidationErrors
+]
+
+
+// POST /api/groups/:groupId/events
+// Creates and returns a new Event for a group specified by its id
+router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserAuth, validateEvent, async(req,res,next)=>{
+
+ // Paused until routes for Venues are added
+
+});
+
+
 // GET
 // /api/groups/:groupId/events
 router.get('/:groupId/events', checkForInvalidGroups, async (req,res,next)=>{
@@ -158,7 +206,7 @@ router.get('/:groupId/events', checkForInvalidGroups, async (req,res,next)=>{
 
     res.json(returnArray);
 
-})
+});
 
 
 // GET /api/groups/:groupId
@@ -276,7 +324,7 @@ router.post('/', requireAuth, validateGroup, async (req,res,next)=>{
 
     res.json(newGroup)
 
-})
+});
 
 // Validate Group Image input is valid for POST route below
 const validateGroupImage = [

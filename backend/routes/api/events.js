@@ -101,7 +101,7 @@ router.get('/:eventId', checkForInvalidEvent, async (req,res,next)=>{
 
 })
 
-// POST
+
 
 
 
