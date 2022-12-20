@@ -225,7 +225,7 @@ const validateGroupImage = [
 
 // POST /api/groups/:groupId/images
 // Add an Image to a group based on the Group's Id
-router.post('/:groupId/images', requireAuth, validateGroupImage, async(req,res,next)=>{ // requireUserAuth
+router.post('/:groupId/images', requireAuth, requireUserAuth, validateGroupImage, async(req,res,next)=>{ // requireUserAuth
 
     // Error handled in requireUserAuth if :groupId is invalid
 
@@ -246,7 +246,7 @@ router.post('/:groupId/images', requireAuth, validateGroupImage, async(req,res,n
 
 // PUT /api/groups/:groupId
 // Updates and returns an existing group
-router.put('/:groupId', requireAuth, validateGroup, async (req,res,next)=>{ // requireUserAuth
+router.put('/:groupId', requireAuth, requireUserAuth, validateGroup, async (req,res,next)=>{ // requireUserAuth
 
     const { name, about, type, private, city, state } = req.body;
 
