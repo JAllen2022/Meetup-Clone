@@ -82,6 +82,11 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   }, {
+    // defaultScope:{
+    //   attributes:{
+    //     exclude:['createdAt','updatedAt','description','capacity','price']
+    //   }
+    // },
     sequelize,
     modelName: 'Event',
   });

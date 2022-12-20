@@ -66,6 +66,7 @@ const requireAuth = function (req, _res, next) {
 };
 
 // Check to ensure that user has proper authorization to make edits to a group
+// Improvements - separate this out into two roles - this function is doing two separate things in one
 const requireUserAuth = async function ( req, _res, next) {
 
   const group = await Group.findByPk(req.params.groupId,{raw:true});

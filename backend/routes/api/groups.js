@@ -3,10 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 const { requireAuth, requireUserAuth } = require ("../../utils/auth");
-const { Group, Membership, GroupImage, Venue, sequelize} = require('../../db/models');
+const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage} = require('../../db/models');
 
 const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
+const { handleValidationErrors, checkForInvalidGroups } = require('../../utils/validation');
 
 // GET /api/groups
 // Get all groups
@@ -104,6 +104,62 @@ router.get('/current', requireAuth, async (req,res,next)=>{
 
     res.json({Groups:returnArray})
 });
+
+// GET
+// /api/groups/:groupId/events
+router.get('/:groupId/events', checkForInvalidGroups, async (req,res,next)=>{
+
+    const groupEvents = await Event.findAll({
+        attributes:{
+            exclude:['createdAt','updatedAt','description','capacity','price']
+        },
+        where:{
+            groupId:req.params.groupId
+        },
+        include:[
+            {
+                model:Group,
+                attributes:['id','name','city','state']
+            },
+            {
+                model:Venue,
+                attributes:['id','city','state']
+            }
+        ]
+
+    })
+
+    const returnArray = [];
+
+    // Lazy load numAttending as well as previewImage
+    for(let i=0; i<groupEvents.length; i++){
+        const event = groupEvents[i].toJSON();
+        // console.log('Checking event: ',event)
+        const attendees = await Attendance.count({
+            where:{
+                eventId:event.id
+            }
+        })
+
+        event.numAttending=attendees;
+        const eventImage = await EventImage.findOne({
+            where:{
+                eventId:event.id
+            },
+            raw:true
+        })
+
+        if(eventImage) event.previewImage=eventImage.url;
+        else event.previewImage=eventImage;
+        // console.log('checking event end')
+
+        returnArray.push(event);
+    }
+
+    res.json(returnArray);
+
+})
+
 
 // GET /api/groups/:groupId
 // Returns the details of a group specified by its id.
