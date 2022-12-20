@@ -16,8 +16,8 @@ const demo_events=[
     type:'In person event',
     capacity:100,
     price:19.95,
-    startDate:'2022-01-21-12-0-0',
-    endDate:'2022-01-21-15-0-0',
+    startDate:'2022-01-21',
+    endDate:'2022-01-21',
   },
   {
     venueId:2,
@@ -27,8 +27,8 @@ const demo_events=[
     type:'In person event',
     capacity:10,
     price:35,
-    startDate:'2022-01-13-10-0-0',
-    endDate:'2022-01-13-13-0-0',
+    startDate:'2022-01-13',
+    endDate:'2022-01-13',
   },
   {
     venueId:3,
@@ -38,8 +38,8 @@ const demo_events=[
     type:'In person event',
     capacity:20,
     price:0,
-    startDate:'2022-01-13-8-0-0',
-    endDate:'2022-01-13-9-0-0',
+    startDate:'2022-01-13',
+    endDate:'2022-01-13',
   },
   {
     venueId:4,
@@ -49,8 +49,8 @@ const demo_events=[
     type:'In person event',
     capacity:200,
     price:15.00,
-    startDate:'2022-01-27-10-0-0',
-    endDate:'2022-01-27-17-0-0',
+    startDate:'2022-01-27',
+    endDate:'2022-01-27',
   },
   {
     venueId:4,
@@ -60,8 +60,8 @@ const demo_events=[
     type:'In person event',
     capacity:100,
     price:10.11,
-    startDate:'2022-01-24-17-0-0',
-    endDate:'2022-01-24-20-0-0',
+    startDate:'2022-01-24',
+    endDate:'2022-01-24',
   }
 ];
 
