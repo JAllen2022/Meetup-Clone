@@ -1,6 +1,7 @@
 'use strict';
-const { Model } = require('sequelize');
+const { Model, Validator } = require('sequelize');
 const bcrypt = require('bcryptjs');
+const { Sequelize } = require('.');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -96,7 +97,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       scopes: {
         currentUser: {
-          attributes: { exclude: ['hashedPassword','createdAt','updatedAt'] }
+          attributes: { exclude: ["hashedPassword"] }
         },
         loginUser: {
           attributes: {}

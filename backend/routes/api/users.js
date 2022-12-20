@@ -39,7 +39,8 @@ const validateSignup = [
 
 
 // Sign up
-//POST /api/users
+// POST /api/users
+// Improvements - better set this up to handle unique email constraint
 router.post( '/', validateSignup,  async (req, res,next) => {
       const { email, password, username, firstName, lastName } = req.body;
 
@@ -51,9 +52,10 @@ router.post( '/', validateSignup,  async (req, res,next) => {
         const emailErr = new Error('User already exists');
         emailErr.status = 403;
         emailErr.title = 'User Signup Failed - Accound already exists';
-        emailErr.errors=['Provided email is already in use.']
+        emailErr.errors=['Provided email is already in use.'];
         next(emailErr);
       }
+
       await setTokenCookie(res, user);
 
       return res.json({
