@@ -3,8 +3,6 @@ const {
   Model, Validate
 } = require('sequelize');
 
-const { Venue } = require('./index');
-
 module.exports = (sequelize, DataTypes) => {
   class Event extends Model {
     /**

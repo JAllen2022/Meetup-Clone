@@ -2,7 +2,7 @@
 const {
   Model
 } = require('sequelize');
-const {Group} = require('./index')
+
 module.exports = (sequelize, DataTypes) => {
   class GroupImage extends Model {
     /**
