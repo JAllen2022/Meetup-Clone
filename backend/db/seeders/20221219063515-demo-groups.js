@@ -54,8 +54,6 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
     const groupNames = demo_groups.map(ele=>ele.name);
-    await queryInterface.bulkDelete(options,{
-      name:{[Op.in]:groupNames}
-    });
+    await queryInterface.bulkDelete(options,null,{});
   }
 };
