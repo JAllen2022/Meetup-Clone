@@ -12,22 +12,22 @@ const demo_memberships = [
   {
     userId:1,
     groupId:1,
-    status:'co-host',
+    status:'host',
   },
   {
     userId:2,
     groupId:2,
-    status:'co-host',
+    status:'host',
   },
   {
     userId:5,
     groupId:3,
-    status:'co-host',
+    status:'host',
   },
   {
     userId:8,
     groupId:4,
-    status:'co-host',
+    status:'host',
   },
   {
     userId:3,
@@ -72,7 +72,7 @@ const demo_memberships = [
   {
     userId:1,
     groupId:4,
-    status:'pending',
+    status:'co-host',
   }
 ];
 

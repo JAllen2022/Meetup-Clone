@@ -20,7 +20,7 @@ router.get('/', async (req,res,next)=>{
         {
             model:GroupImage,
             attributes:[]
-        }
+        },
         ],
         attributes: {
             include:[
@@ -58,29 +58,17 @@ router.get('/', async (req,res,next)=>{
     // Requires Authentication through 'requireAuth' middleware
 router.get('/current', requireAuth, async (req,res,next)=>{
 
+    // Find all groups organized by current user
     const groups = await Group.findAll({
-        // where:{
-        //     organizerId:req.user.id
-        // },
-        include:[{
+        include:{
             model:Membership,
             attributes:[],
             where:{
                 userId:req.user.id
             }
-        },
-        {
-            model:GroupImage,
-            attributes:[]
-        }],
-        attributes: {
-            include:[
-            //  [sequelize.fn('COUNT',sequelize(Members.groupId)), 'numMembers'] // this was causing issues - wrong count
-                [sequelize.col('url'),'previewImgage']
-            ]
-        },
-        group:['Group.id']
+        }
     });
+
     const returnArray = [];
 
     // Improvements?
@@ -88,14 +76,28 @@ router.get('/current', requireAuth, async (req,res,next)=>{
         // Not creating another returnArray and return the OG group
     for(let i=0;i<groups.length;i++){
         const group = groups[i].toJSON();
-        console.log('checking group',group)
+        // console.log('checking group',group)
+
+        // Lazy load membership count
         const  memberCount = await Membership.count({
             where:{
                 groupId:group.id
             }
         })
-        console.log('checking numMembers',memberCount);
+
+        // Lazy load group preview image. This is accounting for the fact that multiple pics may be available
+        // Improvements - either limit database to only have one image per group or allow user to upload and pick from multiple
+        const imageUrl = await GroupImage.findOne({
+            attributes:['url'],
+            where:{
+                groupId:group.id
+            }
+        })
+
+        if(!imageUrl) group.previewImage=imageUrl;
+        else group.previewImage=imageUrl.url;
         group.numMembers=memberCount;
+        // console.log('checking group',group);
         // console.log('checking group end', group) // this doesn't update the OG group value returned
         returnArray.push(group)
     }
@@ -196,6 +198,7 @@ router.post('/', requireAuth, validateGroup, async (req,res,next)=>{
 
     const { name, about, type, private, city, state } = req.body;
 
+    // Creates a new group
     const newGroup = await Group.create({
         organizerId:req.user.id,
         name,
@@ -205,6 +208,15 @@ router.post('/', requireAuth, validateGroup, async (req,res,next)=>{
         city,
         state
     });
+
+    // Creates a new membership and sets user's status to host
+    const host = await Membership.create({
+        userId:req.user.id,
+        groupId:newGroup.id,
+        status:'host'
+    })
+
+    console.log('checking host', host)
 
     res.json(newGroup)
 
