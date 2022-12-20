@@ -41,7 +41,7 @@ module.exports = {
       type: {
         type: Sequelize.STRING(10),
         allowNull:false,
-        defaultValue:'Online',
+        // defaultValue:'Online',
         allowNull:false
       },
       capacity: {
