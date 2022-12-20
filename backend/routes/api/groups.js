@@ -225,7 +225,7 @@ const validateGroupImage = [
 
 // POST /api/groups/:groupId/images
 // Add an Image to a group based on the Group's Id
-router.post('/:groupId/images', requireAuth, requireUserAuth, validateGroupImage, async(req,res,next)=>{
+router.post('/:groupId/images', requireAuth, validateGroupImage, async(req,res,next)=>{ // requireUserAuth
 
     // Error handled in requireUserAuth if :groupId is invalid
 
@@ -244,7 +244,42 @@ router.post('/:groupId/images', requireAuth, requireUserAuth, validateGroupImage
 
 });
 
+// PUT /api/groups/:groupId
+// Updates and returns an existing group
+router.put('/:groupId', requireAuth, validateGroup, async (req,res,next)=>{ // requireUserAuth
 
+    const { name, about, type, private, city, state } = req.body;
+
+    const getGroup = await Group.findByPk(req.params.groupId);
+
+    getGroup.name = name;
+    getGroup.about = about;
+    getGroup.type = type;
+    getGroup.private = private;
+    getGroup.city = city;
+    getGroup.state = state;
+
+    const returnedGroup = await getGroup.save();
+
+    res.json(returnedGroup)
+
+});
+
+// DELETE /api/groups/:groupId
+// Deletes an existing group
+router.delete('/:groupId', requireAuth, requireUserAuth, async (req,res,next)=>{
+
+    // Invalid group numbers handled in requireUserAuth
+    const deleteGroup = await Group.findByPk(req.params.groupId);
+    console.log('delete this group',deleteGroup)
+
+    await deleteGroup.destroy();
+
+    res.json({
+        message:'Successfully deleted'
+    })
+
+});
 
 
 

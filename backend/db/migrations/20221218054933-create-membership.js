@@ -29,7 +29,8 @@ module.exports = {
         references:{
           model:'Groups',
           key:'id'
-        }
+        },
+        onDelete:'CASCADE'
       },
       status: {
         type: Sequelize.STRING,
