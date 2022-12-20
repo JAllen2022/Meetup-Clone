@@ -34,7 +34,7 @@ module.exports = {
       },
       type: {
         type: Sequelize.STRING(10),
-        defaultValue:'Online',
+        // defaultValue:'Online',
         allowNull:false
       },
       private: {

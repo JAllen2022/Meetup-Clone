@@ -33,7 +33,7 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
         allowNull:false,
-        defaultValue:'pending',
+        // defaultValue:'pending',
         validate:{
           isIn:[[
             'attending',
