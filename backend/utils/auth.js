@@ -85,16 +85,13 @@ const requireUserAuth = async function ( req, _res, next) {
   if(req.params.groupId){
     groupId= req.params.groupId;
   }
+  if(req.params.eventId){
+    const event = await Event.findByPk(req.params.eventId)
+    groupId = event.groupId;
+  }
 
   const group = await Group.findByPk(groupId,{raw:true});
-  const membership = await Membership.findOne({
-    where:{
-      groupId:group.id,
-      userId:req.user.id,
-    },
-    raw:true
-  })
-  console.log('MEMBERSHIP ~~~~~~~~~~~~~~ ', membership.status)
+  console.log('checking group', group)
   // If group is not found with a valid groupId number
   if(!group){
     const err = new Error(`Group couldn't be found`);
@@ -103,8 +100,18 @@ const requireUserAuth = async function ( req, _res, next) {
     err.status=404;
     return next(err);
   }
+
+  const membership = await Membership.findOne({
+    where:{
+      groupId:group.id,
+      userId:req.user.id,
+    },
+    raw:true
+  })
+  console.log('MEMBERSHIP ~~~~~~~~~~~~~~ ', membership.status)
+
   // If a group organizer is not equal to the user Id, or they are not co-host or host
-  if(group.organizerId !== req.user.id && !(membership.status==='co-host' || membership.status ==='host')){
+  if(!(membership.status==='co-host' || membership.status ==='host')){
     const err = new Error('Forbidden');
     err.title = 'Forbidden access';
     err.errors=['Forbidden acccess'];

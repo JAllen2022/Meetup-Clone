@@ -6,7 +6,7 @@ const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/
 const { Event, Group, Attendance, EventImage, Venue } = require('../../db/models');
 
 const { check } = require('express-validator');
-const { handleValidationErrors, checkForInvalidEvent } = require('../../utils/validation');
+const { handleValidationErrors, checkForInvalidEvent, validateEventInput } = require('../../utils/validation');
 
 // GET /api/events
 // Return all events
@@ -48,7 +48,8 @@ router.get('/', async (req,res,next)=>{
             },
             raw:true
         })
-        event.previewImage=eventImage.url;
+        if(eventImage) event.previewImage=eventImage.url;
+        else event.previewImage=null;
 
         returnArray.push(event);
         // console.log('checking my event', event)
@@ -58,6 +59,40 @@ router.get('/', async (req,res,next)=>{
     res.json(returnArray);
 
 })
+
+// PUT /api/events/:eventId
+// Edit and returns an event specified by its id
+router.put('/:eventId',checkForInvalidEvent, requireAuth, requireEventAuth, validateEventInput,  async (req,res,next)=>{
+
+    
+
+    res.json({
+        message:'success'
+    })
+});
+
+// POST /api/events/:eventId/images
+// Create and return a new image for an event specified by id
+router.post('/:eventId/images', checkForInvalidEvent, requireAuth, requireEventAuth, async (req,res,next)=>{
+
+    const { url, preview } = req.body;
+
+    const image = await EventImage.create({
+        eventId:req.params.eventId,
+        url,
+        preview
+    })
+
+    const checkImage = await EventImage.findByPk(image.id,{
+        attributes:{
+            exclude:['createdAt','updatedAt','eventId']
+        }
+    });
+
+    res.json(checkImage)
+
+});
+
 
 // GET /api/events/:eventId
 // Returns the details of an event specified by its id
@@ -101,32 +136,5 @@ router.get('/:eventId', checkForInvalidEvent, async (req,res,next)=>{
 
 })
 
-// POST /api/events/:eventId/images
-// Create and return a new image for an event specified by id
-router.post('/:eventId/images', checkForInvalidEvent, requireAuth, requireEventAuth, async (req,res,next)=>{
-
-    const { url, preview } = req.body;
-
-    const image = await EventImage.create({
-        eventId:req.params.eventId,
-        url,
-        preview
-    })
-
-    const checkImage = await EventImage.findByPk(image.id,{
-        attributes:{
-            exclude:['createdAt','updatedAt','eventId']
-        }
-    });
-
-    res.json(checkImage)
-
-});
-
-// PUT /api/events/:eventId
-// Edit and returns an event specified by its id
-router.put('/api/events/:eventId',checkForInvalidEvent, requireAuth, requireEventAuth, async (req,res,next)=>{
-
-});
 
 module.exports = router;
