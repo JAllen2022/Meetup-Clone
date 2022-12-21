@@ -67,7 +67,7 @@ const requireAuth = function (req, _res, next) {
 
 // Check to ensure that user has proper authorization to make edits to a group
 // Improvements - separate this out into two roles - this function is doing two separate things in one
-const requireUserAuth = async function ( req, _res, next) {
+const requireUserAuth = async function ( req, res, next) {
 
   const where={};
   let groupId;
@@ -108,10 +108,12 @@ const requireUserAuth = async function ( req, _res, next) {
     },
     raw:true
   })
-  console.log('MEMBERSHIP ~~~~~~~~~~~~~~ ', membership.status)
+  // console.log('MEMBERSHIP ~~~~~~~~~~~~~~ ', membership.status)
+  res.locals.member = membership;
+
 
   // If a group organizer is not equal to the user Id, or they are not co-host or host
-  if(!(membership.status==='co-host' || membership.status ==='host')){
+  if( !membership || !(membership.status==='co-host' || membership.status ==='host')){
     const err = new Error('Forbidden');
     err.title = 'Forbidden access';
     err.errors=['Forbidden acccess'];

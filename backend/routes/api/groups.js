@@ -109,6 +109,7 @@ router.get('/current', requireAuth, async (req,res,next)=>{
 
 // GET /api/groups/:groupId/members
 // Returns the members of a group specified by its id
+// Improvements - create middleware to ensure group ID provided is good
 router.get('/:groupId/members', async (req,res,next)=>{
 
     const group = await Group.findByPk(req.params.groupId);
@@ -208,6 +209,161 @@ router.get('/:groupId/members', async (req,res,next)=>{
     res.json(output)
 
 });
+
+// POST /api/groups/:groupId/membership
+// Request a new membership for a group specified by id
+// Improvements - create middleware to ensure group ID provided is good
+router.post('/:groupId/membership', requireAuth, async (req,res,next)=>{
+
+    const group = await Group.findByPk(req.params.groupId);
+    // console.log('checking group', group)
+
+    // If group is not found with a valid groupId number
+    if(!group){
+        const err = new Error(`Group couldn't be found`);
+        err.title='Invalid group number';
+        err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
+        err.status=404;
+        return next(err);
+    }
+
+    const getMemStatus = await Membership.findOne({
+        where:{
+            groupId:req.params.groupId,
+            userId:req.user.id
+        }
+    })
+    if(!getMemStatus){
+
+        const membership = await Membership.create({
+            groupId:req.params.groupId,
+            userId:req.user.id,
+            status:'pending'
+        })
+
+        const checkMem = await Membership.findByPk(membership.id,{
+            attributes:['status'],
+            raw:true
+        })
+
+        checkMem.memberId = req.user.id;
+
+        return res.json(checkMem);
+
+    } else if (getMemStatus.status == 'pending'){
+        return res.status(400).json({
+            message:'Membership has already been requested',
+            statusCode:400
+        })
+    } else if (getMemStatus.status == 'member' || getMemStatus.status == 'host' || getMemStatus.status == 'co-host'){
+        return res.status(400).json({
+            message:'User is already a member of the group',
+            statusCode:400
+        })
+    }
+
+});
+
+// PUT /api/groups/:groupId/membership
+// Change the status of a membership for a group specified by id
+// Improvements - majorly refactor so error codes aren't repeated so many times
+router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,next)=>{
+
+    const { memberId, status } = req.body;
+
+    if (status==='pending'){
+        const err = new Error(`Cannot change a membership status to pending`);
+        err.title='Cannot change status to pending';
+        err.errors=[`Cannot change a membership status to pending`];
+        err.status=400;
+        return next(err);
+    }
+
+    // Check for memberId aka UserId
+    const member = await User.findByPk(memberId, {raw:true});
+
+    if(!member){
+        const err = new Error(`User couldn't be found`);
+        err.title='Member does not exist';
+        err.errors=[`Member could not be found with memberID inputed`];
+        err.status=400;
+        return next(err);
+    }
+
+    const foundMembership = await Membership.findOne({
+        where:{
+            groupId:req.params.groupId,
+            userId:memberId
+        }
+    });
+
+    // If no membership found, return an error
+    if(!foundMembership){
+        const err = new Error(`Membership between the user and the group does not exist`);
+        err.title='Membership does not exist';
+        err.errors=[`Membership could not be found with ID inputed`];
+        err.status=404;
+        return next(err);
+    }
+
+    const userMembership = await Membership.findOne({
+        where:{
+            groupId:req.params.groupId,
+            userId: req.user.id
+        },
+        raw:true
+    })
+
+    const foundMemJSON = foundMembership.toJSON();
+    if(foundMemJSON.status==='pending' && status ==='member'){
+        if(userMembership.status ==='host' || userMembership.status ==='co-host'){
+            foundMembership.status = 'member';
+
+            await foundMembership.save();
+
+            const checkMem = await Membership.findByPk(foundMembership.id,{
+                attributes:['id','groupId','status']
+            });
+
+            checkMem.memberId = memberId;
+
+            return res.json(checkMem)
+
+        } else {
+            const err = new Error(`Not authorized to change status to member. Must be host or co-host`);
+            err.title='Not authorized to change status to member. Must be host or co-host';
+            err.errors=[`Not authorized to change status to member. Must be host or co-host`];
+            err.status=400;
+            return next(err);
+        }
+    }
+
+    if(foundMemJSON.status==='member' && status ==='co-host'){
+        if(userMembership.status ==='host'){
+            foundMembership.status = 'co-host';
+            await foundMembership.save();
+
+            const checkMem = await Membership.findByPk(foundMembership.id,{
+                attributes:['id','groupId','status']
+            });
+
+            checkMem.memberId = memberId;
+
+            return res.json(checkMem)
+
+        } else {
+            const err = new Error(`Cannot change a membership status to co-host. User must be organizer/host. `);
+            err.title='Cannot change a membership status to co-host. User must be organizer/host.';
+            err.errors=[`Cannot change a membership status to co-host. User must be organizer/host.`];
+            err.status=403;
+            return next(err);
+        }
+    }
+
+    res.status(400).json({
+        message:`Cannot change memberId, ${memberId}, status from ${foundMemJSON.status} to ${status}`
+    })
+})
 
 // POST /api/groups/:groupId/events
 // Creates and returns a new Event for a group specified by its id
@@ -333,6 +489,7 @@ router.get('/:groupId/venues', checkForInvalidGroups, async (req,res,next)=>{
 
 // GET /api/groups/:groupId
 // Returns the details of a group specified by its id.
+// Improvements - create middleware to ensure group ID provided is good
 router.get('/:groupId', async (req,res,next)=>{
 
     const group = await Group.findByPk(req.params.groupId,{
@@ -392,6 +549,7 @@ router.get('/:groupId', async (req,res,next)=>{
 });
 
 // Use check method to build middleware to ensure input to create a group is valid
+// Improvements - move this to validate utility file
 const validateGroup = [
     check('name')
         .exists({checkFalsy:true})
@@ -449,6 +607,7 @@ router.post('/', requireAuth, validateGroup, async (req,res,next)=>{
 });
 
 // Validate Group Image input is valid for POST route below
+// Improvements - move to validate utility file
 const validateGroupImage = [
     check('url')
         .exists({checkFalsy:true})
