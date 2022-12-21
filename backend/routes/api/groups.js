@@ -194,8 +194,6 @@ router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserA
 
     // Paused until routes for Venues are added
     const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
-    console.log('checking we made it here')
-    console.log(req.params.groupId, venueId, name, type, capacity, price, description, startDate, endDate)
 
     const newEvent = await Event.create({
         venueId,

@@ -1,8 +1,8 @@
 // backend/utils/auth.js
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Group, Membership, Venue } = require('../db/models');
-
+const { User, Group, Membership, Venue, Event } = require('../db/models');
+const { Op } = require('sequelize')
 const { secret, expiresIn } = jwtConfig;
 
 // backend/utils/auth.js
@@ -116,5 +116,42 @@ const requireUserAuth = async function ( req, _res, next) {
 
 };
 
+// Check to ensure that user has proper auth to add pictures to an event
+const requireEventAuth = async function (req,res,next){
 
-module.exports = { setTokenCookie, restoreUser, requireAuth, requireUserAuth};
+  const eventMembers = await Membership.findAll({
+    attribute:['userId','status'],
+    where:{
+      status:{
+        [Op.in]:['host','co-host','attendee']
+      }
+    },
+    include:{
+      model:Group,
+      attributes:[],
+      include:{
+        model:Event,
+        attributes:[],
+        where:{
+          id:req.params.eventId,
+        }
+      }
+    }
+  })
+
+  for(let i=0;i<eventMembers.length;i++){
+    const member = eventMembers[i].toJSON();
+    if(member.id===req.user.id){
+      return next();
+    }
+  }
+
+  const err = new Error('Authentication required');
+  err.title = 'Authentication required';
+  err.errors = ['Authentication required'];
+  err.status = 401; 
+  return next(err);
+
+}
+
+  module.exports = { requireEventAuth, setTokenCookie, restoreUser, requireAuth, requireUserAuth};

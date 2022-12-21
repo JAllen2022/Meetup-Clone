@@ -48,10 +48,10 @@ const checkForInvalidEvent = async (req, res, next) =>{
   });
 
   if(!event){
-    const err = new Error(`Group couldn't be found`);
+    const err = new Error(`Event couldn't be found`);
     err.status = 404;
-    err.title = 'Invalid Group';
-    err.errors = [`The provided groupId, ${req.params.groupId}, is invalid.`];
+    err.title = 'Invalid Event';
+    err.errors = [`The provided eventId, ${req.params.eventId}, is invalid.`];
     return next(err);
   }
 
@@ -87,5 +87,5 @@ module.exports = {
   handleValidationErrors,
   checkForInvalidGroups,
   checkForInvalidEvent,
-  validateNewVenue
+  validateNewVenue,
 };

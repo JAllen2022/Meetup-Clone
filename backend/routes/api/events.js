@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth, requireUserAuth } = require('../../utils/auth');
+const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/auth');
 const { Event, Group, Attendance, EventImage, Venue } = require('../../db/models');
 
 const { check } = require('express-validator');
@@ -101,10 +101,26 @@ router.get('/:eventId', checkForInvalidEvent, async (req,res,next)=>{
 
 })
 
+// POST /api/events/:eventId/images
+// Create and return a new image for an event specified by id
+router.post('/:eventId/images', checkForInvalidEvent, requireAuth, requireEventAuth, async (req,res,next)=>{
 
+    const { url, preview } = req.body;
 
+    const image = await EventImage.create({
+        eventId:req.params.eventId,
+        url,
+        preview
+    })
 
+    const checkImage = await EventImage.findByPk(image.id,{
+        attributes:{
+            exclude:['createdAt','updatedAt','eventId']
+        }
+    });
 
+    res.json(checkImage)
 
+});
 
 module.exports = router;
