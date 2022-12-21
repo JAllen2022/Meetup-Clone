@@ -60,16 +60,6 @@ router.get('/', async (req,res,next)=>{
 
 })
 
-// PUT /api/events/:eventId
-// Edit and returns an event specified by its id
-router.put('/:eventId',checkForInvalidEvent, requireAuth, requireEventAuth, validateEventInput,  async (req,res,next)=>{
-
-    
-
-    res.json({
-        message:'success'
-    })
-});
 
 // POST /api/events/:eventId/images
 // Create and return a new image for an event specified by id
@@ -92,7 +82,6 @@ router.post('/:eventId/images', checkForInvalidEvent, requireAuth, requireEventA
     res.json(checkImage)
 
 });
-
 
 // GET /api/events/:eventId
 // Returns the details of an event specified by its id
@@ -135,6 +124,38 @@ router.get('/:eventId', checkForInvalidEvent, async (req,res,next)=>{
     res.json(returnEvent);
 
 })
+
+// PUT /api/events/:eventId
+// Edit and returns an event specified by its id
+    // Improvements - optimize and make validate venue less sketchy - validations in general need improvement here
+router.put('/:eventId',checkForInvalidEvent, requireAuth, requireUserAuth, validateEventInput,  async (req,res,next)=>{
+    // Paused until routes for Venues are added
+    const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
+
+    const foundEvent = await Event.findByPk(req.params.eventId);
+
+    foundEvent.venueId = venueId;
+    foundEvent.name = name;
+    foundEvent.type = type;
+    foundEvent.capacity = capacity;
+    foundEvent.price = price;
+    foundEvent.description = description;
+    foundEvent.startDate = startDate;
+    foundEvent.endDate = endDate;
+
+    await foundEvent.save();
+
+    const returnedEvent = await Event.findByPk(foundEvent.id,{
+        attributes:{
+            exclude:['createdAt','updatedAt']
+        }
+    })
+
+    res.json(returnedEvent)
+});
+
+// DELETE /api/events/:eventId
+router.delete('/:eventId')
 
 
 module.exports = router;

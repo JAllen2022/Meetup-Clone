@@ -82,6 +82,7 @@ const validateNewVenue = [
   handleValidationErrors
 ];
 
+// Improvements - add this to the array of errors instead of throwing a separate error
 const validateVenue = async (req,res,next)=>{
 
   if(req.body.venueId === null ) return next();
@@ -97,18 +98,32 @@ const validateVenue = async (req,res,next)=>{
   }
 
   // Check to make sure venue belongs to group
-  if(venue.groupId != req.params.groupId){
+  if(req.params.groupId){
+    if(venue.groupId != req.params.groupId){
+        const err = new Error('Venue does belong to the group');
+        err.status=400;
+        err.title='Invalid Venue Id and Group Id';
+        err.errors=['Invalid venue id'];
+        return next(err);
+    }
+  }
+  if(req.params.eventId){
+
+    if(venue.groupId!=res.locals.event.groupId){
       const err = new Error('Venue does belong to the group');
       err.status=400;
       err.title='Invalid Venue Id and Group Id';
       err.errors=['Invalid venue id'];
       return next(err);
+    }
   }
 
   next();
 };
 // Values to validate values to create an event
 // Need to check that venue exists
+// Improvements
+  // add this to error array instead of throwing a separate error
 const validateFutureDate = (req,res,next)=>{
   const { startDate, endDate } = req.body;
 
