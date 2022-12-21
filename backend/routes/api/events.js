@@ -123,4 +123,10 @@ router.post('/:eventId/images', checkForInvalidEvent, requireAuth, requireEventA
 
 });
 
+// PUT /api/events/:eventId
+// Edit and returns an event specified by its id
+router.put('/api/events/:eventId',checkForInvalidEvent, requireAuth, requireEventAuth, async (req,res,next)=>{
+
+});
+
 module.exports = router;
