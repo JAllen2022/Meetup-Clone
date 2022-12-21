@@ -155,7 +155,18 @@ router.put('/:eventId',checkForInvalidEvent, requireAuth, requireUserAuth, valid
 });
 
 // DELETE /api/events/:eventId
-router.delete('/:eventId')
+router.delete('/:eventId', checkForInvalidEvent, requireAuth, requireUserAuth, async (req,res,next)=>{
+
+    const event = await Event.findByPk(req.params.eventId);
+
+    // console.log('CHECKING EVENT ~~~~~~~~', event)
+
+    await event.destroy();
+
+    res.json({
+        message:'Successfully deleted'
+    })
+});
 
 
 module.exports = router;
