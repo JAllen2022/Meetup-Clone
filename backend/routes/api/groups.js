@@ -3,12 +3,12 @@ const express = require('express');
 const router = express.Router();
 
 const { requireAuth, requireUserAuth } = require ("../../utils/auth");
-const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage, sequelize} = require('../../db/models');
+const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage, sequelize, User} = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors, checkForInvalidGroups, validateNewVenue, validateEventInput } = require('../../utils/validation');
 
-
+const { Op } = require('sequelize')
 
 // GET /api/groups
 // Get all groups
@@ -105,6 +105,108 @@ router.get('/current', requireAuth, async (req,res,next)=>{
     }
 
     res.json({Groups:returnArray})
+});
+
+// GET /api/groups/:groupId/members
+// Returns the members of a group specified by its id
+router.get('/:groupId/members', async (req,res,next)=>{
+
+    const group = await Group.findByPk(req.params.groupId);
+    // console.log('checking group', group)
+
+    // If group is not found with a valid groupId number
+    if(!group){
+        const err = new Error(`Group couldn't be found`);
+        err.title='Invalid group number';
+        err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
+        err.status=404;
+        return next(err);
+    }
+
+    const userStatus = await Membership.findOne({
+        where:{
+            userId:req.user.id,
+            groupId:req.params.groupId
+        },
+        raw:true
+    })
+
+    console.log('check user status', userStatus)
+
+    const output={};
+
+    if(userStatus.status === 'host' || userStatus.status ==='co-host'){
+        // console.log("asbadsfadsfasfasdf")
+
+        const userArray = await User.findAll({
+            attributes:['id','firstName','lastName'],
+            include:{
+                model:Membership,
+                where:{
+                    groupId:req.params.groupId,
+                },
+                attributes:[]
+            }
+        })
+
+        // console.log("123123123123123123123123")
+        const memberArray=[];
+
+        // Lazy load each Member because eager loading didn't have the format we wanted
+        // when loading Member attributes
+        for(let i=0;i<userArray.length;i++){
+            const user = userArray[i].toJSON();
+            console.log('checking this', user)
+            const userMem = await Membership.findOne({
+                where:{
+                    groupId:req.params.groupId,
+                    userId:user.id
+                },
+                attributes:['status']
+            });
+            user.Membership=userMem;
+            memberArray.push(user)
+        }
+
+        output.Members=memberArray;
+    } else {
+        const userArray = await User.findAll({
+            attributes:['id','firstName','lastName'],
+            include:{
+                model:Membership,
+                where:{
+                    groupId:req.params.groupId,
+                    status:{
+                        [Op.notIn]:['pending']
+                    }
+                },
+                attributes:[]
+                }
+        });
+
+        const memberArray=[];
+
+        // Lazy load each Member because eager loading didn't have the format we wanted
+        // when loading Member attributes
+        for(let i=0;i<userArray.length;i++){
+            const user = userArray[i].toJSON();
+            console.log('checking this', user)
+            const userMem = await Membership.findOne({
+                where:{
+                    groupId:req.params.groupId,
+                    userId:user.id
+                },
+                attributes:['status']
+            });
+            user.Membership=userMem;
+            memberArray.push(user)
+        }
+
+        output.Members=memberArray;
+    }
+
+    res.json(output)
+
 });
 
 // POST /api/groups/:groupId/events
