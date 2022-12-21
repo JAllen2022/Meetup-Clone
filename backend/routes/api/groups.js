@@ -365,6 +365,88 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
     })
 })
 
+// DELETE /api/groups/:groupId/membership
+// Delete a membership to a group specified by id
+// Improvement - consolidate and dry up errors
+// Improvement - if groupId owner is host and deletes their membership - something needs to happen
+    // either make co-host a host, or cascade the groups to be deleted as well
+router.delete('/:groupId/membership', requireAuth, async(req,res,next)=>{
+
+    const group = await Group.findByPk(req.params.groupId);
+    // console.log('checking group', group)
+
+    // If group is not found with a valid groupId number
+    if(!group){
+        const err = new Error(`Group couldn't be found`);
+        err.title='Invalid group number';
+        err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
+        err.status=404;
+        return next(err);
+    }
+
+    const { memberId } = req.body;
+
+    const targetUser = await User.findByPk(memberId);
+
+    if(!targetUser){
+        const err = new Error(`Validation Error`);
+        err.title='Validation Error';
+        err.errors= {memberId:`User couldn't be found`}
+        err.status=400;
+        return next(err);
+    }
+
+    // Target membership to delete
+    const targetMem = await Membership.findOne({
+        where:{
+            userId: +memberId,
+            groupId:req.params.groupId
+        }
+    })
+    console.log('Checking target mem', targetMem)
+
+    if(!targetMem){
+        const err = new Error(`Membership does not exist`);
+        err.title='Membership does not exist';
+        err.errors=[`Membership does not exist`];
+        err.status=400;
+        return next(err);
+    }
+
+    // get current user's role
+    const currentUser = await Membership.findOne({
+        where:{
+            userId:req.user.id,
+            groupId:req.params.groupId
+        }
+    });
+
+    // Convert to json to check their status
+    const currUserJSON = currentUser.toJSON();
+    const targetMemJSON = targetMem.toJSON();
+    console.log()
+    console.log('Checking ~~~~~~~~~~~~~1', currUserJSON.status)
+    console.log('Checking ~~~~~~~~~~~~~1', targetMemJSON.userId, req.userId)
+
+
+    // If current user is host of the group, and deleting a user's membership
+    if(currUserJSON.status === 'host' || targetMemJSON.userId == req.user.id){
+        await targetMem.destroy();
+
+        return res.json({
+            message:'Successfully deleted membership from group'
+        })
+    } else {
+        const err = new Error(`Unauthorized to delete membership`);
+        err.title='Authorization required';
+        err.errors=[`Unauthorized to delete membership`];
+        err.status=403;
+        return next(err);
+    }
+
+
+});
+
 // POST /api/groups/:groupId/events
 // Creates and returns a new Event for a group specified by its id
 router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserAuth, validateEventInput, async(req,res,next)=>{
