@@ -1,7 +1,7 @@
 // backend/utils/auth.js
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Group, Membership } = require('../db/models');
+const { User, Group, Membership, Venue } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
@@ -69,7 +69,24 @@ const requireAuth = function (req, _res, next) {
 // Improvements - separate this out into two roles - this function is doing two separate things in one
 const requireUserAuth = async function ( req, _res, next) {
 
-  const group = await Group.findByPk(req.params.groupId,{raw:true});
+  const where={};
+  let groupId;
+  if(req.params.venueId){
+    const venue = await Venue.findByPk(req.params.venueId)
+    if(!venue){
+      const err = new Error(`Venue couldn't be found`);
+      err.title='Invalid Venue number';
+      err.errors=[`Venue could not be found with ID inputed: ${req.params.venueId}`];
+      err.status=404;
+      return next(err);
+    }
+    groupId=venue.groupId;
+  }
+  if(req.params.groupId){
+    groupId= req.params.groupId;
+  }
+
+  const group = await Group.findByPk(groupId,{raw:true});
   const membership = await Membership.findOne({
     where:{
       groupId:group.id,

@@ -6,7 +6,7 @@ const { requireAuth, requireUserAuth } = require ("../../utils/auth");
 const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage, sequelize} = require('../../db/models');
 
 const { check } = require('express-validator');
-const { handleValidationErrors, checkForInvalidGroups } = require('../../utils/validation');
+const { handleValidationErrors, checkForInvalidGroups, validateNewVenue } = require('../../utils/validation');
 
 
 
@@ -126,7 +126,7 @@ const validateFutureDate = (req,res,next)=>{
     }
 
     next();
-}
+};
 const validateVenue = async (req,res,next)=>{
 
     if(req.body.venueId === null ) return next();
@@ -151,7 +151,7 @@ const validateVenue = async (req,res,next)=>{
     }
 
     next();
-}
+};
 const validateEvent=[
     validateVenue,
     check('name')
@@ -186,7 +186,7 @@ const validateEvent=[
         .withMessage('Start date must be in the future'),
     validateFutureDate,
     handleValidationErrors
-]
+];
 
 // POST /api/groups/:groupId/events
 // Creates and returns a new Event for a group specified by its id
@@ -218,21 +218,6 @@ router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserA
     res.json(returnedEvent)
 
 });
-
-router.get('/:groupId/venues', checkForInvalidGroups, async (req,res,next)=>{
-
-    const venues = await Venue.findAll({
-        attributes:{
-            exclude:['createdAt','updatedAt']
-        },
-        where:{
-            groupId:req.params.groupId
-        }
-    })
-
-    res.json({Venues:venues})
-})
-
 
 // GET
 // /api/groups/:groupId/events
@@ -289,6 +274,43 @@ router.get('/:groupId/events', checkForInvalidGroups, async (req,res,next)=>{
 
 });
 
+// POST /api/groups/:groupId/venues
+// Create a new venue for a group specified by its id
+router.post('/:groupId/venues', requireAuth, requireUserAuth, validateNewVenue, async (req,res,next)=>{
+
+    const { address, city, state, lat, lng } = req.body;
+
+    const newVen = await Venue.create({
+        groupId:req.params.groupId,
+        address,
+        city,
+        state,
+        lat,
+        lng
+    })
+
+    const checkVen = await Venue.findByPk(newVen.id,{
+        attributes:['id','groupId','address','city','state','lat','lng']
+    });
+
+    res.json(checkVen)
+});
+
+// GET /api/:groupId/venues
+// Get all venues for a group by its id
+router.get('/:groupId/venues', checkForInvalidGroups, async (req,res,next)=>{
+
+    const venues = await Venue.findAll({
+        attributes:{
+            exclude:['createdAt','updatedAt']
+        },
+        where:{
+            groupId:req.params.groupId
+        }
+    })
+
+    res.json({Venues:venues})
+})
 
 // GET /api/groups/:groupId
 // Returns the details of a group specified by its id.

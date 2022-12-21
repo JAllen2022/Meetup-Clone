@@ -2,6 +2,9 @@
 const { validationResult } = require('express-validator');
 const { Group, Event } = require('../db/models');
 
+const { check } = require('express-validator');
+
+
 
 // middleware for formatting errors from express-validator middleware
 // (to customize, see express-validator's documentation)
@@ -57,8 +60,32 @@ const checkForInvalidEvent = async (req, res, next) =>{
   next();
 }
 
+// Validate input to create a new venue
+const validateNewVenue = [
+  check('address')
+      .exists({checkFalsy:true})
+      .withMessage('Street address is required'),
+  check('city')
+      .exists({checkFalsy:true})
+      .withMessage('City is required'),
+  check('state')
+      .exists({checkFalsy:true})
+      .withMessage('State is required'),
+  check('lat')
+      .exists({checkFalsy:true})
+      .isDecimal()
+      .withMessage('Latitude is not valid'),
+  check('lng')
+      .exists({checkFalsy:true})
+      .isDecimal()
+      .withMessage('Longitude is not valid'),
+  handleValidationErrors
+];
+
+
 module.exports = {
   handleValidationErrors,
   checkForInvalidGroups,
-  checkForInvalidEvent
+  checkForInvalidEvent,
+  validateNewVenue
 };
