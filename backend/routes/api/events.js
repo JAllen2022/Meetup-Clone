@@ -61,73 +61,6 @@ router.get('/', async (req,res,next)=>{
 
 })
 
-// POST /api/events/:eventId/attendance
-// Request attendance for an event specified by id
-// Improvements - validations consolidate
-router.post('/:eventId/attendance', requireAuth, async (req,res,next)=>{
-
-
-    const targetEvent = await Event.findByPk(req.params.eventId);
-
-    if(!targetEvent){
-        const err = new Error(`Event couldn't be found`);
-        err.title = 'Invalid Event';
-        err.errors = [`Event couldn't be found`];
-        err.status = 404;
-        return next(err)
-    }
-
-    const userId = req.user.id;
-
-    // Validate user is a member of the group, and is not a 'pending' member
-    // User must be member of the group
-    const currentUser = await Membership.findOne({
-        where:{
-            userId:userId,
-            groupId:targetEvent.groupId,
-            status:{
-                [Op.notIn]:['pending']
-            }
-        }
-    })
-
-    if(!currentUser){
-        const err = new Error(`Must be a member of the group to request attendance`);
-        err.title = 'Invalid request';
-        err.errors = [`Must be a member of the group to request attendance`];
-        err.status = 403;
-        return next(err)
-    }
-
-    // Check if attendance has already been requested
-    const attendanceToEvent = await Attendance.findAll({
-        where:{
-            eventId:targetEvent.id,
-            userId:userId
-        }
-    })
-
-    console.log('attendance to event', attendanceToEvent)
-    if(attendanceToEvent.length>0) {
-        const err = new Error(`Attendance has already been requested`);
-        err.title = 'Invalid request';
-        err.errors = [`Attendance has already been requested`];
-        err.status = 400;
-        return next(err)
-    }
-
-    await Attendance.create({
-        eventId:targetEvent.id,
-        userId:userId,
-        status:'pending'
-    })
-
-    res.json({
-        userId,
-        status:'pending'
-    })
-})
-
 // GET /api/events/:eventId/attendees
 // Get all attendees of an event specified by its id
 // Improvements - rafactor validations.
@@ -199,6 +132,141 @@ router.get('/:eventId/attendees', async (req,res,next)=>{
     res.json(returnObj)
 
 })
+
+// POST /api/events/:eventId/attendance
+// Request attendance for an event specified by id
+// Improvements - validations consolidate
+router.post('/:eventId/attendance', requireAuth, async (req,res,next)=>{
+
+
+    const targetEvent = await Event.findByPk(req.params.eventId);
+
+    if(!targetEvent){
+        const err = new Error(`Event couldn't be found`);
+        err.title = 'Invalid Event';
+        err.errors = [`Event couldn't be found`];
+        err.status = 404;
+        return next(err)
+    }
+
+    const userId = req.user.id;
+
+    // Validate user is a member of the group, and is not a 'pending' member
+    // User must be member of the group
+    const currentUser = await Membership.findOne({
+        where:{
+            userId:userId,
+            groupId:targetEvent.groupId,
+            status:{
+                [Op.notIn]:['pending']
+            }
+        }
+    })
+
+    if(!currentUser){
+        const err = new Error(`Must be a member of the group to request attendance`);
+        err.title = 'Invalid request';
+        err.errors = [`Must be a member of the group to request attendance`];
+        err.status = 403;
+        return next(err)
+    }
+
+    // Check if attendance has already been requested
+    const attendanceToEvent = await Attendance.findAll({
+        where:{
+            eventId:targetEvent.id,
+            userId:userId
+        }
+    })
+
+    console.log('attendance to event', attendanceToEvent)
+    if(attendanceToEvent.length>0) {
+        const err = new Error(`Attendance has already been requested`);
+        err.title = 'Invalid request';
+        err.errors = [`Attendance has already been requested`];
+        err.status = 400;
+        return next(err)
+    }
+
+    await Attendance.create({
+        eventId:targetEvent.id,
+        userId:userId,
+        status:'pending'
+    })
+
+    res.json({
+        userId,
+        status:'pending'
+    })
+})
+
+// PUT /api/events/:eventId/attendance
+// Change the status of an attendance for an event specified by id
+// Improvements
+    // Make sure that inputs for status either, attending, or member
+router.put('/:eventId/attendance', requireAuth, requireUserAuth, async (req,res,next)=>{
+
+    const { userId, status } = req.body;
+
+    if(status === 'pending') {
+        const err = new Error(`Cannot change an attendance status to pending`);
+        err.title = 'Invalid Change to Attendance';
+        err.errors = [`Cannot change an attendance status to pending`];
+        err.status = 400;
+        return next(err)
+    }
+
+    const targetAttendance = await Attendance.findAll({
+        where:{
+            userId:userId,
+            eventId:req.params.eventId
+        },
+    })
+
+    console.log('Checking attendance length ~~~~~~~~~~~~`', targetAttendance)
+
+    // If attendance does not exist
+    if(targetAttendance < 1){
+        const err = new Error(`Attendance between the user and the event does not exist`);
+        err.title = 'Invalid Attendance Log';
+        err.errors = [`Attendance between the user and the event does not exist`];
+        err.status = 400;
+        return next(err)
+    }
+
+    const attendanceLog = targetAttendance[0]
+    // check to make sure that member is a co-host
+    if(status === 'member'){
+        const member = await Membership.findOne({
+            where:{
+                groupId:res.locals.groupId,
+                userId:userId
+            }
+        })
+        console.log('member ~~~~~~~~`', member.status, !member, !(member.status =='co-host' || member.status=='host'))
+        if( !member || !(member.status ==='co-host' || member.status==='host')){
+            const err = new Error(`Cannot change status to 'member' if user is not host or co-host`);
+            err.title = 'Invalid User Status';
+            err.errors = [`Cannot change status to 'member' if user is not host or co-host`];
+            err.status = 403;
+            return next(err)
+        }
+        attendanceLog.status=status;
+    }
+    if(status==='attending') attendanceLog.status=status;
+
+    await attendanceLog.save();
+
+    const checkAttendance = await Attendance.findByPk(attendanceLog.id,{
+        attributes: {
+            exclude:['createdAt','updatedAt']
+        }
+    })
+
+    res.json(checkAttendance)
+
+})
+
 
 // POST /api/events/:eventId/images
 // Create and return a new image for an event specified by id

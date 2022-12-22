@@ -213,6 +213,7 @@ router.get('/:groupId/members', async (req,res,next)=>{
 // POST /api/groups/:groupId/membership
 // Request a new membership for a group specified by id
 // Improvements - create middleware to ensure group ID provided is good
+    // check to make sure there aren't duplicates!!!!
 router.post('/:groupId/membership', requireAuth, async (req,res,next)=>{
 
     const group = await Group.findByPk(req.params.groupId);

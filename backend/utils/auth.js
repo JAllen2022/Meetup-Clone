@@ -87,6 +87,13 @@ const requireUserAuth = async function ( req, res, next) {
   }
   if(req.params.eventId){
     const event = await Event.findByPk(req.params.eventId)
+    if(!event){
+      const err = new Error(`Event could not be found`);
+      err.title='Invalid Event number';
+      err.errors=[`Event could not be found with ID inputed: ${req.params.eventId}`];
+      err.status=404;
+      return next(err);
+    }
     groupId = event.groupId;
   }
 
@@ -110,6 +117,7 @@ const requireUserAuth = async function ( req, res, next) {
   })
   // console.log('MEMBERSHIP ~~~~~~~~~~~~~~ ', membership.status)
   res.locals.member = membership;
+  res.locals.groupId = groupId;
 
 
   // If a group organizer is not equal to the user Id, or they are not co-host or host
