@@ -26,11 +26,9 @@ router.get('/', async (req,res,next)=>{
         ],
         attributes: {
             include:[
-                // [sequelize.fn('COUNT', sequelize.col('Memberships.groupId')),"numMembers"],
                 [sequelize.col('url'),'previewImgage']
             ]
         },
-        // group:['Group.id']
     });
     const returnArray = [];
 
@@ -39,15 +37,12 @@ router.get('/', async (req,res,next)=>{
         // Not creating another returnArray and return the OG group
     for(let i=0;i<groups.length;i++){
         const group = groups[i].toJSON();
-        // console.log('checking group',group)
         const  memberCount = await Membership.count({
             where:{
                 groupId:group.id
             }
         })
-        // console.log('checking numMembers',memberCount);
         group.numMembers=memberCount;
-        // console.log('checking group end', group) // this doesn't update the OG group value returned
         returnArray.push(group)
     }
 
