@@ -466,6 +466,13 @@ router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserA
         endDate
     })
 
+    // Add host to attendees list
+    const attendee = await Attendance.create({
+        eventId:newEvent.id,
+        userId:req.user.id,
+        status:'attending'
+    });
+
     const returnedEvent = await Event.findByPk(newEvent.id,{
         attributes:{
             exclude:['createdAt','updatedAt']
