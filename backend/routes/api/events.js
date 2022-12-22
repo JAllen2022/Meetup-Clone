@@ -204,6 +204,8 @@ router.post('/:eventId/attendance', requireAuth, async (req,res,next)=>{
 // Change the status of an attendance for an event specified by id
 // Improvements
     // Make sure that inputs for status either, attending, or member
+    // Only delete a valid user from userId input
+    // Move up my authentication for users - right now it's at the end
 router.put('/:eventId/attendance', requireAuth, requireUserAuth, async (req,res,next)=>{
 
     const { userId, status } = req.body;
@@ -267,6 +269,62 @@ router.put('/:eventId/attendance', requireAuth, requireUserAuth, async (req,res,
 
 })
 
+// DELETE /api/events/:eventId/attendance
+// Delete an attendance to an event specified by id
+// Improvements - consolidate validations
+router.delete('/:eventId/attendance', requireAuth, async (req,res,next)=>{
+
+    const { userId } = req.body;
+
+    const targetEvent = await Event.findByPk(req.params.eventId);
+
+    if(!targetEvent){
+        const err = new Error(`Event couldn't be found`);
+        err.title = 'Invalid Event';
+        err.errors = [`Event couldn't be found`];
+        err.status = 404;
+        return next(err)
+    }
+
+    // Check to make sure user is
+    const user = await User.findByPk(req.user.id);
+    const membershipCheck = await Membership.findOne({
+        where:{
+            groupId:targetEvent.groupId,
+            userId:req.user.id
+        }
+    })
+
+    const attendance = await Attendance.findOne({
+        where:{
+            userId:userId,
+            eventId:req.params.eventId,
+        }
+    })
+
+    if(!attendance){
+        const err = new Error(`Attendance does not exist for this User`);
+        err.title = 'Invalid Attendance';
+        err.errors = [`Attendance does not exist for this User`];
+        err.status = 404;
+        return next(err)
+    }
+
+    if((userId === req.user.id) || (membershipCheck.status === 'co-host') || (membershipCheck.status === 'host')){
+        await attendance.destroy();
+
+        res.json({
+            message:'Successfully deleted attendance from event'
+        })
+    } else {
+        const err = new Error(`Only the User or organizer may delete an Attendance`);
+        err.title = 'Invalid Permissions';
+        err.errors = [`Only the User or organizer may delete an Attendance`];
+        err.status = 403;
+        return next(err)
+    }
+
+})
 
 // POST /api/events/:eventId/images
 // Create and return a new image for an event specified by id
