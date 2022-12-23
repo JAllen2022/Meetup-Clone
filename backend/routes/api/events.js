@@ -5,13 +5,11 @@ const router = express.Router();
 const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/auth');
 const { Event, Group, Attendance, EventImage, Venue, Membership, User } = require('../../db/models');
 
-const { check } = require('express-validator');
 const { validateReqParamEventId, validateEventInput, validateEventQueryParamInput } = require('../../utils/validation');
 const { Op } = require('sequelize');
 
 // GET /api/events
 // Return all events
-
 router.get('/',validateEventQueryParamInput, async (req,res,next)=>{
 
     const { name, type, startDate } = req.query;

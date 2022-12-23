@@ -2,9 +2,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/auth');
+const { requireAuth, requireUserAuth } = require('../../utils/auth');
 
-const { check } = require('express-validator');
 const { validateReqParamGroupImageId } = require('../../utils/validation');
 
 // DELETE /api/group-images/:imageId

@@ -18,9 +18,15 @@ const handleValidationErrors = (req, _res, next) => {
 
     const newErr={};
     errors.forEach(e => {
-      const objkey=e.split(' ')[0].toLowerCase();
-      newErr[objkey]=e;
+      const obj=e.split(' ')
+      const objkey=obj[0].toLowerCase();
+      obj.shift();
+      newErr[objkey]=obj.join(' ');
     });
+
+    if(newErr.invalid){
+      delete newErr.invalid;
+    }
 
     const err = Error('Validation Error');
     err.errors = newErr;

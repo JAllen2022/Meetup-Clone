@@ -5,7 +5,7 @@ const router = express.Router();
 const { requireHostAuth, requireAuth, requireUserAuth } = require ("../../utils/auth");
 const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage, sequelize, User} = require('../../db/models');
 
-const { validateGroupImageInput, validateReqParamGroupId, validateGroupInput, handleValidationErrors, validateVenueInput, validateEventInput } = require('../../utils/validation');
+const { validateReqParamGroupId, validateGroupInput, validateVenueInput, validateEventInput } = require('../../utils/validation');
 
 const { Op } = require('sequelize')
 

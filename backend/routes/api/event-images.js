@@ -2,12 +2,10 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/auth');
-const { EventImage, Membership, Event, Group } = require('../../db/models');
+const { requireAuth, requireUserAuth } = require('../../utils/auth');
 
-const { check } = require('express-validator');
 const { validateReqParamEventImageId } = require('../../utils/validation');
-const { Op } = require('sequelize');
+
 
 // DELETE /api/group-images/:imageId
 // Delete an existing image for a group

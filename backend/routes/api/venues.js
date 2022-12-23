@@ -5,7 +5,6 @@ const router = express.Router();
 const { requireAuth, requireUserAuth } = require ("../../utils/auth");
 const { Venue} = require('../../db/models');
 
-const { check } = require('express-validator');
 const { validateVenueInput, validateReqParamVenueId } = require('../../utils/validation');
 
 

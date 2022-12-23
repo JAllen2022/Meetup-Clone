@@ -2,7 +2,7 @@
 const express = require('express')
 const router = express.Router();
 
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { setTokenCookie } = require('../../utils/auth');
 const { User } = require('../../db/models');
 
 const { check } = require('express-validator');
@@ -15,11 +15,11 @@ const validateSignup = [
     check('email')
       .exists({ checkFalsy: true })
       .isEmail()
-      .withMessage('Please provide a valid email.'),
+      .withMessage('Email Please provide a valid email.'),
     check('username')
       .exists({ checkFalsy: true })
       .isLength({ min: 4 })
-      .withMessage('Please provide a username with at least 4 characters.'),
+      .withMessage('Username Please provide a username with at least 4 characters.'),
     check('username')
       .not()
       .isEmail()
@@ -27,13 +27,13 @@ const validateSignup = [
     check('password')
       .exists({ checkFalsy: true })
       .isLength({ min: 6 })
-      .withMessage('Password must be 6 characters or more.'),
+      .withMessage('Password Password must be 6 characters or more.'),
     check('firstName')
       .exists({checkFalsy:true})
-      .withMessage('Must include first name'),
+      .withMessage('firstName Must include first name'),
     check('lastName')
       .exists({checkFalsy:true})
-      .withMessage('Must include last name'),
+      .withMessage('lastName Must include last name'),
     handleValidationErrors
   ];
 
@@ -52,14 +52,19 @@ router.post( '/', validateSignup,  async (req, res,next) => {
         const emailErr = new Error('User already exists');
         emailErr.status = 403;
         emailErr.title = 'User Signup Failed - Accound already exists';
-        emailErr.errors=['Provided email is already in use.'];
+        emailErr.errors={email:'User with that email already exists'};
         next(emailErr);
       }
 
       await setTokenCookie(res, user);
 
+      const userJSON = user.toJSON();
+      delete userJSON.createdAt;
+      delete userJSON.updatedAt;
+      userJSON.token="";
+
       return res.json({
-        user: user
+        user: userJSON
       });
     }
   );
