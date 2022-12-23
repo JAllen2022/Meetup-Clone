@@ -155,39 +155,6 @@ router.get('/:groupId/members', validateReqParamGroupId, async (req,res,next)=>{
 
     output.Members=memberArray;
 
-    // If user is not co-host or host, User cannot see 'pending'
-    // } else {
-        // const userArray = await User.findAll({
-        //     attributes:['id','firstName','lastName'],
-        //     include:{
-        //         model:Membership,
-        //         where:{
-        //             groupId:req.params.groupId,
-        //             status:{
-        //                 [Op.notIn]:['pending']
-        //             }
-        //         },
-        //         attributes:[]
-        //         }
-        // });
-
-        // const memberArray=[];
-
-        // // Lazy load each Member because eager loading didn't have the format we wanted
-        // // when loading Member attributes
-        // for(let i=0;i<userArray.length;i++){
-        //     const user = userArray[i].toJSON();
-        //     console.log('checking this', user)
-        //     const userMem = await Membership.findOne({
-        //         where:{
-        //             groupId:req.params.groupId,
-        //             userId:user.id
-        //         },
-        //         attributes:['status']
-        //     });
-        //     user.Membership=userMem;
-        //     memberArray.push(user)
-        // }
 
     output.Members=memberArray;
 
@@ -449,7 +416,7 @@ router.post('/:groupId/events', validateReqParamGroupId, requireAuth, requireUse
     delete newEventJSON.createdAt;
     delete newEventJSON.updatedAt;
 
-    res.json(newEventJSON)
+    res.json({Events:newEventJSON})
 
 });
 

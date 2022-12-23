@@ -41,7 +41,10 @@ router.get( '/', restoreUser, (req, res) => {
 // Log in
 // POST /api/session
 router.post('/', validateLogin, async (req, res, next) => {
-      const { credential, password } = req.body;
+      let { credential, email, username, password } = req.body;
+
+      if(email) credential=email;
+      if(username) credential=username;
 
       const user = await User.login({ credential, password });
 
