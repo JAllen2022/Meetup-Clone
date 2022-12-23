@@ -4,7 +4,7 @@ const { Group, Event, Venue, GroupImage, EventImage } = require('../db/models');
 
 const { check } = require('express-validator');
 
-
+// ~~~~~~~~~~~~~~~ Validation Error Compilers ~~~~~~~~~~~~~~~~~~~~
 
 // middleware for formatting errors from express-validator middleware
 // (to customize, see express-validator's documentation)
@@ -31,8 +31,20 @@ const handleValidationErrors = (req, _res, next) => {
   next();
 };
 
-// ~~~~~~~~~~~~~~~ Req.Params - Parameter Validations ~~~~~~~~~~~~~~~~~~~~
+// Custom Error Compiler
+const customValidationErrorCompiler = (req,rex,next)=>{
+  const checkErrors = Object.keys(req.errorObj)
+  if(checkErrors.length>0){
+    const err = Error('Validation Error');
+    err.errors = req.errorObj;
+    err.status = 400;
+    err.title = 'Validation Error';
+    next(err)
+  }
+  next();
+}
 
+// ~~~~~~~~~~~~~~~ Req.Params - Parameter Validations ~~~~~~~~~~~~~~~~~~~~
 
 // Validate that a group exists with given group id in req.params.groupId
 validateReqParamGroupId = async (req,res,next)=>{
@@ -147,23 +159,7 @@ validateReqParamEventImageId = async (req,res,next)=>{
 
 // ~~~~~~ Create an Event Input Validations ~~~~~~
 
-// Check Future Date value
-const validateFutureDate = (req,res,next)=>{
-  const { startDate, endDate } = req.body;
 
-  const startDateObj = new Date(startDate);
-  const endDateObj = new Date(endDate);
-
-  if(startDateObj > endDateObj){
-      const err = new Error('End date is less than start date');
-      err.status=400;
-      err.title='End date is less than start date';
-      err.errors=['Invalid end date'];
-      return next(err);
-  }
-
-  next();
-};
 
 // Validate that the venue in the request body exists
 const validateVenue = async (req,res,next)=>{
@@ -176,32 +172,23 @@ const validateVenue = async (req,res,next)=>{
 
   // If venue does not exist
   if(!venue){
-      const err = new Error('Venue does not exist');
-      err.status=404;
-      err.title='Invalid Venue Id';
-      err.errors=['Invalid venue id'];
-      return next(err);
+    req.errorObj.venue='Venue does not exist'
+    return next();
   }
 
   // Check to make sure venue belongs to group
   if(req.params.groupId){
     if(venue.groupId != req.params.groupId){
-        const err = new Error('Venue does belong to the group');
-        err.status=400;
-        err.title='Invalid Venue Id and Group Id';
-        err.errors=['Invalid venue id'];
-        return next(err);
+      req.errorObj.venue='Venue does belong to the group';
+      return next();
     }
   }
 
   // If the venue groupId doesn't match the event groupId, then throw an error
   if(req.params.eventId){
     if(venue.groupId!=res.locals.event.groupId){
-      const err = new Error('Venue does belong to the group');
-      err.status=400;
-      err.title='Invalid Venue Id and Group Id';
-      err.errors=['Invalid venue id'];
-      return next(err);
+      req.errorObj.venue='Venue does belong to the group';
+      return next();
     }
   }
 
@@ -211,38 +198,78 @@ const validateVenue = async (req,res,next)=>{
 // Full list of validation middleware for Event input from Req.body
 const validateEventInput=[
   validateVenue,
-  check('name')
-      .exists({checkFalsy:true})
-      .isLength({min:5})
-      .withMessage('Name must be at least 5 characters'),
-  check('type')
-      .exists({checkFalsy:true})
-      .isIn(['Online','In person'])
-      .withMessage('Type must be Online or In person'),
-  check('capacity')
-      .exists({checkFalsy:true})
-      .isInt()
-      .withMessage('Capacity must be an integer'),
-  check('price')
-      .exists({checkFalsy:true})
-      .isDecimal()
-      .withMessage('Price is invalid'),
-  check('description')
-      .exists({checkFalsy:true})
-      .withMessage('Description is required'),
-  check('startDate')
-      .exists({checkFalsy:true})
-      .custom((value=>{
-          const inputDate= new Date(value);
-          const currentDate = new Date();
-          if(inputDate<currentDate){
-              throw new Error('Start date must be in the future')
-          }
-          else return true
-      }))
-      .withMessage('Start date must be in the future'),
-  validateFutureDate,
-  handleValidationErrors
+  (req,res,next)=>{
+    const {name} = req.body;
+    if(!name || name.length<5){
+      req.errorObj.name='Name must be at least 5 characters';
+      return next();
+    }
+    next();
+  },
+  (req,res,next)=>{
+    const {type} = req.body;
+    if(!type || !(type ==='Online' || type==='In Person')){
+      req.errorObj.type='Type must be Online or In person';
+      return next();
+    }
+    next();
+  },
+  (req,res,next)=>{
+    const {capacity} = req.body;
+    if(!capacity || isNaN(capacity)){
+      req.errorObj.capacity='Capacity must be an integer';
+      return next();
+    }
+    next();
+  },
+  (req,res,next)=>{
+    const {price} = req.body;
+    if(!price || isNaN(price)){
+      req.errorObj.price='Price must be an integer';
+      return next();
+    }
+    next();
+  },
+  (req,res,next)=>{
+    const {description} = req.body;
+    if(!description){
+      req.errorObj.description='Description is required';
+      return next();
+    }
+    next();
+  },
+  (req,res,next)=>{
+    const { startDate } = req.body;
+    const inputDate= new Date(startDate);
+    const currentDate = new Date();
+    if(inputDate.toString()==='Invalid Date'){
+      req.errorObj.startDate='Invalid Start Date';
+      return next();
+    }
+    if(inputDate<currentDate){
+      req.errorObj.startDate='Start date must be in the future';
+      return next();
+    }
+    next();
+  },
+// Check Future Date value
+  (req,res,next)=>{
+    const { startDate, endDate } = req.body;
+
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    if(endDateObj.toString()==='Invalid Date'){
+      req.errorObj.endDate='Invalid End Date';
+      return next();
+    }
+    if(startDateObj > endDateObj){
+      req.errorObj.endDate='End date must be after start date';
+      return next();
+    }
+
+    next();
+  },
+  customValidationErrorCompiler
 ];
 
 // ~~~~~~ Create an Venue Input Validations ~~~~~~
@@ -316,8 +343,74 @@ const validateGroupImageInput = [
 ];
 
 
+// ~~~~~~~~~~~~~~~ Req.Query Search Validations ~~~~~~~~~~~~~~~~~~~~
+
+// Validate Event Query Parameters
+const validateEventQueryParamInput=[
+  (req,res,next)=>{
+      let page = +req.query.page;
+      if(isNaN(page)) page = 1;
+      if(page <1){
+          req.errorObj.page=`Page must be greater than or equal to 1`;
+          return next()
+      }
+      res.locals.page=page;
+      next();
+  },
+  (req,res,next)=>{
+      let size = +req.query.size;
+      if(isNaN(size)) size=20;
+      if(size <1 || size>20){
+          req.errorObj.size=`Size must be greater than or equal to 1 and less than or equal to 20`;
+          return next();
+      }
+      res.locals.size=size;
+      next();
+  },
+  (req,res,next)=>{
+      if(req.query.name){
+          const checkStringNumbers = Number(req.query.name);
+          if(typeof checkStringNumbers === 'number' && !isNaN(checkStringNumbers)){
+              req.errorObj.name=`Name must be a string`;
+              return next();
+          }
+          res.locals.name=req.query.name;
+          console.log(res.locals.name)
+      }
+
+      next();
+  },
+  (req,res,next)=>{
+      const {type}=req.query;
+      if(type){
+          if(!(type === 'Online' || type ==='In person')){
+              req.errorObj.type=`Type must be 'Online' or 'In Person`;
+              return next();
+          }
+          res.locals.type=req.query.type;
+      }
+
+      next();
+  },
+  (req,res,next)=>{
+      const {startDate} = req.query;
+      if(startDate){
+          const dateString= new Date(startDate);
+          if(dateString.toString()==='Invalid Date'){
+              req.errorObj.startDate=`Start date must be a valid datetime`;
+              return next();
+          }
+          res.locals.startDate = startDate;
+      }
+      next();
+  },
+  customValidationErrorCompiler
+];
+
+
 module.exports = {
   handleValidationErrors,
+  customValidationErrorCompiler,
   validateReqParamGroupId,
   validateReqParamEventId,
   validateReqParamVenueId,
@@ -326,5 +419,6 @@ module.exports = {
   validateEventInput,
   validateGroupInput,
   validateVenueInput,
-  validateGroupImageInput
+  validateGroupImageInput,
+  validateEventQueryParamInput
 };

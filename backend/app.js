@@ -55,10 +55,12 @@ csurf({
 );
 
 
-// backend/app.js
-
-// ...
-
+app.use((req,res,next)=>{
+  //create an error object to use in later routes
+  req.errorObj={};
+  req.errorArray=[];
+  next();
+})
 app.use(routes); // Connect all the routes
 
 app.get('/',(req,res,next)=>{

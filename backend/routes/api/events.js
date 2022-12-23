@@ -6,90 +6,20 @@ const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/
 const { Event, Group, Attendance, EventImage, Venue, Membership, User } = require('../../db/models');
 
 const { check } = require('express-validator');
-const { validateReqParamEventId, validateEventInput } = require('../../utils/validation');
+const { validateReqParamEventId, validateEventInput, validateEventQueryParamInput } = require('../../utils/validation');
 const { Op } = require('sequelize');
-const { validationResult } = require('express-validator');
 
 // GET /api/events
 // Return all events
 
-const validateEventQueryParamInput=[
-    (req,res,next)=>{
-        let page = +req.query.page
-        if(isNaN(page)) page = 1;
-        if(page <1){
-            const err = new Error(`Page must be greater than or equal to 1`);
-            err.title = 'Invalid Page Parameter';
-            err.errors = [`Page must be greater than or equal to 1`];
-            err.status = 400;
-            req.errors=err;
-            return next(err)
-        }
-        res.locals.page=page;
-        next();
-    },
-    (req,res,next)=>{
-        let size = +req.query.size;
-        if(isNaN(size)) size=20;
-        if(size <1 || size>20){
-            const err = new Error(`Size must be greater than or equal to 1 and less than or equal to 20`);
-            err.title = 'Invalid Size Parameter';
-            err.errors = [`Size must be greater than or equal to 1 and less than or equal to 20`];
-            err.status = 400;
-            return next(err)
-        }
-        res.locals.size=size;
-        next();
-    },
-    (req,res,next)=>{
-        if(req.query.name){
-            // if(typeof name !== 'string'){
-            //     const err = new Error(`Name must be a string`);
-            //     err.title = 'Invalid name';
-            //     err.errors = [`Name must be a string`];
-            //     err.status = 400;
-            //     return next(err)
-            // }
-            res.locals.name=req.query.name;
-            console.log(res.locals.name)
-        }
-
-        next();
-    },
-    (req,res,next)=>{
-        if(req.query.type){
-            if(type !== 'Online' || type !=='In person'){
-                const err = new Error(`Type must be 'Online' or 'In Person`);
-                err.title = 'Invalid type';
-                err.errors = [`Type must be 'Online' or 'In Person`];
-                err.status = 400;
-                return next(err)
-            }
-            res.locals.type=req.query.type;
-        }
-
-        next();
-    },
-    (req,res,next)=>{
-        if(req.query.startDate){
-            if(typeof name !== 'string'){
-                const err = new Error(`Start date must be a valid datetime`);
-                err.title = 'Invalid startDate';
-                err.errors = [`Start date must be a valid datetime`];
-                err.status = 400;
-                return next(err)
-            }
-            res.locals.startDate=req.query.startDate;
-        }
-
-        next();
-    },
-
-  ];
-
 router.get('/',validateEventQueryParamInput, async (req,res,next)=>{
 
+    const { name, type, startDate } = req.query;
+
+    // Format query for search to include req.query parameters
+    const where={};
     const query =  {
+        where,
         attributes:{
         exclude:['createdAt','updatedAt','description','capacity','price']
             },
@@ -107,14 +37,12 @@ router.get('/',validateEventQueryParamInput, async (req,res,next)=>{
             offset: res.locals.size*(res.locals.page-1)
     }
 
-    console.log('made it to my quyery')
-    if(res.locals.name) query.where.name=res.locals.name;
-    if(res.locals.type) query.where.type=res.locals.type;
-    if(res.locals.startDate) query.where.startDate=res.locals.startDate;
-
+    // Add query parameters if they exist
+    if(name) where.name={[Op.like]:`%${name}%`};
+    if(type) where.type=res.locals.type;
+    if(startDate) where.startDate=startDate;
 
     const allEvents = await Event.findAll(query);
-
 
     const returnArray= [];
     // Lazy load preview image for event
@@ -139,7 +67,6 @@ router.get('/',validateEventQueryParamInput, async (req,res,next)=>{
         else event.previewImage=null;
 
         returnArray.push(event);
-        // console.log('checking my event', event)
     }
 
 
