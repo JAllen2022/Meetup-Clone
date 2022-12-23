@@ -284,21 +284,21 @@ const validateEventInput=[
 const validateVenueInput = [
   check('address')
       .exists({checkFalsy:true})
-      .withMessage('Street address is required'),
+      .withMessage('address Street address is required'),
   check('city')
       .exists({checkFalsy:true})
-      .withMessage('City is required'),
+      .withMessage('city City is required'),
   check('state')
       .exists({checkFalsy:true})
-      .withMessage('State is required'),
+      .withMessage('state State is required'),
   check('lat')
       .exists({checkFalsy:true})
       .isFloat({min:-90.00,max:90.00})
-      .withMessage('Latitude is not valid'),
+      .withMessage('lat Latitude is not valid'),
   check('lng')
       .exists({checkFalsy:true})
       .isFloat({min:-180.00,max:180.00})
-      .withMessage('Longitude is not valid'),
+      .withMessage('lng Longitude is not valid'),
   handleValidationErrors
 ];
 
@@ -310,25 +310,25 @@ const validateGroupInput = [
   check('name')
       .exists({checkFalsy:true})
       .isLength({max:60})
-      .withMessage('Name must be 60 characters or less'),
+      .withMessage('name Name must be 60 characters or less'),
   check('about')
       .exists({checkFalsy:true})
       .isLength({min:50})
-      .withMessage('About must be 50 characters or more'),
+      .withMessage('about About must be 50 characters or more'),
   check('type')
       .exists({checkFalsy:true})
       .isIn(['Online','In person'])
-      .withMessage("Type must be 'Online' or 'In person'"),
+      .withMessage("type Type must be 'Online' or 'In person'"),
   check('private')
       .exists({checkFalsy:true})
       .isBoolean({loose:true})
-      .withMessage('Private must be a boolean'),
+      .withMessage('private Private must be a boolean'),
   check('city')
       .exists({checkFalsy:true})
-      .withMessage('City is required'),
+      .withMessage('city City is required'),
   check('state')
       .exists({checkFalsy:true})
-      .withMessage('State is required'),
+      .withMessage('state State is required'),
   handleValidationErrors
 ];
 
@@ -340,11 +340,11 @@ const validateGroupImageInput = [
   check('url')
       .exists({checkFalsy:true})
       .isURL()
-      .withMessage('A valid URL is required'),
+      .withMessage('groupImage A valid URL is required'),
   check('preview')
       .exists({checkFalsy:true})
       .isBoolean()
-      .withMessage('Preview must be a boolean'),
+      .withMessage('preview Preview must be a boolean'),
   handleValidationErrors
 ];
 

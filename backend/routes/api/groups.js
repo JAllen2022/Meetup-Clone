@@ -118,7 +118,7 @@ router.get('/:groupId/members', validateReqParamGroupId, async (req,res,next)=>{
     };
 
     // Check if member is host or co-host
-    if(!(userStatus.status === 'host' || userStatus.status ==='co-host')){
+    if(!userStatus || !(userStatus.status === 'host' || userStatus.status ==='co-host')){
         where.status={
             [Op.notIn]:['pending']
         }
