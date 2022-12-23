@@ -6,12 +6,12 @@ const { requireAuth, requireUserAuth } = require ("../../utils/auth");
 const { Venue} = require('../../db/models');
 
 const { check } = require('express-validator');
-const { validateVenueInput } = require('../../utils/validation');
+const { validateVenueInput, validateReqParamVenueId } = require('../../utils/validation');
 
 
 // PUT /api/venues/:venueId
 // Edit a new venue specified by its id
-router.put('/:venueId', requireAuth, requireUserAuth, validateVenueInput, async (req,res,next)=>{
+router.put('/:venueId', validateReqParamVenueId, requireAuth, requireUserAuth, validateVenueInput, async (req,res,next)=>{
 
     const { address, city, state, lat, lng } = req.body;
 
@@ -24,12 +24,11 @@ router.put('/:venueId', requireAuth, requireUserAuth, validateVenueInput, async 
     venue.lng = lng;
 
     await venue.save();
+    const venueJSON = venue.toJSON();
+    delete venueJSON.createdAt;
+    delete venueJSON.updatedAt;
 
-    const checkVen = await Venue.findByPk(req.params.venueId,{
-        // attributes:['id','groupId','address','city','state','lat','lng']
-    });
-
-    res.json(checkVen)
+    res.json(venueJSON)
 })
 
 

@@ -6,7 +6,7 @@ const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/
 const { Event, Group, Attendance, EventImage, Venue, Membership, User } = require('../../db/models');
 
 const { check } = require('express-validator');
-const { validateReqParamEventId, validateReqParamEventId, validateEventInput } = require('../../utils/validation');
+const { validateReqParamEventId, validateEventInput } = require('../../utils/validation');
 const { Op } = require('sequelize');
 const { validationResult } = require('express-validator');
 
@@ -184,8 +184,8 @@ router.get('/:eventId/attendees', validateReqParamEventId, async (req,res,next)=
     };
 
 
-    // If user is not host or co-host, OR, currentUser is not a member of the group
-    if(!currentUser || (!currentUserJSON.status ==='host' && !currentUserJSON.status === 'co-host')){
+    // If user is not host or co-host
+    if(!currentUser || !(currentUserJSON.status ==='host' || currentUserJSON.status === 'co-host')){
         query.include.where={
             status:{
                 [Op.notIn]:['pending']
@@ -243,6 +243,7 @@ router.post('/:eventId/attendance', validateReqParamEventId, requireAuth, async 
         err.status = 403;
         return next(err)
     }
+    console.log('check currentuser', currentUser)
 
     // Check if attendance has already been requested
     const attendanceToEvent = await Attendance.findAll({
@@ -251,6 +252,16 @@ router.post('/:eventId/attendance', validateReqParamEventId, requireAuth, async 
             userId:userId
         }
     })
+
+    const attendanceLog = attendanceToEvent[0]
+
+    if(attendanceLog){
+        if(attendanceLog.status==='member' || attendanceLog.status==='attending'){
+            const err = new Error('User is already an attendee of the event');
+            err.status=400;
+            next(err)
+        }
+    }
 
     // If array is not empty, than attendance already requested
     if(attendanceToEvent.length>0) {
@@ -336,17 +347,11 @@ router.put('/:eventId/attendance', validateReqParamEventId, requireAuth, require
 
     await attendanceLog.save();
 
-    // const checkAttendance = await Attendance.findByPk(attendanceLog.id,{
-    //     attributes: {
-    //         exclude:['createdAt','updatedAt']
-    //     }
-    // })
-
     const attendanceLogJSON = attendanceLog.toJSON();
-    delete attendanceLog.createdAt;
-    delete attendanceLog.upatedAt;
+    delete attendanceLogJSON.createdAt;
+    delete attendanceLogJSON.updatedAt;
 
-    res.json(attendanceLog)
+    res.json(attendanceLogJSON)
 
 })
 
@@ -385,7 +390,7 @@ router.delete('/:eventId/attendance', validateReqParamEventId, requireAuth, asyn
     }
 
     // If the target userId is equal to the current user id, OR, the current user is co-host or host, allow change
-    if((userId === req.user.id) || (membershipCheck.status === 'co-host') || (membershipCheck.status === 'host')){
+    if((userId === req.user.id) || (membershipCheck.status === 'host')){
         await attendance.destroy();
 
         res.json({
@@ -459,6 +464,8 @@ router.get('/:eventId', validateReqParamEventId, async (req,res,next)=>{
     returnEvent.Group = group;
     returnEvent.Venue = venue;
     returnEvent.EventImages = eventImages;
+    delete returnEvent.createdAt;
+    delete returnEvent.updatedAt;
 
     res.json(returnEvent);
 
@@ -495,8 +502,6 @@ router.put('/:eventId', validateReqParamEventId, requireAuth, requireUserAuth, v
 router.delete('/:eventId', validateReqParamEventId, requireAuth, requireUserAuth, async (req,res,next)=>{
 
     const event = await Event.findByPk(req.params.eventId);
-
-    // console.log('CHECKING EVENT ~~~~~~~~', event)
 
     await event.destroy();
 

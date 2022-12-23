@@ -6,24 +6,14 @@ const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/
 const { EventImage, Membership, Event, Group } = require('../../db/models');
 
 const { check } = require('express-validator');
-const { handleValidationErrors, validateEventInput } = require('../../utils/validation');
+const { validateReqParamEventImageId } = require('../../utils/validation');
 const { Op } = require('sequelize');
 
 // DELETE /api/group-images/:imageId
 // Delete an existing image for a group
-router.delete('/:imageId', requireAuth, requireUserAuth, async (req,res,next)=>{
+router.delete('/:imageId', validateReqParamEventImageId, requireAuth, requireUserAuth, async (req,res,next)=>{
 
-    const image = await EventImage.findByPk(req.params.imageId);
-
-    if(!image){
-        const err = new Error(`Event Image couldn't be found`);
-        err.title = 'Invalid Event Image';
-        err.errors = [`Event Image couldn't be found`];
-        err.status = 404;
-        return next(err)
-    }
-
-    const event = await Event.findByPk(image.eventId);
+    const image = res.locals.eventImage;
 
     await image.destroy();
 

@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth, requireUserAuth } = require ("../../utils/auth");
+const { requireHostAuth, requireAuth, requireUserAuth } = require ("../../utils/auth");
 const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage, sequelize, User} = require('../../db/models');
 
 const { validateGroupImageInput, validateReqParamGroupId, validateGroupInput, handleValidationErrors, validateVenueInput, validateEventInput } = require('../../utils/validation');
@@ -249,9 +249,9 @@ router.put('/:groupId/membership', validateReqParamGroupId, requireAuth, require
 
     // Cannot change the status to pending - pass an error if user tries to
     if (status==='pending'){
-        const err = new Error(`Cannot change a membership status to pending`);
+        const err = new Error(`Validation Error`);
         err.title='Cannot change status to pending';
-        err.errors=[`Cannot change a membership status to pending`];
+        err.errors={status:`Cannot change a membership status to pending`};
         err.status=400;
         return next(err);
     }
@@ -261,9 +261,9 @@ router.put('/:groupId/membership', validateReqParamGroupId, requireAuth, require
 
     // If member is not found
     if(!member){
-        const err = new Error(`User couldn't be found`);
+        const err = new Error(`Validation Error`);
         err.title='Member does not exist';
-        err.errors=[`Member could not be found with memberID inputed`];
+        err.errors={memberId:`User couldn't be found`};
         err.status=400;
         return next(err);
     }
@@ -346,7 +346,8 @@ router.put('/:groupId/membership', validateReqParamGroupId, requireAuth, require
 
     // Extra error catching in case user tries to change
     res.status(400).json({
-        message:`Cannot change memberId, ${memberId}, status from ${foundMemJSON.status} to ${status}`
+        message:`Cannot change memberId, ${memberId}, status from ${foundMemJSON.status} to ${status}`,
+        statusCode:400
     })
 })
 
@@ -380,10 +381,8 @@ router.delete('/:groupId/membership', validateReqParamGroupId, requireAuth, asyn
 
     // If the target membership between the group and the user doesn't exist, throw an error
     if(!targetMem){
-        const err = new Error(`Membership does not exist`);
-        err.title='Membership does not exist';
-        err.errors=[`Membership does not exist`];
-        err.status=400;
+        const err = new Error(`Membership does not exist for this User`);
+        err.status=404;
         return next(err);
     }
 
@@ -444,13 +443,6 @@ router.post('/:groupId/events', validateReqParamGroupId, requireAuth, requireUse
         userId:req.user.id,
         status:'member'
     });
-
-    // // Access database to
-    // const returnedEvent = await Event.findByPk(newEvent.id,{
-    //     attributes:{
-    //         exclude:['createdAt','updatedAt']
-    //     }
-    // })
 
     // Remove createdAt and updatedAt from the created event to match the desired output
     const newEventJSON = newEvent.toJSON();
@@ -540,17 +532,11 @@ router.post('/:groupId/venues', validateReqParamGroupId, requireAuth, requireUse
     //     attributes:['id','groupId','address','city','state','lat','lng']
     // });
     const newVenJSON = newVen.toJSON();
+    delete newVenJSON.createdAt;
+    delete newVenJSON.updatedAt;
 
     // Return desired Venue object
-    res.json({
-        id:newVen.id,
-        groupId:newVen.groupId,
-        address:newVen.address,
-        city:newVen.city,
-        state:newVen.state,
-        lat:newVen.lat,
-        lng:newVen.lng
-    })
+    res.json(newVenJSON)
 });
 
 // GET /api/:groupId/venues
@@ -580,6 +566,9 @@ router.get('/:groupId', validateReqParamGroupId, async (req,res,next)=>{
         include:[
             {
                 model:GroupImage,
+                attributes:{
+                    exclude:['createdAt','updatedAt','groupId']
+                }
             },
                 {
                     model: Venue,
@@ -643,9 +632,10 @@ router.post('/', requireAuth, validateGroupInput, async (req,res,next)=>{
 
 // POST /api/groups/:groupId/images
 // Add an Image to a group based on the Group's Id
-router.post('/:groupId/images', validateReqParamGroupId, requireAuth, requireUserAuth, validateGroupImageInput, async(req,res,next)=>{
+router.post('/:groupId/images', validateReqParamGroupId, requireAuth, requireHostAuth, async(req,res,next)=>{
 
     const { url, preview } = req.body;
+    const membership = res.locals.member;
 
     // Create a new GroupImage
     const newGroupImage = await GroupImage.create({
@@ -666,7 +656,7 @@ router.post('/:groupId/images', validateReqParamGroupId, requireAuth, requireUse
 
 // PUT /api/groups/:groupId
 // Updates and returns an existing group
-router.put('/:groupId', validateReqParamGroupId, requireAuth, requireUserAuth, validateGroupInput, async (req,res,next)=>{
+router.put('/:groupId', validateReqParamGroupId, requireAuth, requireHostAuth, validateGroupInput, async (req,res,next)=>{
 
     const { name, about, type, private, city, state } = req.body;
 
@@ -688,7 +678,7 @@ router.put('/:groupId', validateReqParamGroupId, requireAuth, requireUserAuth, v
 
 // DELETE /api/groups/:groupId
 // Deletes an existing group
-router.delete('/:groupId', validateReqParamGroupId, requireAuth, requireUserAuth, async (req,res,next)=>{
+router.delete('/:groupId', validateReqParamGroupId, requireAuth, requireHostAuth, async (req,res,next)=>{
 
     // Get the group that was found in validateReqParamGroupId that was saved in res.locals obj
     const targetGroup = res.locals.group;
@@ -696,7 +686,8 @@ router.delete('/:groupId', validateReqParamGroupId, requireAuth, requireUserAuth
     await targetGroup.destroy();
 
     res.json({
-        message:'Successfully deleted'
+        message:'Successfully deleted',
+        statusCode:200
     })
 
 });

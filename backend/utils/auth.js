@@ -71,42 +71,6 @@ const requireUserAuth = async function ( req, res, next) {
 
   const where={};
   const groupId = res.locals.groupId;
-  // if(req.params.venueId){
-  //   const venue = await Venue.findByPk(req.params.venueId)
-  //   if(!venue){
-  //     const err = new Error(`Venue couldn't be found`);
-  //     err.title='Invalid Venue number';
-  //     err.errors=[`Venue could not be found with ID inputed: ${req.params.venueId}`];
-  //     err.status=404;
-  //     return next(err);
-  //   }
-  //   groupId=venue.groupId;
-  // }
-  // if(req.params.groupId){
-  //   groupId= req.params.groupId;
-  // }
-  // if(req.params.eventId){
-  //   const event = await Event.findByPk(req.params.eventId)
-  //   if(!event){
-  //     const err = new Error(`Event could not be found`);
-  //     err.title='Invalid Event number';
-  //     err.errors=[`Event could not be found with ID inputed: ${req.params.eventId}`];
-  //     err.status=404;
-  //     return next(err);
-  //   }
-  //   groupId = event.groupId;
-  // }
-
-  // const group = await Group.findByPk(groupId,{raw:true});
-  // console.log('checking group', group)
-  // // If group is not found with a valid groupId number
-  // if(!group){
-  //   const err = new Error(`Group couldn't be found`);
-  //   err.title='Invalid group number';
-  //   err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
-  //   err.status=404;
-  //   return next(err);
-  // }
 
   const membership = await Membership.findOne({
     where:{
@@ -131,6 +95,37 @@ const requireUserAuth = async function ( req, res, next) {
 
   next();
 };
+
+// Authorization requiring ONLY host to make changes
+const requireHostAuth = async function ( req, res, next) {
+
+  const where={};
+  const groupId = res.locals.groupId;
+
+  const membership = await Membership.findOne({
+    where:{
+      groupId:groupId,
+      userId:req.user.id,
+    },
+    raw:true
+  })
+
+  // Pass membership object along for the current user
+  res.locals.member = membership;
+
+  // If a user is not a member, and is not a co-host, or host, then ability to change
+  // details of a group is denied
+  if( !membership || !(membership.status ==='host')){
+    const err = new Error('Forbidden');
+    err.title = 'Forbidden access';
+    err.errors=['Forbidden acccess'];
+    err.status=403;
+    return next(err);
+  }
+
+  next();
+};
+
 
 // Check to ensure that user has proper auth to add pictures to an event
 const requireEventAuth = async function (req,res,next){
@@ -188,4 +183,4 @@ const requireEventAuth = async function (req,res,next){
 
 // };
 
-  module.exports = { requireEventAuth, setTokenCookie, restoreUser, requireAuth, requireUserAuth};
+  module.exports = { requireHostAuth, requireEventAuth, setTokenCookie, restoreUser, requireAuth, requireUserAuth};

@@ -1,6 +1,6 @@
 // backend/utils/validation.js
 const { validationResult } = require('express-validator');
-const { Group, Event, Venue } = require('../db/models');
+const { Group, Event, Venue, GroupImage, EventImage } = require('../db/models');
 
 const { check } = require('express-validator');
 
@@ -16,10 +16,16 @@ const handleValidationErrors = (req, _res, next) => {
       .array()
       .map((error) => `${error.msg}`);
 
-    const err = Error('Bad request.');
-    err.errors = errors;
+    const newErr={};
+    errors.forEach(e => {
+      const objkey=e.split(' ')[0].toLowerCase();
+      newErr[objkey]=e;
+    });
+
+    const err = Error('Validation Error');
+    err.errors = newErr;
     err.status = 400;
-    err.title = 'Bad request.';
+    err.title = 'Validation Error';
     next(err);
   }
   next();
@@ -87,6 +93,52 @@ validateReqParamVenueId = async (req,res,next)=>{
   res.locals.groupId=venue.groupId;
 
   next();
+}
+
+// Validate that a group image exists with given groupimage.id in req.params.imageId
+validateReqParamGroupImageId = async (req,res,next)=>{
+
+  const image = await GroupImage.findByPk(req.params.imageId);
+
+  // If an group image is not found with a valid imageId number
+  if(!image){
+      const err = new Error(`Group Image couldn't be found`);
+      err.title = 'Invalid Group Image';
+      err.errors = [`Group Image couldn't be found`];
+      err.status = 404;
+      return next(err)
+  }
+
+  // Save group image obj and groupId and pass along in a variable that can be used later
+  res.locals.groupId=image.groupId;
+  res.locals.image=image;
+
+  next();
+
+}
+
+// Validate that a event image exists with given eventimage.id in req.params.imageId
+validateReqParamEventImageId = async (req,res,next)=>{
+
+  const image = await EventImage.findByPk(req.params.imageId);
+
+  // If an event image is not found with a valid imageId number
+  if(!image){
+      const err = new Error(`Event Image couldn't be found`);
+      err.title = 'Invalid Event Image';
+      err.errors = [`Event Image couldn't be found`];
+      err.status = 404;
+      return next(err)
+  }
+
+  const event = await Event.findByPk(image.eventId);
+
+  // Save image obj and groupId and pass along in a variable that can be used later
+  res.locals.groupId=event.groupId;
+  res.locals.eventImage=image;
+
+  next();
+
 }
 
 
@@ -208,11 +260,11 @@ const validateVenueInput = [
       .withMessage('State is required'),
   check('lat')
       .exists({checkFalsy:true})
-      .isDecimal()
+      .isFloat({min:-90.00,max:90.00})
       .withMessage('Latitude is not valid'),
   check('lng')
       .exists({checkFalsy:true})
-      .isDecimal()
+      .isFloat({min:-180.00,max:180.00})
       .withMessage('Longitude is not valid'),
   handleValidationErrors
 ];
@@ -250,6 +302,7 @@ const validateGroupInput = [
 // ~~~~~~ Create a GroupImage Input Validations ~~~~~~
 
 // Full list of validation middleware for GroupImage input from Req.body
+// This authorization is not required. Preview check below does not allow false values for some reason
 const validateGroupImageInput = [
   check('url')
       .exists({checkFalsy:true})
@@ -257,7 +310,7 @@ const validateGroupImageInput = [
       .withMessage('A valid URL is required'),
   check('preview')
       .exists({checkFalsy:true})
-      .isBoolean({loose:true})
+      .isBoolean()
       .withMessage('Preview must be a boolean'),
   handleValidationErrors
 ];
@@ -268,6 +321,8 @@ module.exports = {
   validateReqParamGroupId,
   validateReqParamEventId,
   validateReqParamVenueId,
+  validateReqParamGroupImageId,
+  validateReqParamEventImageId,
   validateEventInput,
   validateGroupInput,
   validateVenueInput,
