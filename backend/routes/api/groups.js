@@ -5,8 +5,7 @@ const router = express.Router();
 const { requireAuth, requireUserAuth } = require ("../../utils/auth");
 const { Group, Membership, GroupImage, Venue, Event, Attendance, EventImage, sequelize, User} = require('../../db/models');
 
-const { check } = require('express-validator');
-const { handleValidationErrors, checkForInvalidGroups, validateNewVenue, validateEventInput } = require('../../utils/validation');
+const { validateGroupImageInput, validateReqParamGroupId, validateGroupInput, handleValidationErrors, validateVenueInput, validateEventInput } = require('../../utils/validation');
 
 const { Op } = require('sequelize')
 
@@ -33,7 +32,6 @@ router.get('/', async (req,res,next)=>{
     const returnArray = [];
 
     // Improvements?
-        // This is an N+1 operation - eager load above
         // Not creating another returnArray and return the OG group
     for(let i=0;i<groups.length;i++){
         const group = groups[i].toJSON();
@@ -52,7 +50,6 @@ router.get('/', async (req,res,next)=>{
 
 // GET /api/groups/current
 // Get all groups joined or organized by the current user
-    // Requires Authentication through 'requireAuth' middleware
 router.get('/current', requireAuth, async (req,res,next)=>{
 
     // Find all groups organized by current user
@@ -73,7 +70,6 @@ router.get('/current', requireAuth, async (req,res,next)=>{
         // Not creating another returnArray and return the OG group
     for(let i=0;i<groups.length;i++){
         const group = groups[i].toJSON();
-        // console.log('checking group',group)
 
         // Lazy load membership count
         const  memberCount = await Membership.count({
@@ -87,15 +83,16 @@ router.get('/current', requireAuth, async (req,res,next)=>{
         const imageUrl = await GroupImage.findOne({
             attributes:['url'],
             where:{
-                groupId:group.id
+                groupId:group.id,
+                preview:true
             }
         })
 
         if(!imageUrl) group.previewImage=imageUrl;
         else group.previewImage=imageUrl.url;
+
         group.numMembers=memberCount;
-        // console.log('checking group',group);
-        // console.log('checking group end', group) // this doesn't update the OG group value returned
+
         returnArray.push(group)
     }
 
@@ -104,21 +101,9 @@ router.get('/current', requireAuth, async (req,res,next)=>{
 
 // GET /api/groups/:groupId/members
 // Returns the members of a group specified by its id
-// Improvements - create middleware to ensure group ID provided is good
-router.get('/:groupId/members', async (req,res,next)=>{
+router.get('/:groupId/members', validateReqParamGroupId, async (req,res,next)=>{
 
-    const group = await Group.findByPk(req.params.groupId);
-    // console.log('checking group', group)
-
-    // If group is not found with a valid groupId number
-    if(!group){
-        const err = new Error(`Group couldn't be found`);
-        err.title='Invalid group number';
-        err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
-        err.status=404;
-        return next(err);
-    }
-
+    // Get Membership to check whether user is host or co-host
     const userStatus = await Membership.findOne({
         where:{
             userId:req.user.id,
@@ -127,79 +112,85 @@ router.get('/:groupId/members', async (req,res,next)=>{
         raw:true
     })
 
-    console.log('check user status', userStatus)
-
     const output={};
+    let where={
+        groupId:req.params.groupId
+    };
 
-    if(userStatus.status === 'host' || userStatus.status ==='co-host'){
-        // console.log("asbadsfadsfasfasdf")
-
-        const userArray = await User.findAll({
-            attributes:['id','firstName','lastName'],
-            include:{
-                model:Membership,
-                where:{
-                    groupId:req.params.groupId,
-                },
-                attributes:[]
-            }
-        })
-
-        // console.log("123123123123123123123123")
-        const memberArray=[];
-
-        // Lazy load each Member because eager loading didn't have the format we wanted
-        // when loading Member attributes
-        for(let i=0;i<userArray.length;i++){
-            const user = userArray[i].toJSON();
-            console.log('checking this', user)
-            const userMem = await Membership.findOne({
-                where:{
-                    groupId:req.params.groupId,
-                    userId:user.id
-                },
-                attributes:['status']
-            });
-            user.Membership=userMem;
-            memberArray.push(user)
+    // Check if member is host or co-host
+    if(!(userStatus.status === 'host' || userStatus.status ==='co-host')){
+        where.status={
+            [Op.notIn]:['pending']
         }
+    }
 
-        output.Members=memberArray;
-    } else {
-        const userArray = await User.findAll({
-            attributes:['id','firstName','lastName'],
-            include:{
-                model:Membership,
-                where:{
-                    groupId:req.params.groupId,
-                    status:{
-                        [Op.notIn]:['pending']
-                    }
-                },
-                attributes:[]
-                }
+    const userArray = await User.findAll({
+        attributes:['id','firstName','lastName'],
+        include:{
+            model:Membership,
+            where,
+            attributes:[]
+        }
+    })
+
+    const memberArray=[];
+
+    // Lazy load each Member - Eager loading didn't have the format we wanted
+    // when loading Member attributes
+    for(let i=0;i<userArray.length;i++){
+
+        const user = userArray[i].toJSON();
+
+        const userMem = await Membership.findOne({
+            where:{
+                groupId:req.params.groupId,
+                userId:user.id
+            },
+            attributes:['status']
         });
 
-        const memberArray=[];
-
-        // Lazy load each Member because eager loading didn't have the format we wanted
-        // when loading Member attributes
-        for(let i=0;i<userArray.length;i++){
-            const user = userArray[i].toJSON();
-            console.log('checking this', user)
-            const userMem = await Membership.findOne({
-                where:{
-                    groupId:req.params.groupId,
-                    userId:user.id
-                },
-                attributes:['status']
-            });
-            user.Membership=userMem;
-            memberArray.push(user)
-        }
-
-        output.Members=memberArray;
+        user.Membership=userMem;
+        memberArray.push(user);
     }
+
+    output.Members=memberArray;
+
+    // If user is not co-host or host, User cannot see 'pending'
+    // } else {
+        // const userArray = await User.findAll({
+        //     attributes:['id','firstName','lastName'],
+        //     include:{
+        //         model:Membership,
+        //         where:{
+        //             groupId:req.params.groupId,
+        //             status:{
+        //                 [Op.notIn]:['pending']
+        //             }
+        //         },
+        //         attributes:[]
+        //         }
+        // });
+
+        // const memberArray=[];
+
+        // // Lazy load each Member because eager loading didn't have the format we wanted
+        // // when loading Member attributes
+        // for(let i=0;i<userArray.length;i++){
+        //     const user = userArray[i].toJSON();
+        //     console.log('checking this', user)
+        //     const userMem = await Membership.findOne({
+        //         where:{
+        //             groupId:req.params.groupId,
+        //             userId:user.id
+        //         },
+        //         attributes:['status']
+        //     });
+        //     user.Membership=userMem;
+        //     memberArray.push(user)
+        // }
+
+    output.Members=memberArray;
+
 
     res.json(output)
 
@@ -207,28 +198,17 @@ router.get('/:groupId/members', async (req,res,next)=>{
 
 // POST /api/groups/:groupId/membership
 // Request a new membership for a group specified by id
-// Improvements - create middleware to ensure group ID provided is good
-    // check to make sure there aren't duplicates!!!!
-router.post('/:groupId/membership', requireAuth, async (req,res,next)=>{
+router.post('/:groupId/membership', validateReqParamGroupId, requireAuth, async (req,res,next)=>{
 
-    const group = await Group.findByPk(req.params.groupId);
-    // console.log('checking group', group)
-
-    // If group is not found with a valid groupId number
-    if(!group){
-        const err = new Error(`Group couldn't be found`);
-        err.title='Invalid group number';
-        err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
-        err.status=404;
-        return next(err);
-    }
-
+    // Get current membership status
     const getMemStatus = await Membership.findOne({
         where:{
             groupId:req.params.groupId,
             userId:req.user.id
         }
     })
+
+    // If current membership status does not exist, create one and return
     if(!getMemStatus){
 
         const membership = await Membership.create({
@@ -237,20 +217,18 @@ router.post('/:groupId/membership', requireAuth, async (req,res,next)=>{
             status:'pending'
         })
 
-        const checkMem = await Membership.findByPk(membership.id,{
-            attributes:['status'],
-            raw:true
-        })
+        return res.json({
+            status:'pending',
+            memberId:req.user.id
+        });
 
-        checkMem.memberId = req.user.id;
-
-        return res.json(checkMem);
-
+    // If user already requested for membership, and status is pending, return 400 error
     } else if (getMemStatus.status == 'pending'){
         return res.status(400).json({
             message:'Membership has already been requested',
             statusCode:400
         })
+    // If user is already a member, return 400 error
     } else if (getMemStatus.status == 'member' || getMemStatus.status == 'host' || getMemStatus.status == 'co-host'){
         return res.status(400).json({
             message:'User is already a member of the group',
@@ -262,11 +240,14 @@ router.post('/:groupId/membership', requireAuth, async (req,res,next)=>{
 
 // PUT /api/groups/:groupId/membership
 // Change the status of a membership for a group specified by id
-// Improvements - majorly refactor so error codes aren't repeated so many times
-router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,next)=>{
+// Ultimate improvement - throw authorization error immediately
+router.put('/:groupId/membership', validateReqParamGroupId, requireAuth, requireUserAuth, async (req,res,next)=>{
 
     const { memberId, status } = req.body;
 
+    const groupId = res.locals.groupId;
+
+    // Cannot change the status to pending - pass an error if user tries to
     if (status==='pending'){
         const err = new Error(`Cannot change a membership status to pending`);
         err.title='Cannot change status to pending';
@@ -278,6 +259,7 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
     // Check for memberId aka UserId
     const member = await User.findByPk(memberId, {raw:true});
 
+    // If member is not found
     if(!member){
         const err = new Error(`User couldn't be found`);
         err.title='Member does not exist';
@@ -286,9 +268,10 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
         return next(err);
     }
 
+    // Get membership for user we want to update
     const foundMembership = await Membership.findOne({
         where:{
-            groupId:req.params.groupId,
+            groupId:groupId,
             userId:memberId
         }
     });
@@ -302,29 +285,30 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
         return next(err);
     }
 
-    const userMembership = await Membership.findOne({
-        where:{
-            groupId:req.params.groupId,
-            userId: req.user.id
-        },
-        raw:true
-    })
-
+    // Conver user member to JSON object
     const foundMemJSON = foundMembership.toJSON();
-    if(foundMemJSON.status==='pending' && status ==='member'){
-        if(userMembership.status ==='host' || userMembership.status ==='co-host'){
-            foundMembership.status = 'member';
 
+    // Pull current user's membership from res.locals.member object saved in the requireUserAuth
+    const userMembership=res.locals.member;
+
+    // Check to see if the user member has a status of pending and we want to change them to a member
+    if(foundMemJSON.status==='pending' && status ==='member'){
+        // Can only make this change if the current user is a host or co-host
+        if(userMembership.status ==='host' || userMembership.status ==='co-host'){
+
+            // Make the change and save to database
+            foundMembership.status = 'member';
             await foundMembership.save();
 
-            const checkMem = await Membership.findByPk(foundMembership.id,{
-                attributes:['id','groupId','status']
-            });
+            // Return custom object instead of making another call to server
+            return res.json({
+                id:foundMembership.id,
+                groupId:groupId,
+                memberId: memberId,
+                status:'member'
+            })
 
-            checkMem.memberId = memberId;
-
-            return res.json(checkMem)
-
+        // Throw an error if the change to member is not made from a co-host or host
         } else {
             const err = new Error(`Not authorized to change status to member. Must be host or co-host`);
             err.title='Not authorized to change status to member. Must be host or co-host';
@@ -334,7 +318,10 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
         }
     }
 
+    // Changing a member to co-host
     if(foundMemJSON.status==='member' && status ==='co-host'){
+
+        // Current user must be the host of the group
         if(userMembership.status ==='host'){
             foundMembership.status = 'co-host';
             await foundMembership.save();
@@ -347,6 +334,7 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
 
             return res.json(checkMem)
 
+        // If user is not the host, then throw an error
         } else {
             const err = new Error(`Cannot change a membership status to co-host. User must be organizer/host. `);
             err.title='Cannot change a membership status to co-host. User must be organizer/host.';
@@ -356,6 +344,7 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
         }
     }
 
+    // Extra error catching in case user tries to change
     res.status(400).json({
         message:`Cannot change memberId, ${memberId}, status from ${foundMemJSON.status} to ${status}`
     })
@@ -363,27 +352,16 @@ router.put('/:groupId/membership', requireAuth, requireUserAuth, async (req,res,
 
 // DELETE /api/groups/:groupId/membership
 // Delete a membership to a group specified by id
-// Improvement - consolidate and dry up errors
 // Improvement - if groupId owner is host and deletes their membership - something needs to happen
     // either make co-host a host, or cascade the groups to be deleted as well
-router.delete('/:groupId/membership', requireAuth, async(req,res,next)=>{
-
-    const group = await Group.findByPk(req.params.groupId);
-    // console.log('checking group', group)
-
-    // If group is not found with a valid groupId number
-    if(!group){
-        const err = new Error(`Group couldn't be found`);
-        err.title='Invalid group number';
-        err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
-        err.status=404;
-        return next(err);
-    }
+router.delete('/:groupId/membership', validateReqParamGroupId, requireAuth, async(req,res,next)=>{
 
     const { memberId } = req.body;
 
+    // Check that the provided memberId is a user that exists
     const targetUser = await User.findByPk(memberId);
 
+    // If the provided memberId doesn't exist, throw an error
     if(!targetUser){
         const err = new Error(`Validation Error`);
         err.title='Validation Error';
@@ -399,8 +377,8 @@ router.delete('/:groupId/membership', requireAuth, async(req,res,next)=>{
             groupId:req.params.groupId
         }
     })
-    console.log('Checking target mem', targetMem)
 
+    // If the target membership between the group and the user doesn't exist, throw an error
     if(!targetMem){
         const err = new Error(`Membership does not exist`);
         err.title='Membership does not exist';
@@ -420,10 +398,6 @@ router.delete('/:groupId/membership', requireAuth, async(req,res,next)=>{
     // Convert to json to check their status
     const currUserJSON = currentUser.toJSON();
     const targetMemJSON = targetMem.toJSON();
-    console.log()
-    console.log('Checking ~~~~~~~~~~~~~1', currUserJSON.status)
-    console.log('Checking ~~~~~~~~~~~~~1', targetMemJSON.userId, req.userId)
-
 
     // If current user is host of the group, and deleting a user's membership
     if(currUserJSON.status === 'host' || targetMemJSON.userId == req.user.id){
@@ -432,6 +406,7 @@ router.delete('/:groupId/membership', requireAuth, async(req,res,next)=>{
         return res.json({
             message:'Successfully deleted membership from group'
         })
+    // If the current user is not the host or the same user as the memberId, then throw an error
     } else {
         const err = new Error(`Unauthorized to delete membership`);
         err.title='Authorization required';
@@ -445,11 +420,12 @@ router.delete('/:groupId/membership', requireAuth, async(req,res,next)=>{
 
 // POST /api/groups/:groupId/events
 // Creates and returns a new Event for a group specified by its id
-router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserAuth, validateEventInput, async(req,res,next)=>{
+router.post('/:groupId/events', validateReqParamGroupId, requireAuth, requireUserAuth, validateEventInput, async(req,res,next)=>{
 
     // Paused until routes for Venues are added
     const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
 
+    // Create a new Event
     const newEvent = await Event.create({
         venueId,
         groupId:req.params.groupId,
@@ -466,23 +442,30 @@ router.post('/:groupId/events', checkForInvalidGroups, requireAuth, requireUserA
     const attendee = await Attendance.create({
         eventId:newEvent.id,
         userId:req.user.id,
-        status:'attending'
+        status:'member'
     });
 
-    const returnedEvent = await Event.findByPk(newEvent.id,{
-        attributes:{
-            exclude:['createdAt','updatedAt']
-        }
-    })
+    // // Access database to
+    // const returnedEvent = await Event.findByPk(newEvent.id,{
+    //     attributes:{
+    //         exclude:['createdAt','updatedAt']
+    //     }
+    // })
 
-    res.json(returnedEvent)
+    // Remove createdAt and updatedAt from the created event to match the desired output
+    const newEventJSON = newEvent.toJSON();
+    delete newEventJSON.createdAt;
+    delete newEventJSON.updatedAt;
+
+    res.json(newEventJSON)
 
 });
 
 // GET
 // /api/groups/:groupId/events
-router.get('/:groupId/events', checkForInvalidGroups, async (req,res,next)=>{
+router.get('/:groupId/events', validateReqParamGroupId, async (req,res,next)=>{
 
+    // Find all events
     const groupEvents = await Event.findAll({
         attributes:{
             exclude:['createdAt','updatedAt','description','capacity','price']
@@ -516,16 +499,19 @@ router.get('/:groupId/events', checkForInvalidGroups, async (req,res,next)=>{
         })
 
         event.numAttending=attendees;
+
+        // Find any EventImage where preview is true
         const eventImage = await EventImage.findOne({
             where:{
-                eventId:event.id
+                eventId:event.id,
+                preview:true
             },
             raw:true
         })
 
+        // If an event image is found set it equal to previewImage property. If not, set to null
         if(eventImage) event.previewImage=eventImage.url;
-        else event.previewImage=eventImage;
-        // console.log('checking event end')
+        else event.previewImage=null;
 
         returnArray.push(event);
     }
@@ -536,10 +522,11 @@ router.get('/:groupId/events', checkForInvalidGroups, async (req,res,next)=>{
 
 // POST /api/groups/:groupId/venues
 // Create a new venue for a group specified by its id
-router.post('/:groupId/venues', requireAuth, requireUserAuth, validateNewVenue, async (req,res,next)=>{
+router.post('/:groupId/venues', validateReqParamGroupId, requireAuth, requireUserAuth, validateVenueInput, async (req,res,next)=>{
 
     const { address, city, state, lat, lng } = req.body;
 
+    // Create a Venue
     const newVen = await Venue.create({
         groupId:req.params.groupId,
         address,
@@ -549,17 +536,28 @@ router.post('/:groupId/venues', requireAuth, requireUserAuth, validateNewVenue, 
         lng
     })
 
-    const checkVen = await Venue.findByPk(newVen.id,{
-        attributes:['id','groupId','address','city','state','lat','lng']
-    });
+    // const checkVen = await Venue.findByPk(newVen.id,{
+    //     attributes:['id','groupId','address','city','state','lat','lng']
+    // });
+    const newVenJSON = newVen.toJSON();
 
-    res.json(checkVen)
+    // Return desired Venue object
+    res.json({
+        id:newVen.id,
+        groupId:newVen.groupId,
+        address:newVen.address,
+        city:newVen.city,
+        state:newVen.state,
+        lat:newVen.lat,
+        lng:newVen.lng
+    })
 });
 
 // GET /api/:groupId/venues
 // Get all venues for a group by its id
-router.get('/:groupId/venues', checkForInvalidGroups, async (req,res,next)=>{
+router.get('/:groupId/venues', validateReqParamGroupId, async (req,res,next)=>{
 
+    // Find all Venues for groupId
     const venues = await Venue.findAll({
         attributes:{
             exclude:['createdAt','updatedAt']
@@ -575,25 +573,14 @@ router.get('/:groupId/venues', checkForInvalidGroups, async (req,res,next)=>{
 // GET /api/groups/:groupId
 // Returns the details of a group specified by its id.
 // Improvements - create middleware to ensure group ID provided is good
-router.get('/:groupId', async (req,res,next)=>{
+router.get('/:groupId', validateReqParamGroupId, async (req,res,next)=>{
 
+    // Get group by primary key
     const group = await Group.findByPk(req.params.groupId,{
         include:[
             {
                 model:GroupImage,
-                // Default scope take care of this. Uncomment/remove later if necessary
-                // attributes:{
-                //     exclude:['groupId','createdAt','updatedAt']
-                // }
-
             },
-            // Improvement - if we can eager load this and change the variable name here
-            // instead of having User class
-            // {
-                //     model:User,
-                //     attributes:['id','firstName','lastName']
-
-                // },
                 {
                     model: Venue,
                     attributes:{
@@ -602,15 +589,6 @@ router.get('/:groupId', async (req,res,next)=>{
                 }
             ]
         })
-
-        // If a group isn't found, create an error, and call next
-        if(!group){
-            const err = new Error(`Group couldn't be found`);
-            err.status = 404;
-            err.title = 'Invalid Group';
-            err.errors = [`The provided groupId, ${req.params.groupId}, is invalid.`];
-            return next(err);
-        }
 
         // Lazy load Organizer (user) information through OrganizerID
         // Improvement - can find a way to eager load this above
@@ -623,7 +601,6 @@ router.get('/:groupId', async (req,res,next)=>{
         })
         const jsonGroup = group.toJSON();
         jsonGroup.Organizer= org;
-        // console.log(jsonGroup)
 
         // Lazy Load numMembers here for numMembers key/value pair
         const memCount = await Membership.count({ where: {groupId:group.id}})
@@ -633,37 +610,11 @@ router.get('/:groupId', async (req,res,next)=>{
 
 });
 
-// Use check method to build middleware to ensure input to create a group is valid
-// Improvements - move this to validate utility file
-const validateGroup = [
-    check('name')
-        .exists({checkFalsy:true})
-        .isLength({max:60})
-        .withMessage('Name must be 60 characters or less'),
-    check('about')
-        .exists({checkFalsy:true})
-        .isLength({min:50})
-        .withMessage('About must be 50 characters or more'),
-    check('type')
-        .exists({checkFalsy:true})
-        .isIn(['Online','In person'])
-        .withMessage("Type must be 'Online' or 'In person'"),
-    check('private')
-        .exists({checkFalsy:true})
-        .isBoolean({loose:true})
-        .withMessage('Private must be a boolean'),
-    check('city')
-        .exists({checkFalsy:true})
-        .withMessage('City is required'),
-    check('state')
-        .exists({checkFalsy:true})
-        .withMessage('State is required'),
-    handleValidationErrors
-];
+
 
 // POST /api/groups
 // Creates and returns a new group
-router.post('/', requireAuth, validateGroup, async (req,res,next)=>{
+router.post('/', requireAuth, validateGroupInput, async (req,res,next)=>{
 
     const { name, about, type, private, city, state } = req.body;
 
@@ -685,63 +636,51 @@ router.post('/', requireAuth, validateGroup, async (req,res,next)=>{
         status:'host'
     })
 
-    // console.log('checking host', host)
-
     res.json(newGroup)
-
 });
 
-// Validate Group Image input is valid for POST route below
-// Improvements - move to validate utility file
-const validateGroupImage = [
-    check('url')
-        .exists({checkFalsy:true})
-        .isURL()
-        .withMessage('A valid URL is required'),
-    check('preview')
-        .exists({checkFalsy:true})
-        .isBoolean({loose:true})
-        .withMessage('Preview must be a boolean'),
-    handleValidationErrors
-];
+
 
 // POST /api/groups/:groupId/images
 // Add an Image to a group based on the Group's Id
-router.post('/:groupId/images', requireAuth, requireUserAuth, validateGroupImage, async(req,res,next)=>{ // requireUserAuth
-
-    // Error handled in requireUserAuth if :groupId is invalid
+router.post('/:groupId/images', validateReqParamGroupId, requireAuth, requireUserAuth, validateGroupImageInput, async(req,res,next)=>{
 
     const { url, preview } = req.body;
 
+    // Create a new GroupImage
     const newGroupImage = await GroupImage.create({
         groupId:req.params.groupId,
         url,
         preview
     });
 
-    // Improvement - remove this and somehow exclude createdAt, updatedAt, and GroupId on creation of GroupImage above
-    const returnNewImage = await GroupImage.findByPk(newGroupImage.id)
+    const newGroupImageJSON = newGroupImage.toJSON();
 
-    res.json(returnNewImage)
+    res.json({
+        id:newGroupImageJSON.id,
+        url:newGroupImageJSON.url,
+        preview:newGroupImageJSON.preview
+    })
 
 });
 
 // PUT /api/groups/:groupId
 // Updates and returns an existing group
-router.put('/:groupId', requireAuth, requireUserAuth, validateGroup, async (req,res,next)=>{ // requireUserAuth
+router.put('/:groupId', validateReqParamGroupId, requireAuth, requireUserAuth, validateGroupInput, async (req,res,next)=>{
 
     const { name, about, type, private, city, state } = req.body;
 
-    const getGroup = await Group.findByPk(req.params.groupId);
+    // Get the group that was found in validateReqParamGroupId that was saved in res.locals obj
+    const targetGroup = res.locals.group;
 
-    getGroup.name = name;
-    getGroup.about = about;
-    getGroup.type = type;
-    getGroup.private = private;
-    getGroup.city = city;
-    getGroup.state = state;
+    targetGroup.name = name;
+    targetGroup.about = about;
+    targetGroup.type = type;
+    targetGroup.private = private;
+    targetGroup.city = city;
+    targetGroup.state = state;
 
-    const returnedGroup = await getGroup.save();
+    const returnedGroup = await targetGroup.save();
 
     res.json(returnedGroup)
 
@@ -749,13 +688,12 @@ router.put('/:groupId', requireAuth, requireUserAuth, validateGroup, async (req,
 
 // DELETE /api/groups/:groupId
 // Deletes an existing group
-router.delete('/:groupId', requireAuth, requireUserAuth, async (req,res,next)=>{
+router.delete('/:groupId', validateReqParamGroupId, requireAuth, requireUserAuth, async (req,res,next)=>{
 
-    // Invalid group numbers handled in requireUserAuth
-    const deleteGroup = await Group.findByPk(req.params.groupId);
-    // console.log('delete this group',deleteGroup)
+    // Get the group that was found in validateReqParamGroupId that was saved in res.locals obj
+    const targetGroup = res.locals.group;
 
-    await deleteGroup.destroy();
+    await targetGroup.destroy();
 
     res.json({
         message:'Successfully deleted'

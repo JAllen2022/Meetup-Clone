@@ -6,7 +6,7 @@ const { requireAuth, requireUserAuth, requireEventAuth } = require('../../utils/
 const { Event, Group, Attendance, EventImage, Venue, Membership, User } = require('../../db/models');
 
 const { check } = require('express-validator');
-const { handleValidationErrors, checkForInvalidEvent, validateEventInput } = require('../../utils/validation');
+const { validateReqParamEventId, validateReqParamEventId, validateEventInput } = require('../../utils/validation');
 const { Op } = require('sequelize');
 const { validationResult } = require('express-validator');
 
@@ -150,21 +150,12 @@ router.get('/',validateEventQueryParamInput, async (req,res,next)=>{
 // GET /api/events/:eventId/attendees
 // Get all attendees of an event specified by its id
 // Improvements - rafactor validations.
-router.get('/:eventId/attendees', async (req,res,next)=>{
+router.get('/:eventId/attendees', validateReqParamEventId, async (req,res,next)=>{
 
-    const targetEvent = await Event.findByPk(req.params.eventId);
-
-    if(!targetEvent){
-        const err = new Error(`Event couldn't be found`);
-        err.title = 'Invalid Event';
-        err.errors = [`Event couldn't be found`];
-        err.status = 404;
-        return next(err)
-    }
-
+    const targetEvent = res.locals.event;
     const targetEventJSON = targetEvent.toJSON();
 
-    // Check if user is host or co-host
+    // Get membership status to see if the user is host or a member
     const currentUser = await Membership.findOne({
         where:{
             userId:req.user.id,
@@ -202,8 +193,13 @@ router.get('/:eventId/attendees', async (req,res,next)=>{
         }
     }
 
+    // Make query to find the attendees
     const attendeeList = await User.findAll(query);
-    const returnObj = {Attendees:[]};
+
+    // Structure the object to be returned
+    const returnObj = {
+        Attendees:[]
+    };
 
     // Object manipulation to get Attendance to show up as an object instead of an array of objects
     for(let i=0;i<attendeeList.length;i++){
@@ -214,26 +210,16 @@ router.get('/:eventId/attendees', async (req,res,next)=>{
         returnObj.Attendees.push(attendee);
     }
 
-
     res.json(returnObj)
-
 })
 
 // POST /api/events/:eventId/attendance
 // Request attendance for an event specified by id
 // Improvements - validations consolidate
-router.post('/:eventId/attendance', requireAuth, async (req,res,next)=>{
+router.post('/:eventId/attendance', validateReqParamEventId, requireAuth, async (req,res,next)=>{
 
-
-    const targetEvent = await Event.findByPk(req.params.eventId);
-
-    if(!targetEvent){
-        const err = new Error(`Event couldn't be found`);
-        err.title = 'Invalid Event';
-        err.errors = [`Event couldn't be found`];
-        err.status = 404;
-        return next(err)
-    }
+    const targetEvent = res.locals.event;
+    const groupId = res.locals.groupId;
 
     const userId = req.user.id;
 
@@ -242,13 +228,14 @@ router.post('/:eventId/attendance', requireAuth, async (req,res,next)=>{
     const currentUser = await Membership.findOne({
         where:{
             userId:userId,
-            groupId:targetEvent.groupId,
+            groupId:groupId,
             status:{
                 [Op.notIn]:['pending']
             }
         }
     })
 
+    // If the current user is not a member of the group, i.e. is not 'pending', then throw an error
     if(!currentUser){
         const err = new Error(`Must be a member of the group to request attendance`);
         err.title = 'Invalid request';
@@ -265,7 +252,7 @@ router.post('/:eventId/attendance', requireAuth, async (req,res,next)=>{
         }
     })
 
-    console.log('attendance to event', attendanceToEvent)
+    // If array is not empty, than attendance already requested
     if(attendanceToEvent.length>0) {
         const err = new Error(`Attendance has already been requested`);
         err.title = 'Invalid request';
@@ -292,7 +279,7 @@ router.post('/:eventId/attendance', requireAuth, async (req,res,next)=>{
     // Make sure that inputs for status either, attending, or member
     // Only delete a valid user from userId input
     // Move up my authentication for users - right now it's at the end
-router.put('/:eventId/attendance', requireAuth, requireUserAuth, async (req,res,next)=>{
+router.put('/:eventId/attendance', validateReqParamEventId, requireAuth, requireUserAuth, async (req,res,next)=>{
 
     const { userId, status } = req.body;
 
@@ -311,8 +298,6 @@ router.put('/:eventId/attendance', requireAuth, requireUserAuth, async (req,res,
         },
     })
 
-    console.log('Checking attendance length ~~~~~~~~~~~~`', targetAttendance)
-
     // If attendance does not exist
     if(targetAttendance < 1){
         const err = new Error(`Attendance between the user and the event does not exist`);
@@ -323,15 +308,18 @@ router.put('/:eventId/attendance', requireAuth, requireUserAuth, async (req,res,
     }
 
     const attendanceLog = targetAttendance[0]
-    // check to make sure that member is a co-host
+
+    // If changing status to 'member'
     if(status === 'member'){
+        // Check the membership of the target user
         const member = await Membership.findOne({
             where:{
                 groupId:res.locals.groupId,
                 userId:userId
             }
         })
-        console.log('member ~~~~~~~~`', member.status, !member, !(member.status =='co-host' || member.status=='host'))
+
+        // If the membership of the target user doesn't exist, or they aren't the co-host or host of the group, then throw error
         if( !member || !(member.status ==='co-host' || member.status==='host')){
             const err = new Error(`Cannot change status to 'member' if user is not host or co-host`);
             err.title = 'Invalid User Status';
@@ -339,41 +327,39 @@ router.put('/:eventId/attendance', requireAuth, requireUserAuth, async (req,res,
             err.status = 403;
             return next(err)
         }
+
+        // Update status to member
         attendanceLog.status=status;
     }
+    // If just changing status to attending, then set status
     if(status==='attending') attendanceLog.status=status;
 
     await attendanceLog.save();
 
-    const checkAttendance = await Attendance.findByPk(attendanceLog.id,{
-        attributes: {
-            exclude:['createdAt','updatedAt']
-        }
-    })
+    // const checkAttendance = await Attendance.findByPk(attendanceLog.id,{
+    //     attributes: {
+    //         exclude:['createdAt','updatedAt']
+    //     }
+    // })
 
-    res.json(checkAttendance)
+    const attendanceLogJSON = attendanceLog.toJSON();
+    delete attendanceLog.createdAt;
+    delete attendanceLog.upatedAt;
+
+    res.json(attendanceLog)
 
 })
 
 // DELETE /api/events/:eventId/attendance
 // Delete an attendance to an event specified by id
 // Improvements - consolidate validations
-router.delete('/:eventId/attendance', requireAuth, async (req,res,next)=>{
+router.delete('/:eventId/attendance', validateReqParamEventId, requireAuth, async (req,res,next)=>{
 
     const { userId } = req.body;
 
-    const targetEvent = await Event.findByPk(req.params.eventId);
+    const targetEvent = res.locals.event;
 
-    if(!targetEvent){
-        const err = new Error(`Event couldn't be found`);
-        err.title = 'Invalid Event';
-        err.errors = [`Event couldn't be found`];
-        err.status = 404;
-        return next(err)
-    }
-
-    // Check to make sure user is
-    const user = await User.findByPk(req.user.id);
+    // Check membership for the target user
     const membershipCheck = await Membership.findOne({
         where:{
             groupId:targetEvent.groupId,
@@ -381,6 +367,7 @@ router.delete('/:eventId/attendance', requireAuth, async (req,res,next)=>{
         }
     })
 
+    // Get the attendance for the user
     const attendance = await Attendance.findOne({
         where:{
             userId:userId,
@@ -388,6 +375,7 @@ router.delete('/:eventId/attendance', requireAuth, async (req,res,next)=>{
         }
     })
 
+    // If not attendance relationship between target user and event, throw error
     if(!attendance){
         const err = new Error(`Attendance does not exist for this User`);
         err.title = 'Invalid Attendance';
@@ -396,12 +384,14 @@ router.delete('/:eventId/attendance', requireAuth, async (req,res,next)=>{
         return next(err)
     }
 
+    // If the target userId is equal to the current user id, OR, the current user is co-host or host, allow change
     if((userId === req.user.id) || (membershipCheck.status === 'co-host') || (membershipCheck.status === 'host')){
         await attendance.destroy();
 
         res.json({
             message:'Successfully deleted attendance from event'
         })
+    // If the user is not any of the above, throw an error
     } else {
         const err = new Error(`Only the User or organizer may delete an Attendance`);
         err.title = 'Invalid Permissions';
@@ -409,12 +399,11 @@ router.delete('/:eventId/attendance', requireAuth, async (req,res,next)=>{
         err.status = 403;
         return next(err)
     }
-
 })
 
 // POST /api/events/:eventId/images
 // Create and return a new image for an event specified by id
-router.post('/:eventId/images', checkForInvalidEvent, requireAuth, requireEventAuth, async (req,res,next)=>{
+router.post('/:eventId/images', validateReqParamEventId, requireAuth, requireEventAuth, async (req,res,next)=>{
 
     const { url, preview } = req.body;
 
@@ -424,19 +413,18 @@ router.post('/:eventId/images', checkForInvalidEvent, requireAuth, requireEventA
         preview
     })
 
-    const checkImage = await EventImage.findByPk(image.id,{
-        attributes:{
-            exclude:['createdAt','updatedAt','eventId']
-        }
-    });
+    const imageJSON = image.toJSON();
+    delete imageJSON.createdAt;
+    delete imageJSON.udpateAt;
+    delete imageJSON.eventId;
 
-    res.json(checkImage)
+    res.json(imageJSON)
 
 });
 
 // GET /api/events/:eventId
 // Returns the details of an event specified by its id
-router.get('/:eventId', checkForInvalidEvent, async (req,res,next)=>{
+router.get('/:eventId', validateReqParamEventId, async (req,res,next)=>{
 
     const event = res.locals.event;
 
@@ -479,11 +467,11 @@ router.get('/:eventId', checkForInvalidEvent, async (req,res,next)=>{
 // PUT /api/events/:eventId
 // Edit and returns an event specified by its id
     // Improvements - optimize and make validate venue less sketchy - validations in general need improvement here
-router.put('/:eventId',checkForInvalidEvent, requireAuth, requireUserAuth, validateEventInput,  async (req,res,next)=>{
-    // Paused until routes for Venues are added
+router.put('/:eventId', validateReqParamEventId, requireAuth, requireUserAuth, validateEventInput,  async (req,res,next)=>{
+
     const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
 
-    const foundEvent = await Event.findByPk(req.params.eventId);
+    const foundEvent = res.locals.event;
 
     foundEvent.venueId = venueId;
     foundEvent.name = name;
@@ -496,17 +484,15 @@ router.put('/:eventId',checkForInvalidEvent, requireAuth, requireUserAuth, valid
 
     await foundEvent.save();
 
-    const returnedEvent = await Event.findByPk(foundEvent.id,{
-        attributes:{
-            exclude:['createdAt','updatedAt']
-        }
-    })
+    const foundEventJSON = foundEvent.toJSON();
+    delete foundEventJSON.createdAt;
+    delete foundEventJSON.updatedAt;
 
-    res.json(returnedEvent)
+    res.json(foundEventJSON)
 });
 
 // DELETE /api/events/:eventId
-router.delete('/:eventId', checkForInvalidEvent, requireAuth, requireUserAuth, async (req,res,next)=>{
+router.delete('/:eventId', validateReqParamEventId, requireAuth, requireUserAuth, async (req,res,next)=>{
 
     const event = await Event.findByPk(req.params.eventId);
 

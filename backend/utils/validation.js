@@ -25,70 +25,104 @@ const handleValidationErrors = (req, _res, next) => {
   next();
 };
 
-const checkForInvalidGroups = async (req, res, next) =>{
+// ~~~~~~~~~~~~~~~ Req.Params - Parameter Validations ~~~~~~~~~~~~~~~~~~~~
 
-  const group = await Group.findByPk(req.params.groupId,{raw:true});
 
+// Validate that a group exists with given group id in req.params.groupId
+validateReqParamGroupId = async (req,res,next)=>{
+  const group = await Group.findByPk(req.params.groupId);
+
+  // If group is not found with a valid groupId number
   if(!group){
-    const err = new Error(`Group couldn't be found`);
-    err.status = 404;
-    err.title = 'Invalid Group';
-    err.errors = [`The provided groupId, ${req.params.groupId}, is invalid.`];
-    return next(err);
+      const err = new Error(`Group couldn't be found`);
+      err.title='Invalid group number';
+      err.errors=[`Group could not be found with ID inputed: ${req.params.groupId}`];
+      err.status=404;
+      return next(err);
   }
+
+  // Pass group object along in res locals object so we don't have to request from database again
+  res.locals.groupId=group.id;
+  res.locals.group=group;
+
   next();
 }
 
-const checkForInvalidEvent = async (req, res, next) =>{
+// Validate that a event exists with given event.id in req.params.eventId
+validateReqParamEventId = async (req,res,next)=>{
 
-  const event = await Event.findByPk(req.params.eventId,{
-    attributes:{
-      exclude:['createdAt','updatedAt']
-    }
-  });
+  const event = await Event.findByPk(req.params.eventId)
 
+  // If an event is not found with a valid eventId number
   if(!event){
-    const err = new Error(`Event couldn't be found`);
-    err.status = 404;
-    err.title = 'Invalid Event';
-    err.errors = [`The provided eventId, ${req.params.eventId}, is invalid.`];
+    const err = new Error(`Event could not be found`);
+    err.title='Invalid Event number';
+    err.errors=[`Event could not be found with ID inputed: ${req.params.eventId}`];
+    err.status=404;
     return next(err);
   }
 
+  // Save event obj and groupId and pass along in a variable that can be used later
   res.locals.event=event;
+  res.locals.groupId = event.groupId;
 
   next();
 }
 
-// Validate input to create a new venue
-const validateNewVenue = [
-  check('address')
-      .exists({checkFalsy:true})
-      .withMessage('Street address is required'),
-  check('city')
-      .exists({checkFalsy:true})
-      .withMessage('City is required'),
-  check('state')
-      .exists({checkFalsy:true})
-      .withMessage('State is required'),
-  check('lat')
-      .exists({checkFalsy:true})
-      .isDecimal()
-      .withMessage('Latitude is not valid'),
-  check('lng')
-      .exists({checkFalsy:true})
-      .isDecimal()
-      .withMessage('Longitude is not valid'),
-  handleValidationErrors
-];
+// Validate that a venue exists with given venue.id in req.params.venueId
+validateReqParamVenueId = async (req,res,next)=>{
 
-// Improvements - add this to the array of errors instead of throwing a separate error
+  // If an venue is not found with a valid venueId number
+  const venue = await Venue.findByPk(req.params.venueId)
+  if(!venue){
+    const err = new Error(`Venue couldn't be found`);
+    err.title='Invalid Venue number';
+    err.errors=[`Venue could not be found with ID inputed: ${req.params.venueId}`];
+    err.status=404;
+    return next(err);
+  }
+
+  // Save venue obj and groupId and pass along in a variable that can be used later
+  res.locals.venue=venue;
+  res.locals.groupId=venue.groupId;
+
+  next();
+}
+
+
+// ~~~~~~~~~~~~~~~ Req.body Input Validations ~~~~~~~~~~~~~~~~~~~~
+
+
+// ~~~~~~ Create an Event Input Validations ~~~~~~
+
+// Check Future Date value
+const validateFutureDate = (req,res,next)=>{
+  const { startDate, endDate } = req.body;
+
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+
+  if(startDateObj > endDateObj){
+      const err = new Error('End date is less than start date');
+      err.status=400;
+      err.title='End date is less than start date';
+      err.errors=['Invalid end date'];
+      return next(err);
+  }
+
+  next();
+};
+
+// Validate that the venue in the request body exists
 const validateVenue = async (req,res,next)=>{
 
+  // Allow null values for VenueId
   if(req.body.venueId === null ) return next();
 
+  // Find the venue by primary key
   const venue= await Venue.findByPk(req.body.venueId)
-  // Check to make sure venue exists
+
+  // If venue does not exist
   if(!venue){
       const err = new Error('Venue does not exist');
       err.status=404;
@@ -107,8 +141,9 @@ const validateVenue = async (req,res,next)=>{
         return next(err);
     }
   }
-  if(req.params.eventId){
 
+  // If the venue groupId doesn't match the event groupId, then throw an error
+  if(req.params.eventId){
     if(venue.groupId!=res.locals.event.groupId){
       const err = new Error('Venue does belong to the group');
       err.status=400;
@@ -120,27 +155,8 @@ const validateVenue = async (req,res,next)=>{
 
   next();
 };
-// Values to validate values to create an event
-// Need to check that venue exists
-// Improvements
-  // add this to error array instead of throwing a separate error
-const validateFutureDate = (req,res,next)=>{
-  const { startDate, endDate } = req.body;
 
-  const startDateObj = new Date(startDate);
-  const endDateObj = new Date(endDate);
-
-  if(startDateObj > endDateObj){
-      const err = new Error('End date is less than start date');
-      err.status=400;
-      err.title='End date is less than start date';
-      err.errors=['Invalid end date'];
-      return next(err);
-  }
-
-  next();
-};
-
+// Full list of validation middleware for Event input from Req.body
 const validateEventInput=[
   validateVenue,
   check('name')
@@ -177,11 +193,83 @@ const validateEventInput=[
   handleValidationErrors
 ];
 
+// ~~~~~~ Create an Venue Input Validations ~~~~~~
+
+// Full list of validation middleware for Venue input from Req.body
+const validateVenueInput = [
+  check('address')
+      .exists({checkFalsy:true})
+      .withMessage('Street address is required'),
+  check('city')
+      .exists({checkFalsy:true})
+      .withMessage('City is required'),
+  check('state')
+      .exists({checkFalsy:true})
+      .withMessage('State is required'),
+  check('lat')
+      .exists({checkFalsy:true})
+      .isDecimal()
+      .withMessage('Latitude is not valid'),
+  check('lng')
+      .exists({checkFalsy:true})
+      .isDecimal()
+      .withMessage('Longitude is not valid'),
+  handleValidationErrors
+];
+
+
+// ~~~~~~ Create a Group Input Validations ~~~~~~
+
+// Full list of validation middleware for Group input from Req.body
+const validateGroupInput = [
+  check('name')
+      .exists({checkFalsy:true})
+      .isLength({max:60})
+      .withMessage('Name must be 60 characters or less'),
+  check('about')
+      .exists({checkFalsy:true})
+      .isLength({min:50})
+      .withMessage('About must be 50 characters or more'),
+  check('type')
+      .exists({checkFalsy:true})
+      .isIn(['Online','In person'])
+      .withMessage("Type must be 'Online' or 'In person'"),
+  check('private')
+      .exists({checkFalsy:true})
+      .isBoolean({loose:true})
+      .withMessage('Private must be a boolean'),
+  check('city')
+      .exists({checkFalsy:true})
+      .withMessage('City is required'),
+  check('state')
+      .exists({checkFalsy:true})
+      .withMessage('State is required'),
+  handleValidationErrors
+];
+
+// ~~~~~~ Create a GroupImage Input Validations ~~~~~~
+
+// Full list of validation middleware for GroupImage input from Req.body
+const validateGroupImageInput = [
+  check('url')
+      .exists({checkFalsy:true})
+      .isURL()
+      .withMessage('A valid URL is required'),
+  check('preview')
+      .exists({checkFalsy:true})
+      .isBoolean({loose:true})
+      .withMessage('Preview must be a boolean'),
+  handleValidationErrors
+];
+
 
 module.exports = {
   handleValidationErrors,
-  checkForInvalidGroups,
-  checkForInvalidEvent,
-  validateNewVenue,
-  validateEventInput
+  validateReqParamGroupId,
+  validateReqParamEventId,
+  validateReqParamVenueId,
+  validateEventInput,
+  validateGroupInput,
+  validateVenueInput,
+  validateGroupImageInput
 };
