@@ -15,11 +15,11 @@ const validateSignup = [
     check('email')
       .exists({ checkFalsy: true })
       .isEmail()
-      .withMessage('email Email Please provide a valid email.'),
+      .withMessage('email Please provide a valid email.'),
     check('username')
       .exists({ checkFalsy: true })
       .isLength({ min: 4 })
-      .withMessage('username Username Please provide a username with at least 4 characters.'),
+      .withMessage('username Please provide a username with at least 4 characters.'),
     check('username')
       .not()
       .isEmail()
@@ -27,7 +27,7 @@ const validateSignup = [
     check('password')
       .exists({ checkFalsy: true })
       .isLength({ min: 6 })
-      .withMessage('password Password Password must be 6 characters or more.'),
+      .withMessage('password Password must be 6 characters or more.'),
     check('firstName')
       .exists({checkFalsy:true})
       .withMessage('firstName Must include first name'),
@@ -61,11 +61,11 @@ router.post( '/', validateSignup,  async (req, res,next) => {
       const userJSON = user.toJSON();
       delete userJSON.createdAt;
       delete userJSON.updatedAt;
+      delete userJSON.username;
       userJSON.token="";
 
-      return res.json({
-        user: userJSON
-      });
+      return res.json(userJSON
+      );
     }
   );
 
