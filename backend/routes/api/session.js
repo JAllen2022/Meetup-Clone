@@ -14,10 +14,10 @@ const router = express.Router();
 // request to have a key of credential with either the username or email of a user and a key of password with the password of the user.
 // The validateLogin middleware is composed of the check and handleValidationErrors middleware. It checks to see whether or not req.body.credential and req.body.password are empty. If one of them is empty, then an error will be returned as the response.
 const validateLogin = [
-check('credential')
+check('email')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage('email Email or username is required'),
+    .withMessage('email Email is required'),
 check('password')
     .exists({ checkFalsy: true })
     .withMessage('password Password is required'),
