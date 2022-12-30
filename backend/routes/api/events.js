@@ -351,7 +351,7 @@ router.post('/:eventId/images', validateReqParamEventId, requireAuth, requireEve
 
     const imageJSON = image.toJSON();
     delete imageJSON.createdAt;
-    delete imageJSON.udpateAt;
+    delete imageJSON.updatedAt;
     delete imageJSON.eventId;
 
     res.json(imageJSON)
