@@ -239,7 +239,7 @@ router.put('/:eventId/attendance', validateReqParamEventId, requireAuth, require
         const err = new Error(`Attendance between the user and the event does not exist`);
         err.title = 'Invalid Attendance Log';
         err.errors = [`Attendance between the user and the event does not exist`];
-        err.status = 400;
+        err.status = 404;
         return next(err)
     }
 
@@ -311,6 +311,12 @@ router.delete('/:eventId/attendance', validateReqParamEventId, requireAuth, asyn
         err.title = 'Invalid Attendance';
         err.errors = [`Attendance does not exist for this User`];
         err.status = 404;
+        return next(err)
+    } else if (!membershipCheck){
+        const err = new Error(`Only the User or organizer may delete an Attendance`);
+        err.title = 'Invalid Permissions';
+        err.errors = [`Only the User or organizer may delete an Attendance`];
+        err.status = 403;
         return next(err)
     }
 

@@ -252,7 +252,7 @@ router.put('/:groupId/membership', validateReqParamGroupId, requireAuth, require
         return next(err);
     }
 
-    // Conver user member to JSON object
+    // Convert user member to JSON object
     const foundMemJSON = foundMembership.toJSON();
 
     // Pull current user's membership from res.locals.member object saved in the requireUserAuth
@@ -297,9 +297,10 @@ router.put('/:groupId/membership', validateReqParamGroupId, requireAuth, require
                 attributes:['id','groupId','status']
             });
 
-            checkMem.memberId = memberId;
+            const checkMemJSON = checkMem.toJSON();
+            checkMemJSON.memberId = memberId;
 
-            return res.json(checkMem)
+            return res.json(checkMemJSON)
 
         // If user is not the host, then throw an error
         } else {

@@ -1,6 +1,6 @@
 // backend/utils/validation.js
 const { validationResult } = require('express-validator');
-const { Group, Event, Venue, GroupImage, EventImage } = require('../db/models');
+const { Group, Event, Venue, GroupImage, EventImage, Attendance } = require('../db/models');
 
 const { check } = require('express-validator');
 
@@ -178,6 +178,13 @@ const validateVenue = async (req,res,next)=>{
 
   // If venue does not exist
   if(!venue){
+    if(req.method==='PUT'){
+      const err = new Error(`Venue couldn't be found`);
+      err.title = 'Invalid Venue';
+      err.errors = [`Venue couldn't be found`];
+      err.status = 404;
+      return next(err)
+    }
     req.errorObj.venueId='Venue does not exist'
     return next();
   }

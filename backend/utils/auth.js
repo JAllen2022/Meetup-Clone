@@ -1,7 +1,7 @@
 // backend/utils/auth.js
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Group, Membership, Venue, Event } = require('../db/models');
+const { User, Membership, Attendance } = require('../db/models');
 const { Op } = require('sequelize')
 const { secret, expiresIn } = jwtConfig;
 
@@ -130,7 +130,7 @@ const requireHostAuth = async function ( req, res, next) {
 // Check to ensure that user has proper auth to add pictures to an event
 const requireEventAuth = async function (req,res,next){
 
-  const checkAttendance = await Attendees.findAll({
+  const checkAttendance = await Attendance.findAll({
     where:{
       userId: req.user.id,
       eventId: req.params.eventId,
