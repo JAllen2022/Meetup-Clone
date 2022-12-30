@@ -130,57 +130,25 @@ const requireHostAuth = async function ( req, res, next) {
 // Check to ensure that user has proper auth to add pictures to an event
 const requireEventAuth = async function (req,res,next){
 
-  const eventMembers = await Membership.findAll({
-    attribute:['userId','status'],
+  const checkAttendance = await Attendees.findAll({
     where:{
+      userId: req.user.id,
+      eventId: req.params.eventId,
       status:{
-        [Op.in]:['host','co-host','attendee']
-      }
-    },
-    include:{
-      model:Group,
-      attributes:[],
-      include:{
-        model:Event,
-        attributes:[],
-        where:{
-          id:req.params.eventId,
-        }
+        [Op.in]:['member','attending']
       }
     }
-  })
+  });
 
-  for(let i=0;i<eventMembers.length;i++){
-    const member = eventMembers[i].toJSON();
-    if(member.id===req.user.id){
-      return next();
-    }
+  if(!checkAttendance || checkAttendance.length<1){
+    const err = new Error('Authentication required');
+    err.title = 'Authentication required';
+    err.errors = ['Authentication required'];
+    err.status = 401; 
+    return next(err);
   }
 
-  const err = new Error('Authentication required');
-  err.title = 'Authentication required';
-  err.errors = ['Authentication required'];
-  err.status = 401; 
-  return next(err);
-
+  next();
 };
-
-// const requireUserOrHostAuth = async function (req,res,next){
-
-
-//   const targetUser = await User.findByPk(memberId);
-
-//   if(!targetUser){
-//       const err = new Error(`Validation Error`);
-//       err.title='Validation Error';
-//       err.errors= {memberId:`User couldn't be found`}
-//       err.status=400;
-//       return next(err);
-//   }
-
-
-
-
-// };
 
   module.exports = { requireHostAuth, requireEventAuth, setTokenCookie, restoreUser, requireAuth, requireUserAuth};

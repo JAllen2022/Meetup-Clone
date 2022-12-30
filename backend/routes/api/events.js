@@ -68,7 +68,7 @@ router.get('/',validateEventQueryParamInput, async (req,res,next)=>{
     }
 
 
-    res.json(returnArray);
+    res.json({Events:returnArray});
 
 })
 

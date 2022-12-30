@@ -416,7 +416,7 @@ router.post('/:groupId/events', validateReqParamGroupId, requireAuth, requireUse
     delete newEventJSON.createdAt;
     delete newEventJSON.updatedAt;
 
-    res.json({Events:newEventJSON})
+    res.json(newEventJSON)
 
 });
 
@@ -475,7 +475,7 @@ router.get('/:groupId/events', validateReqParamGroupId, async (req,res,next)=>{
         returnArray.push(event);
     }
 
-    res.json(returnArray);
+    res.json({Events:returnArray});
 
 });
 
@@ -508,7 +508,7 @@ router.post('/:groupId/venues', validateReqParamGroupId, requireAuth, requireUse
 
 // GET /api/:groupId/venues
 // Get all venues for a group by its id
-router.get('/:groupId/venues', validateReqParamGroupId, async (req,res,next)=>{
+router.get('/:groupId/venues', validateReqParamGroupId, requireAuth, requireUserAuth, async (req,res,next)=>{
 
     // Find all Venues for groupId
     const venues = await Venue.findAll({
@@ -592,7 +592,7 @@ router.post('/', requireAuth, validateGroupInput, async (req,res,next)=>{
         status:'host'
     })
 
-    res.json(newGroup)
+    res.status(201).json(newGroup)
 });
 
 

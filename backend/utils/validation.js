@@ -178,14 +178,14 @@ const validateVenue = async (req,res,next)=>{
 
   // If venue does not exist
   if(!venue){
-    req.errorObj.venue='Venue does not exist'
+    req.errorObj.venueId='Venue does not exist'
     return next();
   }
 
   // Check to make sure venue belongs to group
   if(req.params.groupId){
     if(venue.groupId != req.params.groupId){
-      req.errorObj.venue='Venue does belong to the group';
+      req.errorObj.venueId='Venue does not belong to the group';
       return next();
     }
   }
@@ -193,7 +193,7 @@ const validateVenue = async (req,res,next)=>{
   // If the venue groupId doesn't match the event groupId, then throw an error
   if(req.params.eventId){
     if(venue.groupId!=res.locals.event.groupId){
-      req.errorObj.venue='Venue does belong to the group';
+      req.errorObj.venueId='Venue does not belong to the group';
       return next();
     }
   }
@@ -231,7 +231,7 @@ const validateEventInput=[
   (req,res,next)=>{
     const {price} = req.body;
     if(!price || isNaN(price)){
-      req.errorObj.price='Price must be an integer';
+      req.errorObj.price='Price is invalid';
       return next();
     }
     next();

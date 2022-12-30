@@ -61,6 +61,7 @@ app.use((req,res,next)=>{
   req.errorArray=[];
   next();
 })
+
 app.use(routes); // Connect all the routes
 
 app.get('/',(req,res,next)=>{
