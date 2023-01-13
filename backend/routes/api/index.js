@@ -35,9 +35,6 @@ router.get("/", (req, res, next) => {
   });
 });
 
-router.post("/test", (req, res) => {
-  res.json({ requestBody: req.body });
-});
 
 // Add a XSRF-TOKEN cookie
 router.get("/csrf/restore", (req, res) => {
