@@ -389,7 +389,7 @@ const validateEventQueryParamInput = [
         return next();
       }
       res.locals.name = req.query.name;
-      console.log(res.locals.name);
+      // console.log(res.locals.name);
     }
 
     next();

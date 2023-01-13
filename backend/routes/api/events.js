@@ -149,7 +149,7 @@ router.get(
     // Object manipulation to get Attendance to show up as an object instead of an array of objects
     for (let i = 0; i < attendeeList.length; i++) {
       const attendee = attendeeList[i].toJSON();
-      console.log("checking this ~~~~~ 1 ", attendee);
+    //   console.log("checking this ~~~~~ 1 ", attendee);
       attendee.Attendance = attendee.Attendances[0];
       delete attendee.Attendances;
       returnObj.Attendees.push(attendee);
@@ -194,7 +194,7 @@ router.post(
       err.status = 403;
       return next(err);
     }
-    console.log("check currentuser", currentUser);
+    // console.log("check currentuser", currentUser);
 
     // Check if attendance has already been requested
     const attendanceToEvent = await Attendance.findAll({
