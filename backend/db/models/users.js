@@ -1,7 +1,7 @@
-'use strict';
-const { Model, Validator } = require('sequelize');
-const bcrypt = require('bcryptjs');
-const { Sequelize } = require('.');
+"use strict";
+const { Model, Validator } = require("sequelize");
+const bcrypt = require("bcryptjs");
+const { Sequelize } = require(".");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -12,22 +12,22 @@ module.exports = (sequelize, DataTypes) => {
         email,
         hashedPassword,
         firstName,
-        lastName
+        lastName,
       });
-      return await User.scope('currentUser').findByPk(user.id);
+      return await User.scope("currentUser").findByPk(user.id);
     }
     static async login({ credential, password }) {
-      const { Op } = require('sequelize');
-      const user = await User.scope('loginUser').findOne({
+      const { Op } = require("sequelize");
+      const user = await User.scope("loginUser").findOne({
         where: {
           [Op.or]: {
             username: credential,
-            email: credential
-          }
-        }
+            email: credential,
+          },
+        },
       });
       if (user && user.validatePassword(password)) {
-        return await User.scope('currentUser').findByPk(user.id);
+        return await User.scope("currentUser").findByPk(user.id);
       }
     }
     static getCurrentUserById(id) {
@@ -41,12 +41,19 @@ module.exports = (sequelize, DataTypes) => {
       return { id, username, email, firstName, lastName };
     }
     static associate(models) {
-      User.hasMany(models.Group,{foreignKey:'organizerId'});
-      User.hasMany(models.Attendance, {foreignKey:'userId', onDelete:'CASCADE', hooks:true});
-      User.hasMany(models.Membership,{foreignKey:'userId', onDelete:'CASCADE', hooks:true});
-
+      User.hasMany(models.Group, { foreignKey: "organizerId" });
+      User.hasMany(models.Attendance, {
+        foreignKey: "userId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
+      User.hasMany(models.Membership, {
+        foreignKey: "userId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
     }
-  };
+  }
 
   User.init(
     {
@@ -59,50 +66,50 @@ module.exports = (sequelize, DataTypes) => {
             if (Validator.isEmail(value)) {
               throw new Error("Cannot be an email.");
             }
-          }
-        }
+          },
+        },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique:true,
+        unique: true,
         validate: {
           len: [3, 256],
-          isEmail: true
-        }
+          isEmail: true,
+        },
       },
-      firstName:{
+      firstName: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false,
       },
-      lastName:{
+      lastName: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false,
       },
       hashedPassword: {
         type: DataTypes.STRING.BINARY,
         allowNull: false,
         validate: {
-          len: [60, 60]
-        }
-      }
+          len: [60, 60],
+        },
+      },
     },
     {
       sequelize,
       modelName: "User",
       defaultScope: {
         attributes: {
-          exclude: ["hashedPassword", "email", "createdAt", "updatedAt"]
-        }
+          exclude: ["hashedPassword", "email", "createdAt", "updatedAt"],
+        },
       },
       scopes: {
         currentUser: {
-          attributes: { exclude: ["hashedPassword"] }
+          attributes: { exclude: ["hashedPassword"] },
         },
         loginUser: {
-          attributes: {}
-        }
-      }
+          attributes: {},
+        },
+      },
     }
   );
   return User;
