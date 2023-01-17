@@ -43,7 +43,7 @@ router.get("/", async (req, res, next) => {
       },
     ],
     attributes: {
-      include: [[sequelize.col("url"), "previewImgage"]],
+      include: [[sequelize.col("url"), "previewImage"]],
     },
   });
   const returnArray = [];
