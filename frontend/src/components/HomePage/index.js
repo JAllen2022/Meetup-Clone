@@ -1,12 +1,17 @@
 import homeImage from '../../assets/HomePageImage.png'
 import ImageLinks from './ImageLinks'
 import { homePageDivElements } from './homePageDivElements';
+import greenBlob from '../../assets/GreenBlob.png'
 import './HomePage.css'
 
 
 function HomePage() {
 
     return (
+      <>
+      <div className='home-background'>
+        <img id='green-blob'src={greenBlob} />
+      </div>
       <div className="home-page-body">
         <div className="home-two-top-divs">
           <div className="">
@@ -25,6 +30,7 @@ function HomePage() {
                 {homePageDivElements.map(ele => <ImageLinks props={ele} />)}
             </div>
       </div>
+      </>
     );
 }
 

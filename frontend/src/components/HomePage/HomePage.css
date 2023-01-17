@@ -5,9 +5,10 @@
 
 .home-page-body{
     padding-top: 75px;
-    max-width:1120px;
-    padding-left:7rem;
-    padding-right:7rem;
+    max-width:800px;
+    margin-left: auto;
+    margin-right:auto;
+    background-color: transparent;
 }
 
 .home-two-top-divs {
@@ -28,7 +29,7 @@
   width:100%;
   height:100%;
   max-width: 344px;
-  max-height: 200px;
+  max-height: 180px;
   object-fit: fill;
 }
 
@@ -44,4 +45,19 @@
 
 .home-page-image-divs > p {
     margin:0;
+}
+
+#green-blob{
+    position:absolute;
+    top:0;
+    right:0;
+}
+
+.home-background {
+    position: relative;
+    overflow: hidden;
+    z-index: -1;
+    box-sizing: border-box;
+    border: 0 solid;
+
 }
