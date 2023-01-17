@@ -13,7 +13,9 @@ function SignupFormModal() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [extendedDiv, setExtendedDiv]=useState('')
   const { closeModal } = useModal();
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,7 +33,9 @@ function SignupFormModal() {
         .then(closeModal)
         .catch(async (res) => {
           const data = await res.json();
-          if (data && data.errors) setErrors(data.errors);
+          if (data && data.errors) setErrors(Object.values(data.errors));
+          else setErrors([data.message]);
+          if(data.length>0)setExtendedDiv('extended')
         });
     }
     return setErrors([
@@ -40,71 +44,82 @@ function SignupFormModal() {
   };
 
   return (
-    <>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
+    <div className={`signup-outer-div ${extendedDiv}`}>
+      <div className="login-header">
+        <h1>Sign Up</h1>
+      </div>
+      <form className="modal-form" onSubmit={handleSubmit}>
         <ul>
           {errors.map((error, idx) => (
             <li key={idx}>{error}</li>
           ))}
         </ul>
-        <label>
-          Email
+        <div>
+          <label className="form-label">Email</label>
           <input
+            className="form-inputs"
             type="text"
             value={email}
+            placeholder='example@email.com'
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Username
+        </div>
+        <div>
+          <label className="form-label">Username</label>
           <input
+            className="form-inputs"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-        </label>
-        <label>
-          First Name
+        </div>
+        <div>
+          <label className="form-label">First Name</label>
           <input
+            className="form-inputs"
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Last Name
+        </div>
+        <div>
+          <label className="form-label">Last Name</label>
           <input
+            className="form-inputs"
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Password
+        </div>
+        <div>
+          <label className="form-label">Password</label>
           <input
+            className="form-inputs"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Confirm Password
+        </div>
+        <div>
+          <label className="form-label">Confirm Password</label>
           <input
+            className="form-inputs"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-        </label>
-        <button type="submit">Sign Up</button>
+        </div>
+        <button class="form-submit-button" type="submit">
+          Sign Up
+        </button>
       </form>
-    </>
+    </div>
   );
 }
 

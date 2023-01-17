@@ -19,40 +19,63 @@ function LoginFormModal() {
       .then(closeModal)
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) setErrors(data.errors);
+        console.log('we are in here', data.message)
+        if (data && data.errors) {
+          setErrors(Object.values(data.errors));
+
+        } else {
+        setErrors([data.message])
+      }
       });
-  };
+    };
+
 
   return (
-    <>
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <ul>
-          {errors.map((error, idx) => (
-            <li key={idx}>{error}</li>
-          ))}
-        </ul>
-        <label>
-          Username or Email
+    <div className="login-outer-div">
+      <div className="login-header">
+        <h1>Log In</h1>
+        <p style={{ margin: 0 }}>Not a member yet? Sign up</p>
+      </div>
+      <form className="modal-form" onSubmit={handleSubmit}>
+        <div>
+          <ul>
+            {errors.map((error, idx) => (
+              <li key={idx}>{error}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <label className="form-label">Username or Email</label>
           <input
+            className="form-inputs"
             type="text"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Password
+        </div>
+        <div>
+          <label className="form-label">Password</label>
           <input
+            className="form-inputs"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-        <button type="submit">Log In</button>
+          <div>
+            <button class="form-submit-button" type="submit">
+              Log In
+            </button>
+          </div>
+          <div>
+            <button class="form-submit-button" type="submit">
+              Demo User
+            </button>
+          </div>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
 
