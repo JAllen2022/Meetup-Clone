@@ -7,7 +7,7 @@ export default function DivCardBodyEvents({ event }) {
       <>
         <div className="div-card-body">
           <div className="div-card-title">
-            <h3 className="div-card-title-time">{dateString}</h3>
+            <h4 className="div-card-title-time">{dateString}</h4>
             <h3 className="div-card-title-name">{event.name}</h3>
           </div>
           <div classname="div-card-info">

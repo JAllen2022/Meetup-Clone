@@ -4,7 +4,7 @@ const GET_GROUP_EVENTS = 'groups/GET_GROUP_EVENTS'
 const initialState = {
   allGroups: {},
   singleGroup: {},
-  singleGroupEvents: {}
+  groupEvents: {},
 };
 
 /* ----- ACTIONS ------ */
@@ -38,7 +38,7 @@ export const getSingleGroup = (groupId) => async (dispatch) => {
 
   if (response.ok) {
     const data = await response.json();
-    dispatch(groupEvents(data));
+    dispatch(singleGroup(data));
   }
 };
 
@@ -47,7 +47,8 @@ export const getGroupEvents = (groupId) => async (dispatch) => {
 
   if (response.ok) {
     const data = await response.json();
-    dispatch(groupEvents(data.Events));
+    console.log('what is data0', data.Events)
+    dispatch(groupEvents(data));
   }
 }
 
@@ -61,9 +62,15 @@ export default function groupReducer(state = initialState, action) {
     case GET_SINGLE_GROUP:
       newState.singleGroup = action.payload;
       return newState;
-    case GET_GROUP_EVENTS:
-      newState.singleGroupEvents = normalize(action.payload);
-      return newState;
+    case GET_GROUP_EVENTS: {
+      const newObj = {};
+      const events = action.payload.Events;
+      events.map(ele=> newObj[ele.id]=ele)
+      newState.groupEvents = newObj;
+      console.log(
+        'new state', newState
+      )
+      return newState;}
     default:
       return state;
   }
@@ -71,9 +78,9 @@ export default function groupReducer(state = initialState, action) {
 
 function normalize(array) {
   const obj = {};
-  console.log("what the hello",array[0]);
   array.forEach((ele) => {
     obj[ele.id] = ele;
   });
+
   return obj;
 }

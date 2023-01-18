@@ -59,6 +59,11 @@
     padding:0;
 }
 
+.div-card-title-time {
+margin-top:0;
+    padding:0;
+}
+
 .div-card-title-location {
     text-transform:uppercase;
     font-weight:500;

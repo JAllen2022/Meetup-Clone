@@ -2,6 +2,7 @@ import { useParams, NavLink } from "react-router-dom";
 import { useEffect } from "react";
 import { getSingleGroup, getGroupEvents } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
+import EventCards from './EventCards'
 import "./GroupPage.css";
 
 const groupNavBar = [
@@ -27,11 +28,10 @@ function GroupPage() {
   const { groupId } = useParams();
   const dispatch = useDispatch();
   const group = useSelector((state) => state.groups.singleGroup);
-  const groupEvents = useSelector((state) => state.groups.singleGroupEvents);
-  // console.log('checking groupId', typeof groupId)
-  // console.log("checking my groupevents", groupEvents);
+  const groupEvents = useSelector((state) => state.groups.groupEvents);
 
   let groupImage = {};
+  let groupEventsArray= Object.values(groupEvents)
   if (group.GroupImages)
     groupImage = group.GroupImages.find((ele) => ele.preview === true);
 
@@ -110,9 +110,9 @@ function GroupPage() {
               <h2 className="section-title">What we're about</h2>
               <p className="group-description">{group.about}</p>
             </div>
-            <div className="group-details-upcoming-events">
               <h2>Upcoming Events</h2>
-              {/* <EventCards /> */}
+            <div className="group-details-upcoming-events">
+              {groupEventsArray.map(ele => <EventCards event={ele} />)}
             </div>
           </div>
           <div className="group-details-main-body-right">
