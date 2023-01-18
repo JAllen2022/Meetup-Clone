@@ -102,3 +102,30 @@
 .home-links:hover {
     text-decoration: underline;
 }
+
+.profileIcon {
+    cursor: pointer;
+    color:#212121;
+}
+
+.profile-button-drop-down-container {
+    padding: .75rem 1rem;
+    position:absolute;
+    inset: 0px 0px auto auto;
+    transform: translate3d(0px, 48px, 0px);
+    border: 1px solid rgb(197, 195, 195);
+    border-radius: .25rem;
+    box-shadow: 5px 5px 5px rgb(197, 195, 195);
+    background-color: #fff;
+}
+
+.profile-button-drop-down-top-half {
+    border-bottom:1px solid rgb(197, 195, 195);
+}
+
+.profile-button-drop-down-elements {
+    margin:.55rem 0;
+    font-size:.85rem;
+    padding:0;
+    color:#212121
+}

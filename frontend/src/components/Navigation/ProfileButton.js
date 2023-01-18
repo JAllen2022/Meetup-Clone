@@ -27,33 +27,36 @@ function ProfileButton({ user, state }) {
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
-
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
   };
 
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+  const ulClassName =
+    "profile-button-drop-down-container" + (showMenu ? "" : " hidden");
 
   return (
-    <>
-      <button onClick={openMenu}>
+    <div>
+      <div className="profileIcon" onClick={openMenu}>
         <i className="fas fa-user-circle" />
-      </button>
-      <nav className={ulClassName} ref={ulRef}>
-        <ul>
-          <li>{user.username}</li>
-          <li>
-            {user.firstName} {user.lastName}
-          </li>
-          <li>{user.email}</li>
-          <li>
-            <button onClick={logout}>Log Out</button>
-          </li>
-        </ul>
-      </nav>
-    </>
+        <i style={{ color: 212121 }} class="fa-solid fa-caret-down"></i>
+      </div>
+      <div className={ulClassName}>
+        <div ref={ulRef}>
+          <div className="profile-button-drop-down-top-half">
+            <p className="profile-button-drop-down-elements">Your Events</p>
+            <p className="profile-button-drop-down-elements">Your Groups</p>
+          </div>
+          <div>
+            <p className="profile-button-drop-down-elements">View Profile</p>
+            <p onClick={logout} className="profile-button-drop-down-elements">
+              Log Out
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
