@@ -1,8 +1,24 @@
+import { Link, useHistory } from 'react-router-dom'
 import defaultImage from "../../assets/DefaultGroupImage.png";
-function DivCards({ group }) {
+import DivCardBodyGroup from "./DivCardBodyGroup";
+import DivCardBodyEvents from './DivCardBodyEvents';
+
+function DivCards({ event, group }) {
+  const history = useHistory();
+  let previewImage;
+  console.log('checking my events', event)
+  if (event) previewImage = event.previewImage;
+  else previewImage = group.previewImage;
+
   const directToGroup = () => {
-    //direc to group
-  };
+    if (group) {
+      let directToGroup = `/groups/${group.id}`
+      history.push(directToGroup)
+    } else {
+      let directToGroup = `events/${event.id}`;
+      history.push(directToGroup);
+    }
+  }
 
   return (
     <div onClick={directToGroup} className="div-card">
@@ -10,27 +26,12 @@ function DivCards({ group }) {
         {
           <img
             className="div-card-indiv-image"
-            src={group.previewImage ? group.previewImage : defaultImage}
+            src={previewImage ? previewImage : defaultImage}
             alt="group image"
           />
         }
       </div>
-      <div className="div-card-body">
-        <div className="div-card-title">
-          <h3 className="div-card-title-name">{group.name}</h3>
-          <h3 className="div-card-title-location">
-            {group.city}, {group.state}
-          </h3>
-        </div>
-        <div classname="div-card-info">
-          <p>{group.about}</p>
-        </div>
-        <div className="div-card-footer">
-          <p>
-            {group.numMembers} · {group.private ? "Private" : "Public"}
-          </p>
-        </div>
-      </div>
+      {group ? <DivCardBodyGroup group={group} /> : <DivCardBodyEvents event={event} />}
     </div>
   );
 }

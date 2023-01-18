@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllGroups } from "../../store/groups";
+import { getAllEvents } from "../../store/events";
 import { useSelector } from "react-redux";
-import DivCards from './DivCards'
+import DivCards from "./DivCards";
 import "./AllGroups.css";
 
 function AllGroups() {
-    const [selectedTabGroup, setSelectedTabGroup] = useState(true);
-    const [selectedTabEvent, setSelectedTabEvent] = useState(false);
-    const dispatch = useDispatch();
-    const groupObj = useSelector((state) => state.groups);
-    let groupArray = [];
-    if(groupObj.Groups) groupArray=Object.values(groupObj.Groups)
+  const [selectedTabGroup, setSelectedTabGroup] = useState(true);
+  const [selectedTabEvent, setSelectedTabEvent] = useState(false);
+  const dispatch = useDispatch();
+  const groupObj = useSelector((state) => state.groups.allGroups);
+  const eventsObj = useSelector((state) => state.events.allEvents);
+
+  let groupArray = [];
+  let eventsArray = [];
+  if (groupObj) groupArray = Object.values(groupObj);
+  if (eventsObj) eventsArray = Object.values(eventsObj);
 
   const clickedGroup = (e) => {
     if (selectedTabEvent) setSelectedTabEvent(false);
@@ -26,6 +31,8 @@ function AllGroups() {
   useEffect(() => {
     if (selectedTabGroup) {
       dispatch(getAllGroups());
+    } else {
+      dispatch(getAllEvents());
     }
   }, [selectedTabEvent, selectedTabGroup]);
 
@@ -49,7 +56,11 @@ function AllGroups() {
           Events
         </div>
       </div>
-      {groupArray.map((ele,id)=> <DivCards key={id} group={ele}/>)}
+      {selectedTabGroup
+        ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
+        : eventsArray.map((ele, id) => (
+            <DivCards key={id} event={ele} />
+          ))}
     </div>
   );
 }
