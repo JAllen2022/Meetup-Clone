@@ -7,9 +7,17 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    min-height:64px;
 }
 
 #nav-bar-logo-image {
     width:75px;
     padding-left:20%
+}
+
+.log-in {
+    display:inline-block;
+    color: #212121;
+    margin-right:20px;
+    font-size:.875rem;
 }

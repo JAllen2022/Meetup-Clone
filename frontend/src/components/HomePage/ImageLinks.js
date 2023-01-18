@@ -1,20 +1,17 @@
-import rightArrow from "../../assets/HomePageRightArrow.png";
+
 import { Link } from "react-router-dom";
 
 function ImageLinks({ props }) {
   console.log("checking props", props);
   return (
-    <Link to='/groups'>
+    <Link className='home-links' to="/groups">
       <div className="home-page-image-divs">
-        <img className="home-page-images-in-divs" src={props.image} />
+        <div className="home-page-image-container">
+          <img className="home-page-images-in-divs" src={props.image} />
+        </div>
         <p>
           {props.text}
-          <span>
-            <img
-              style={{ paddingLeft: 5, width: 12, height: 12 }}
-              src={rightArrow}
-            />
-          </span>
+          <i class="fa-solid fa-arrow-right"></i>
         </p>
       </div>
     </Link>

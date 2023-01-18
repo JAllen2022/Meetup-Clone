@@ -16,7 +16,7 @@ function OpenModalMenuItem({
     if (onItemClick) onItemClick();
   };
 
-  return <div onClick={onClick}>{itemText}</div>;
+  return <div className='log-in'onClick={onClick}>{itemText}</div>;
 }
 
 export default OpenModalMenuItem;

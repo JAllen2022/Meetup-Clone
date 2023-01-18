@@ -1,8 +1,8 @@
 // frontend/src/components/LoginFormModal/index.js
 import React, { useState } from "react";
-import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
+import * as sessionActions from "../../store/session";
 import "./LoginForm.css";
 
 function LoginFormModal() {
@@ -29,6 +29,13 @@ function LoginFormModal() {
       });
     };
 
+  const demoUserClicked = (e) => {
+    e.preventDefault();
+
+    return dispatch(sessionActions.login({ credential:'demo@user.io', password:'password' })).then(
+      closeModal
+    );
+  }
 
   return (
     <div className="login-outer-div">
@@ -69,7 +76,7 @@ function LoginFormModal() {
             </button>
           </div>
           <div>
-            <button class="form-submit-button" type="submit">
+            <button class="form-submit-button" onClick={demoUserClicked} type="submit">
               Demo User
             </button>
           </div>
