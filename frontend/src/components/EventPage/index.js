@@ -8,21 +8,24 @@ function EventPage() {
   const { eventId } = useParams();
   const dispatch = useDispatch();
   const event = useSelector((state) => state.events.singleEvent);
-  console.log('checking my eventimages', event.EventImages)
+  console.log("checking my eventimages", event.EventImages);
   const [eventImage, setEventImage] = useState();
+  const groupInfo = event.Group;
+  console.log('groupinfo', groupInfo)
 
   useEffect(() => {
-    setEventImage(event.EventImages
-      ? event.EventImages.find((ele) => ele.preview === true)
-      : null)
-  },[event])
-
-
+    setEventImage(
+      event.EventImages
+        ? event.EventImages.find((ele) => ele.preview === true)
+        : null
+    );
+  }, [event]);
 
   useEffect(() => {
     dispatch(thunkGetSingleEvent(eventId));
   }, [dispatch]);
   if (!event) return null;
+
   return (
     <div className="event-page-container">
       <div className="event-page-header-container">
@@ -71,7 +74,28 @@ function EventPage() {
               <div></div>
             </div>
           </div>
-          <div className="event-body-right"></div>
+          <div className="event-body-right">
+            <div className="event-body-right-group-info-container">
+              <div className="event-body-right-group-info-image-container">
+                {groupInfo?.previewImage ? (
+                  <img
+                    className="event-body-right-group-info-image"
+                    src={groupInfo.previewImage}
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="event-body-right-group-info">
+                <div className="event-body-right-group-info-title">
+                  {groupInfo?.name}
+                </div>
+                <div className='event-body-righ-group-private-public'>
+                  {groupInfo?.private ? "Private Group" : "Public Group"}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
