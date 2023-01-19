@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function ImageLinks({ props }) {
   return (
-    <Link className='home-links' to="/groups">
+    <Link className='home-links' to="/search/groups">
       <div className="home-page-image-divs">
         <div className="home-page-image-container">
           <img className="home-page-images-in-divs" src={props.image} />

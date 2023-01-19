@@ -4,7 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import HomePage from "./components/HomePage";
-import SearchEventAndGroups from "./components/SearchEventAndGroups";
+import SearchGroupsAndEvents from "./components/SearchGroupsAndEvents";
 import GroupPage from './components/GroupPage'
 import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
 
@@ -32,8 +32,11 @@ function App() {
           <Route path="/create-group">
             <CreateAndUpdateGroup />
           </Route>
-          <Route path="/groups">
-            <SearchEventAndGroups />
+          <Route path="/search/groups">
+            <SearchGroupsAndEvents defaultTab={"groups"} />
+          </Route>
+          <Route path="/search/events">
+            <SearchGroupsAndEvents defaultTab={"events"} />
           </Route>
         </Switch>
       )}

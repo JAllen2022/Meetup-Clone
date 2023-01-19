@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { thunkGetAllGroups } from "../../store/groups";
-import { getAllEvents } from "../../store/events";
+import { thunkGetAllEvents } from "../../store/events";
 import { useSelector } from "react-redux";
 import DivCards from "./DivCards";
-import "./AllGroups.css";
+import "./SearchGroupsAndEvents.css";
 
-function AllGroups() {
-  const [selectedTabGroup, setSelectedTabGroup] = useState(true);
-  const [selectedTabEvent, setSelectedTabEvent] = useState(false);
+function SearchGroupsAndEvents({ defaultTab }) {
+  const [selectedTabGroup, setSelectedTabGroup] = useState(defaultTab==='groups'? true : false);
+  const [selectedTabEvent, setSelectedTabEvent] = useState(defaultTab==='events'? true : false);
   const dispatch = useDispatch();
   const groupObj = useSelector((state) => state.groups.allGroups);
   const eventsObj = useSelector((state) => state.events.allEvents);
@@ -29,12 +29,12 @@ function AllGroups() {
   };
 
   useEffect(() => {
-    if (selectedTabGroup) {
+    if (selectedTabGroup && !groupArray.length) {
       dispatch(thunkGetAllGroups());
-    } else {
-      dispatch(getAllEvents());
+    } else if (selectedTabGroup && !eventsArray.length) {
+      dispatch(thunkGetAllEvents());
     }
-  }, [selectedTabEvent, selectedTabGroup]);
+  }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);
 
   return (
     <div className="all-groups-main-outer-body">
@@ -63,4 +63,4 @@ function AllGroups() {
   );
 }
 
-export default AllGroups;
+export default SearchGroupsAndEvents;

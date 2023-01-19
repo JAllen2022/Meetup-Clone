@@ -1,7 +1,8 @@
+import  formatDateString  from '../../util/formatDateString';
 import "./GroupPage.css";
 
 function EventCards({ event }) {
-  const eventTime = new Date(event.startDate).toUTCString();
+  const eventTime = formatDateString(event.startDate);
 
   return (
     <div className="event-card-container">
