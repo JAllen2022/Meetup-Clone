@@ -15,6 +15,7 @@ const {
   Venue,
   Membership,
   User,
+  GroupImage
 } = require("../../db/models");
 
 const {
@@ -149,7 +150,7 @@ router.get(
     // Object manipulation to get Attendance to show up as an object instead of an array of objects
     for (let i = 0; i < attendeeList.length; i++) {
       const attendee = attendeeList[i].toJSON();
-    //   console.log("checking this ~~~~~ 1 ", attendee);
+      //   console.log("checking this ~~~~~ 1 ", attendee);
       attendee.Attendance = attendee.Attendances[0];
       delete attendee.Attendances;
       returnObj.Attendees.push(attendee);
@@ -430,6 +431,15 @@ router.get("/:eventId", validateReqParamEventId, async (req, res, next) => {
     attributes: ["id", "name", "private", "city", "state"],
   });
 
+  // Lazy load group image
+  const imageUrl = await GroupImage.findOne({
+    attributes: ["url"],
+    where: {
+      groupId: group.id,
+      preview: true
+    }
+  });
+
   // Lazy load Venue
   const venue = await event.getVenue({
     attributes: {
@@ -445,12 +455,16 @@ router.get("/:eventId", validateReqParamEventId, async (req, res, next) => {
   const returnEvent = event.toJSON();
 
   // Add all found attributes to returned Event object
+
   returnEvent.numAttending = attendees;
-  returnEvent.Group = group;
+  returnEvent.Group = group.toJSON();;
   returnEvent.Venue = venue;
   returnEvent.EventImages = eventImages;
   delete returnEvent.createdAt;
   delete returnEvent.updatedAt;
+  console.log("WHAT THE FUCK", imageUrl.url);
+  if (!imageUrl) returnEvent.Group.previewImage = imageUrl.url;
+  else returnEvent.Group.previewImage = imageUrl.url;
 
   res.json(returnEvent);
 });
