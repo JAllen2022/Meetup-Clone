@@ -3,13 +3,19 @@ import { useDispatch } from "react-redux";
 import { thunkGetAllGroups } from "../../store/groups";
 import { thunkGetAllEvents } from "../../store/events";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import DivCards from "./DivCards";
 import "./SearchGroupsAndEvents.css";
 
 function SearchGroupsAndEvents({ defaultTab }) {
-  const [selectedTabGroup, setSelectedTabGroup] = useState(defaultTab==='groups'? true : false);
-  const [selectedTabEvent, setSelectedTabEvent] = useState(defaultTab==='events'? true : false);
+  const [selectedTabGroup, setSelectedTabGroup] = useState(
+    defaultTab === "groups" ? true : false
+  );
+  const [selectedTabEvent, setSelectedTabEvent] = useState(
+    defaultTab === "events" ? true : false
+  );
   const dispatch = useDispatch();
+  const history = useHistory();
   const groupObj = useSelector((state) => state.groups.allGroups);
   const eventsObj = useSelector((state) => state.events.allEvents);
 
@@ -19,12 +25,18 @@ function SearchGroupsAndEvents({ defaultTab }) {
   if (eventsObj) eventsArray = Object.values(eventsObj);
 
   const clickedGroup = (e) => {
-    if (selectedTabEvent) setSelectedTabEvent(false);
+    if (selectedTabEvent) {
+      setSelectedTabEvent(false);
+      history.push("/search/groups");
+    }
     setSelectedTabGroup(true);
   };
 
   const clickedEvent = (e) => {
-    if (selectedTabGroup) setSelectedTabGroup(false);
+    if (selectedTabGroup) {
+      setSelectedTabGroup(false);
+      history.push('/search/events')
+    }
     setSelectedTabEvent(true);
   };
 

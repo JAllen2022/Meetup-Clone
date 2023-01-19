@@ -116,9 +116,11 @@ export default function groupReducer(state = initialState, action) {
     case GET_ALL_GROUPS:
       newState.allGroups = normalize(action.payload.Groups);
       return newState;
+
     case GET_SINGLE_GROUP:
       newState.singleGroup = action.payload;
       return newState;
+
     case GET_GROUP_EVENTS: {
       const newObj = {};
       const events = action.payload.Events;
@@ -129,12 +131,18 @@ export default function groupReducer(state = initialState, action) {
     case CREATE_GROUP:
       newState.singleGroup = action.payload;
       return newState;
+
     case RESET_SINGLE_GROUP:
       newState.singleGroup = {};
       return newState;
+
     case UPDATE_GROUP:
+      newState.allGroups = { ...newState.allGroups };
+      newState.allGroups[action.payload.id]={...newState.allGroups[action.payload.id]}
+      newState.allGroups[action.payload.id] = action.payload;
       newState.singleGroup = action.payload;
       return newState;
+
     case DELETE_GROUP:
       if (newState.allGroups[action.payload]) {
         newState.allGroups = { ...newState.allGroups }
@@ -142,6 +150,7 @@ export default function groupReducer(state = initialState, action) {
       }
       newState.singleGroup = {};
       return newState;
+
     default:
       return state;
   }

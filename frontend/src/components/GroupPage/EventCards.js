@@ -1,4 +1,4 @@
-import  formatDateString  from '../../util/formatDateString';
+import formatDateString from "../../util/formatDateString";
 import "./GroupPage.css";
 
 function EventCards({ event }) {
@@ -10,7 +10,8 @@ function EventCards({ event }) {
         <div className="event-card-top-half">
           <div className="event-card-top-half-left">
             <p className="event-card-date-and-time">{eventTime}</p>
-            <h3> {event.name}</h3> <i class="fa-solid fa-location-dot"></i>
+            <h3> {event.name}</h3>{" "}
+            <i class="fa-solid fa-location-dot fa-solid-profile"></i>
             <span>
               {event.Venue
                 ? `${event.Venue.city}, ${event.Venue.state}`

@@ -127,20 +127,20 @@ function GroupPage() {
           <div className="group-details-header-title-body">
             <h1>{group.name}</h1>
             <div>
-              <i class="fa-solid fa-location-dot"></i>
+              <i className="fa-solid fa-location-dot fa-solid-profile"></i>
               <span className="group-details-header-spans">
                 {group.city}, {group.state}
               </span>
             </div>
             <div>
-              <i class="fa-solid fa-user-group"></i>
+              <i className="fa-solid fa-user-group fa-solid-profile"></i>
               <span className="group-details-header-spans">
                 {group.numMembers} ·{" "}
                 {group.private ? "Private group" : "Public group"}
               </span>
             </div>
             <div>
-              <i class="fa-solid fa-user"></i>
+              <i className="fa-solid fa-user fa-solid-profile"></i>
               <span className="group-details-header-spans">
                 Organized By {group.Organizer?.firstName}{" "}
                 {group.Organizer?.lastName}

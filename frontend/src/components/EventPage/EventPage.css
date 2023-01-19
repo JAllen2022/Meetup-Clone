@@ -1,3 +1,111 @@
-.event-page-container {
+.event-page-header-container {
+border:1px red solid;
+  width: 100%;
+  border-bottom: solid 1px lightgray;
+  border-top: solid 1px lightgray;
+}
+.event-page-header-item-wrapper{
+border:1px red solid;
+width:85%;
+margin:1rem auto;
+}
+.event-page-title-host-container {
+    margin-top:.5rem;
     border:1px red solid;
+}
+
+.event-page-title{
+    margin:0;
+}
+
+.hosts-container {
+    margin-left:.75rem;
+}
+
+.event-body-container {
+    background-color: #f6f7f8;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.event-body {
+    border:1px red solid;
+    display:flex;
+width:85%;
+margin:0 auto;
+    min-height:100vh;
+}
+
+.event-body-left {
+    display:flex;
+    flex-direction:column;
+    width: 60%;
+    min-height:100vh;
+    border:1px red solid;
+}
+
+.event-body-right {
+    width: 40%;
+    min-height:100vh;
+    border:2px orange solid;
+}
+
+.event-body-left-event-details {
+    margin-top:2rem;
+    border:1px red solid;
+}
+
+.event-body-left-event-details-image {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+.event-attendees {
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    border:1px red solid;
+    width:100%;
+    gap:1rem;
+    height:6rem;
+}
+
+.event-attendees > div {
+    background-color: #fff;
+}
+.event-attendees-profile-card {
+    width:100%;
+    border:1px red solid;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.event-attendees-profile-inner-card {
+    width:80%;
+    height:100%;
+    margin:auto;
+    border:1px red solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.event-attendees-profile-image {
+    width: fit-content;
+    height: fit-content;
+}
+
+.event-profile {
+    font-size: 3rem;
+    margin:auto;
+     color:#008294
+}
+
+.event-attendees-profile-name {
+    padding:.5rem;
+    font-size: .95rem;
 }

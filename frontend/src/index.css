@@ -3,3 +3,11 @@ html, body {
     margin:0;
     padding:0;
 }
+
+.full-rounded-profile {
+    font-size:2rem;
+}
+
+.event-page-title-host-container {
+    display: flex;
+}

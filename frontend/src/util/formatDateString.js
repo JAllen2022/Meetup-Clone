@@ -1,9 +1,7 @@
 export default function formatDateString(string) {
   const date = new Date(string);
-  console.log("checking my date", date);
-  const dateString = date.toString();
-  const dateArray = dateString.split(" ");
-  const firstHalf = dateString.slice(0, 3) + ", " + dateString.slice(3, 10);
+  const dateArray= date.toString().split(" ");
+  const firstHalf = dateArray[0] + ", " + dateArray[1] + ' ' + dateArray[2];
   let hour = date.getHours();
   let minutes = date.getMinutes();
   let ampm;

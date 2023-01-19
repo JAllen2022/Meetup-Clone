@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import SearchGroupsAndEvents from "./components/SearchGroupsAndEvents";
 import GroupPage from './components/GroupPage'
 import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
+import EventPage from './components/EventPage'
 
 function App() {
   const dispatch = useDispatch();
@@ -31,6 +32,9 @@ function App() {
           </Route>
           <Route path="/create-group">
             <CreateAndUpdateGroup />
+          </Route>
+          <Route path="/events/:eventId">
+            <EventPage />
           </Route>
           <Route path="/search/groups">
             <SearchGroupsAndEvents defaultTab={"groups"} />
