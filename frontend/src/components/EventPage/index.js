@@ -1,16 +1,20 @@
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkGetSingleEvent } from "../../store/events";
 import "./EventPage.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import formatDateString from "../../util/formatDateString.js";
 
 function EventPage() {
   const { eventId } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const ulRef = useRef();
   const event = useSelector((state) => state.events.singleEvent);
+  const user = useSelector((state) => state.session.user);
   // console.log("checking my eventimages", event.EventImages);
   const [eventImage, setEventImage] = useState();
+  const [showMenu, setShowMenu] = useState(false);
   const groupInfo = event.Group;
   const venueInfo = event.Venue;
   // console.log('checking event0', event)
@@ -24,6 +28,77 @@ function EventPage() {
     venueCity = event.Venue.city;
     venueState = event.Venue.state;
   }
+
+  // Helper functions here for group options button
+  const optionsMember = (
+    <div className="">
+      <p className=""></p>
+    </div>
+  );
+
+  const optionsGuest = (
+    <div className="">
+      <p className=""></p>
+    </div>
+  );
+
+  const createEvent = () => {};
+
+  const editGroup = () => {
+    history.push(``);
+  };
+
+  const deleteGroup = () => {
+    dispatch("");
+  };
+
+  const optionsHost = (
+    <div className="">
+      <p className="" onClick={createEvent}>
+        Create Event
+      </p>
+      <p className="" onClick={editGroup}>
+        Edit Group
+      </p>
+      <p className="" onClick={deleteGroup}>
+        Delete Group
+      </p>
+    </div>
+  );
+
+  const [userType, setUserType] = useState(optionsGuest);
+
+  // Three options for Group Actions button
+  // If you are the owner, you can edit and delete the group
+  // If you are a logged in user - you can request membership
+  // if you are not logged in - do not show the button
+  useEffect(() => {
+    // if (user && group.Organizer) {
+    //   if (user.id === event.Organizer.id) {
+    //     setUserType(optionsHost);
+    //   } else {
+    //     setUserType(optionsMember);
+    //   }
+    // }
+  }, [user, event]);
+
+    useEffect(() => {
+      if (!showMenu) return;
+
+      const closeMenu = (e) => {
+        if (ulRef.current) {
+          if (!ulRef.current.contains(e.target)) {
+            setShowMenu(false);
+          }
+        } else {
+          return () => document.removeEventListener("click", closeMenu);
+        }
+      };
+
+      document.addEventListener("click", closeMenu);
+
+      return () => document.removeEventListener("click", closeMenu);
+    }, [showMenu]);
 
   useEffect(() => {
     setEventImage(
@@ -138,9 +213,23 @@ function EventPage() {
             <div className="event-sticky-footer-title-data">{event.name}</div>
           </div>
           <div className="event-sticky-footer-event-buttons-right">
-            <div className="event-sticky-footer-event-options">
+            <div
+              ref={ulRef}
+              className="event-sticky-footer-event-options"
+              onClick={() => setShowMenu((prev) => !prev)}
+            >
               Event Actions <i class="fa-solid fa-angle-up"></i>
             </div>
+            {showMenu && (
+              <div className="event-sticky-footer-event-option-menu-container">
+                <div className="event-sticky-footer-event-option-menu-inner-container">
+                  {/* {userType} */}
+                  <Link className="event-sticky-menu-link">Edit Event</Link>
+                  <Link className="event-sticky-menu-link">Delete Event</Link>
+                  <Link className="event-sticky-menu-link">Add Image</Link>
+                </div>
+              </div>
+            )}
             <div className="event-sticky-footer-attend-button">Attend</div>
           </div>
         </div>
