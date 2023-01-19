@@ -115,7 +115,7 @@
     transform: translate3d(0px, 48px, 0px);
     border: 1px solid rgb(197, 195, 195);
     border-radius: .25rem;
-    box-shadow: 5px 5px 5px rgb(197, 195, 195);
+    box-shadow: 0 0 5px rgb(197, 195, 195);
     background-color: #fff;
 }
 

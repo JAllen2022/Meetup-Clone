@@ -21,3 +21,18 @@
     margin-right:20px;
     font-size:.875rem;
 }
+
+.nav-bar-user-right {
+    display:flex;
+    flex-direction: row;
+}
+
+.nav-bar-create-group {
+    margin-right: 1rem;
+    font-size:.875rem;
+}
+
+#create-group {
+    text-decoration: none;
+    color:#008294;
+}

@@ -4,8 +4,9 @@ import { Switch, Route } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import HomePage from "./components/HomePage";
-import AllGroups from './components/AllGroups'
+import SearchEventAndGroups from "./components/SearchEventAndGroups";
 import GroupPage from './components/GroupPage'
+import CreateGroup from "./components/CreateGroup";
 
 function App() {
   const dispatch = useDispatch();
@@ -17,20 +18,22 @@ function App() {
   return (
     <>
       <Navigation isLoaded={isLoaded} />
-      {isLoaded &&
+      {isLoaded && (
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <HomePage />
           </Route>
-          <Route path='/groups/:groupId'>
+          <Route path="/groups/:groupId">
             <GroupPage />
           </Route>
-          <Route path='/groups'>
-            <AllGroups />
+          <Route path="/create-group">
+            <CreateGroup />
           </Route>
-
+          <Route path="/groups">
+            <SearchEventAndGroups />
+          </Route>
         </Switch>
-      }
+      )}
     </>
   );
 }

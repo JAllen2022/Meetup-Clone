@@ -6,7 +6,6 @@ import DivCardBodyEvents from './DivCardBodyEvents';
 function DivCards({ event, group }) {
   const history = useHistory();
   let previewImage;
-  console.log('checking my events', event)
   if (event) previewImage = event.previewImage;
   else previewImage = group.previewImage;
 

@@ -16,7 +16,6 @@ function HomePage() {
         <TopRightBlob />
         <MiddleBlob />
         <BottomLeftBlob />
-
         <div className="home-page-body">
           <div className="home-two-top-divs">
             <div className="">

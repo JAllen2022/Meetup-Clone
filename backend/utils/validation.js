@@ -33,7 +33,7 @@ const handleValidationErrors = (req, _res, next) => {
       delete newErr.invalid;
     }
 
-    const err = Error("Validation Error");
+    const err = new Error("Validation Error");
     err.errors = newErr;
     err.status = 400;
     err.title = "Validation Error";
@@ -45,6 +45,7 @@ const handleValidationErrors = (req, _res, next) => {
 // Custom Error Compiler
 const customValidationErrorCompiler = (req, rex, next) => {
   const checkErrors = Object.keys(req.errorObj);
+  console.log('the request', req)
   if (checkErrors.length > 0) {
     const err = Error("Validation Error");
     err.errors = req.errorObj;
@@ -313,29 +314,68 @@ const validateVenueInput = [
 
 // Full list of validation middleware for Group input from Req.body
 const validateGroupInput = [
-  check("name")
-    .exists({ checkFalsy: true })
-    .isLength({ max: 60 })
-    .withMessage("name Name must be 60 characters or less"),
-  check("about")
-    .exists({ checkFalsy: true })
-    .isLength({ min: 50 })
-    .withMessage("about About must be 50 characters or more"),
-  check("type")
-    .exists({ checkFalsy: true })
-    .isIn(["Online", "In person"])
-    .withMessage("type Type must be 'Online' or 'In person'"),
-  check("private")
-    .exists({ checkFalsy: true })
-    .isBoolean({ loose: true })
-    .withMessage("private Private must be a boolean"),
-  check("city")
-    .exists({ checkFalsy: true })
-    .withMessage("city City is required"),
-  check("state")
-    .exists({ checkFalsy: true })
-    .withMessage("state State is required"),
-  handleValidationErrors,
+  (req, res, next) => {
+    const { name } = req.body;
+    if (!name) {
+      req.errorObj.name = "Name is required";
+      return next();
+    }
+    if (name.length > 60) {
+      req.errorObj.name = "Name must be 60 characters or less";
+      return next();
+    }
+    next();
+  },
+  (req, res, next) => {
+    const { about } = req.body;
+    if (!about) {
+      req.errorObj.about = "About is required";
+      return next();
+    }
+    if (about.length < 50) {
+      req.errorObj.about = "About must be 50 characters or more";
+      return next();
+    }
+    next();
+  },
+  (req, res, next) => {
+    const { type } = req.body;
+    const allowedValues = ["Online", "In person"];
+    if (!type) {
+      req.errorObj.type = "Type is required";
+      return next();
+    }
+    if (!allowedValues.includes(type)) {
+      req.errorObj.type = "Type must be 'Online' or 'In person'";
+      return next();
+    }
+    next();
+  },
+  (req, res, next) => {
+    const { private } = req.body;
+    if (typeof private !== "boolean") {
+      req.errorObj.private = "Private must be a boolean";
+      return next();
+    }
+    next();
+  },
+  (req, res, next) => {
+    const { city } = req.body;
+    if (!city) {
+      req.errorObj.city = "City is required";
+      return next();
+    }
+    next();
+  },
+  (req, res, next) => {
+    const { state } = req.body;
+    if (!state) {
+      req.errorObj.state = "State is required";
+      return next();
+    }
+    next();
+  },
+  customValidationErrorCompiler,
 ];
 
 // ~~~~~~ Create a GroupImage Input Validations ~~~~~~

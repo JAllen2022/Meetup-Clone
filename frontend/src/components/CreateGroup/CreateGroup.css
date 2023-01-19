@@ -1,0 +1,29 @@
+.create-group-container {
+    width:85vw;
+    margin:auto;
+    color: #212121;
+    font-weight: 550;
+}
+
+#in-person {
+    margin-left:1rem;
+}
+
+.form-private-checkmark-container {
+    margin: 1rem 0;
+}
+
+
+.form-end-button-container {
+    margin-top: 3rem;
+    display:flex;
+    justify-content: space-between;
+}
+
+.create-cancel {
+    width:25%
+}
+
+.errors {
+    color:red;
+}

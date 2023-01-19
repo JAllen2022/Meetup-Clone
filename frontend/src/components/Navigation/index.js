@@ -1,6 +1,6 @@
 // frontend/src/components/Navigation/index.js
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import ProfileButton from "./ProfileButton";
@@ -25,10 +25,15 @@ function Navigation({ isLoaded }) {
       {isLoaded && (
         <div className="nav-bar-user-right">
           {sessionUser ? (
-            <ProfileButton
-              user={sessionUser}
-              state={{ showMenu, setShowMenu }}
-            />
+            <>
+              <div className="nav-bar-create-group">
+                <Link id='create-group' to='/create-group'> Start a new group - 30% off!</Link>
+              </div>
+              <ProfileButton
+                user={sessionUser}
+                state={{ showMenu, setShowMenu }}
+              />
+            </>
           ) : (
             <>
               <OpenModalMenuItem

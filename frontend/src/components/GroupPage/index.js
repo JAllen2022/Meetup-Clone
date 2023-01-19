@@ -1,8 +1,8 @@
 import { useParams, NavLink } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState,useRef } from "react";
 import { getSingleGroup, getGroupEvents } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
-import EventCards from './EventCards'
+import EventCards from "./EventCards";
 import "./GroupPage.css";
 
 const groupNavBar = [
@@ -23,24 +23,73 @@ const groupNavBar = [
     to: "/photos",
   },
 ];
+const optionsHost = (
+  <div className="profile-button-drop-down-top-half group-drop-menu">
+    <p className="profile-button-drop-down-elements">Edit Group</p>
+    <p className="profile-button-drop-down-elements">Delete Group</p>
+  </div>
+);
+const optionsMember = (
+  <div className="profile-button-drop-down-top-half">
+    <p>Leave Group</p>
+  </div>
+);
+
+const optionsGuest = (
+  <div className="profile-button-drop-down-top-half">
+    <p className="profile-button-drop-down-elements">Request Membership</p>
+  </div>
+);
 
 function GroupPage() {
   const { groupId } = useParams();
   const dispatch = useDispatch();
   const group = useSelector((state) => state.groups.singleGroup);
   const groupEvents = useSelector((state) => state.groups.groupEvents);
+  const user = useSelector((state) => state.session.user);
+  const [showMenu, setShowMenu] = useState(false);
+  const [userType, setUserType] = useState(optionsGuest);
+    const ulRef = useRef();
+
 
   let groupImage = {};
-  let groupEventsArray= Object.values(groupEvents)
+  let groupEventsArray = Object.values(groupEvents);
   if (group.GroupImages)
     groupImage = group.GroupImages.find((ele) => ele.preview === true);
 
-  function memberOptions() {}
+  // Three options for Group Actions button
+  // If you are the owner, you can edit and delete the group
+  // If you are a logged in user - you can request membership
+  // if you are not logged in - do not show the button
+  useEffect(() => {
+    if (user && group.Organizer) {
+      if (user.id === group.Organizer.id) {
+        setUserType(optionsHost);
+      } else {
+        setUserType(optionsMember);
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     dispatch(getSingleGroup(groupId));
     dispatch(getGroupEvents(groupId));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const closeMenu = (e) => {
+      if (!ulRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("click", closeMenu);
+
+    return () => document.removeEventListener("click", closeMenu);
+  }
+  ,[showMenu])
 
   return (
     <div className="group-details-entire-doc-body">
@@ -80,6 +129,7 @@ function GroupPage() {
       </div>
       <div className="group-details-nav-bar-container">
         <div className="group-details-nav-bar">
+          <div className="group-details-nav-bar-buttons-container"></div>
           <div className="group-details-nav-bar-buttons">
             {groupNavBar.map((ele) => (
               <NavLink
@@ -88,18 +138,28 @@ function GroupPage() {
                 key={ele.name}
                 to={`/groups/${groupId}${ele.to}`}
               >
-                {ele.name}
+                <span>{ele.name}</span>
               </NavLink>
             ))}
           </div>
           <div className="group-details-nav-bar-dropdown">
             <button
               className="group-detail-nav-bar-button"
-              onClick={memberOptions}
+              onClick={() => setShowMenu((prev) => !prev)}
+              ref={ulRef}
             >
-              <span>You're a member</span>{" "}
-              <i class="fa-solid fa-angle-down"></i>
+              <div className="group-detail-nav-bar-inner-button-div">
+                <span>Group Actions</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </div>
             </button>
+            {showMenu && (
+              <div className="group-detail-nav-bar-dropdown-container">
+                <div className="group-detail-nav-bar-dropdown-container-items">
+                  {userType}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -110,9 +170,11 @@ function GroupPage() {
               <h2 className="section-title">What we're about</h2>
               <p className="group-description">{group.about}</p>
             </div>
-              <h2>Upcoming Events</h2>
+            <h2>Upcoming Events</h2>
             <div className="group-details-upcoming-events">
-              {groupEventsArray.map(ele => <EventCards event={ele} />)}
+              {groupEventsArray.map((ele) => (
+                <EventCards event={ele} />
+              ))}
             </div>
           </div>
           <div className="group-details-main-body-right">

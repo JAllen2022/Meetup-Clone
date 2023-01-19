@@ -1,6 +1,9 @@
+import { csrfFetch } from "./csrf";
 const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_EVENTS = 'groups/GET_GROUP_EVENTS'
+const CREATE_GROUP = 'groups/CREATE_GROUP'
+
 const initialState = {
   allGroups: {},
   singleGroup: {},
@@ -21,6 +24,11 @@ export const singleGroup = (group) => ({
 export const groupEvents = (events) => ({
   type: GET_GROUP_EVENTS,
   payload: events
+})
+
+export const createGroup = (group) => ({
+  type: CREATE_GROUP,
+  payload: group
 })
 
 /* ------ SELECTORS ------ */
@@ -47,8 +55,20 @@ export const getGroupEvents = (groupId) => async (dispatch) => {
 
   if (response.ok) {
     const data = await response.json();
-    console.log('what is data0', data.Events)
     dispatch(groupEvents(data));
+  }
+}
+
+export const thunkCreateGroup = (groupInformation) => async dispatch => {
+  console.log('checking my fetch', groupInformation)
+  const response = await csrfFetch("/api/groups", {
+    method: "POST",
+    body: JSON.stringify(groupInformation),
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(createGroup(data))
   }
 }
 
@@ -67,10 +87,13 @@ export default function groupReducer(state = initialState, action) {
       const events = action.payload.Events;
       events.map(ele=> newObj[ele.id]=ele)
       newState.groupEvents = newObj;
-      console.log(
-        'new state', newState
-      )
-      return newState;}
+      return newState;
+    }
+    case CREATE_GROUP:
+      console.log('checking my payload', action.payload)
+      newState.singleGroup = action.payload;
+      console.log("checking my state", newState);
+      return newState;
     default:
       return state;
   }
