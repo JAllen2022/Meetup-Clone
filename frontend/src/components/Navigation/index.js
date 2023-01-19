@@ -1,8 +1,9 @@
 // frontend/src/components/Navigation/index.js
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { resetSingleGroup } from "../../store/groups";
 import ProfileButton from "./ProfileButton";
 import imageLogo from "../../assets/LinkUpLogo.png";
 import OpenModalMenuItem from "./OpenModalMenuItem";
@@ -14,6 +15,11 @@ function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
   const [showMenu, setShowMenu] = useState(false);
   const closeMenu = () => setShowMenu(false);
+  const dispatch = useDispatch();
+
+  const refreshGroup = () => {
+    dispatch(resetSingleGroup());
+  }
 
   return (
     <div className="nav-bar">
@@ -27,7 +33,7 @@ function Navigation({ isLoaded }) {
           {sessionUser ? (
             <>
               <div className="nav-bar-create-group">
-                <Link id='create-group' to='/create-group'> Start a new group - 30% off!</Link>
+                <Link id='create-group' to='/create-group' onClick={refreshGroup}> Start a new group - 30% off!</Link>
               </div>
               <ProfileButton
                 user={sessionUser}

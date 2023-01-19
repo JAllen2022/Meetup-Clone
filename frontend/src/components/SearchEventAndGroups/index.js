@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllGroups } from "../../store/groups";
+import { thunkGetAllGroups } from "../../store/groups";
 import { getAllEvents } from "../../store/events";
 import { useSelector } from "react-redux";
 import DivCards from "./DivCards";
@@ -30,7 +30,7 @@ function AllGroups() {
 
   useEffect(() => {
     if (selectedTabGroup) {
-      dispatch(getAllGroups());
+      dispatch(thunkGetAllGroups());
     } else {
       dispatch(getAllEvents());
     }
@@ -58,9 +58,7 @@ function AllGroups() {
       </div>
       {selectedTabGroup
         ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
-        : eventsArray.map((ele, id) => (
-            <DivCards key={id} event={ele} />
-          ))}
+        : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />)}
     </div>
   );
 }

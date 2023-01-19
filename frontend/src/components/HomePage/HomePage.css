@@ -90,7 +90,6 @@
 .fa-solid {
     width:20px;
     height: 20px;
-    margin-left: 5px;
     color:#008294
 }
 
@@ -127,5 +126,6 @@
     margin:.55rem 0;
     font-size:.85rem;
     padding:0;
-    color:#212121
+    color:#212121;
+    cursor: pointer;
 }

@@ -40,7 +40,7 @@ function ProfileButton({ user, state }) {
     <div>
       <div className="profileIcon" onClick={openMenu}>
         <i className="fas fa-user-circle" />
-        <i style={{ color: 212121 }} class="fa-solid fa-caret-down"></i>
+        <i style={{ color: 212121 }} className="fa-solid fa-caret-down"></i>
       </div>
       <div className={ulClassName}>
         <div ref={ulRef}>

@@ -1,6 +1,6 @@
-import { useParams, NavLink } from "react-router-dom";
-import { useEffect, useState,useRef } from "react";
-import { getSingleGroup, getGroupEvents } from "../../store/groups";
+import { useParams, NavLink, useHistory } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { thunkGetSingleGroup, thunkGetGroupEvents, thunkDeleteGroup } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
 import EventCards from "./EventCards";
 import "./GroupPage.css";
@@ -23,34 +23,53 @@ const groupNavBar = [
     to: "/photos",
   },
 ];
-const optionsHost = (
-  <div className="profile-button-drop-down-top-half group-drop-menu">
-    <p className="profile-button-drop-down-elements">Edit Group</p>
-    <p className="profile-button-drop-down-elements">Delete Group</p>
-  </div>
-);
-const optionsMember = (
-  <div className="profile-button-drop-down-top-half">
-    <p>Leave Group</p>
-  </div>
-);
-
-const optionsGuest = (
-  <div className="profile-button-drop-down-top-half">
-    <p className="profile-button-drop-down-elements">Request Membership</p>
-  </div>
-);
 
 function GroupPage() {
   const { groupId } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
   const group = useSelector((state) => state.groups.singleGroup);
   const groupEvents = useSelector((state) => state.groups.groupEvents);
   const user = useSelector((state) => state.session.user);
   const [showMenu, setShowMenu] = useState(false);
-  const [userType, setUserType] = useState(optionsGuest);
-    const ulRef = useRef();
 
+  const optionsMember = (
+    <div className="profile-button-drop-down-top-half">
+      <p className="profile-button-drop-down-elements">Leave Group</p>
+    </div>
+  );
+
+  const optionsGuest = (
+    <div className="profile-button-drop-down-top-half">
+      <p className="profile-button-drop-down-elements">Request Membership</p>
+    </div>
+  );
+
+  const createEvent = () => {};
+
+  const editGroup = () => {
+    history.push(`/groups/${groupId}/edit`);
+  };
+
+  const deleteGroup = () => {
+    dispatch((thunkDeleteGroup(groupId))).then(()=>history.push('/'));
+  };
+
+  const optionsHost = (
+    <div className="profile-button-drop-down-top-half group-drop-menu">
+      <p className="profile-button-drop-down-elements" onClick={createEvent}>
+        Create Event
+      </p>
+      <p className="profile-button-drop-down-elements" onClick={editGroup}>
+        Edit Group
+      </p>
+      <p className="profile-button-drop-down-elements" onClick={deleteGroup}>
+        Delete Group
+      </p>
+    </div>
+  );
+  const [userType, setUserType] = useState(optionsGuest);
+  const ulRef = useRef();
 
   let groupImage = {};
   let groupEventsArray = Object.values(groupEvents);
@@ -69,27 +88,30 @@ function GroupPage() {
         setUserType(optionsMember);
       }
     }
-  }, [user]);
+  }, [user, group]);
 
   useEffect(() => {
-    dispatch(getSingleGroup(groupId));
-    dispatch(getGroupEvents(groupId));
+    dispatch(thunkGetSingleGroup(groupId));
+    dispatch(thunkGetGroupEvents(groupId));
   }, [dispatch]);
 
   useEffect(() => {
     if (!showMenu) return;
 
     const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
-        setShowMenu(false);
+      if (ulRef.current) {
+        if (!ulRef.current.contains(e.target)) {
+          setShowMenu(false);
+        }
+      } else {
+        return () => document.removeEventListener("click", closeMenu);
       }
     };
 
     document.addEventListener("click", closeMenu);
 
     return () => document.removeEventListener("click", closeMenu);
-  }
-  ,[showMenu])
+  }, [showMenu]);
 
   return (
     <div className="group-details-entire-doc-body">
@@ -142,11 +164,10 @@ function GroupPage() {
               </NavLink>
             ))}
           </div>
-          <div className="group-details-nav-bar-dropdown">
+          <div className="group-details-nav-bar-dropdown" ref={ulRef}>
             <button
               className="group-detail-nav-bar-button"
               onClick={() => setShowMenu((prev) => !prev)}
-              ref={ulRef}
             >
               <div className="group-detail-nav-bar-inner-button-div">
                 <span>Group Actions</span>

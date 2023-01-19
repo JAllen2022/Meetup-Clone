@@ -107,14 +107,15 @@
 .event-card-container {
   border-radius: 5px;
   background-color: white;
-  width:100%;
+  width:97%;
   height:9rem;
-  padding:10px;
-  margin-top:1rem;
+  padding:.35rem;
+  margin:.35rem 0;
 }
 
 .event-card-container:hover {
-  box-shadow: 0 0 10px gray;
+  background-color: rgb(251, 251, 251);
+  box-shadow:0 0 1px gray;
   cursor: pointer;
 }
 
@@ -190,7 +191,6 @@
   position: absolute;
   border-radius: 0.25rem;
   margin-left: 2.25rem;
-  border:1px red solid;
   width:8rem;
   top:.25rem;
   z-index: 4;

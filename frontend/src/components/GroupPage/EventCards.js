@@ -2,7 +2,6 @@ import "./GroupPage.css";
 
 function EventCards({ event }) {
   const eventTime = new Date(event.startDate).toUTCString();
-  console.log(" chekding image", event.previewImage);
 
   return (
     <div className="event-card-container">

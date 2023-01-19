@@ -2,7 +2,6 @@
 import { Link } from "react-router-dom";
 
 function ImageLinks({ props }) {
-  console.log("checking props", props);
   return (
     <Link className='home-links' to="/groups">
       <div className="home-page-image-divs">

@@ -1,8 +1,11 @@
 import { csrfFetch } from "./csrf";
 const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
-const GET_GROUP_EVENTS = 'groups/GET_GROUP_EVENTS'
-const CREATE_GROUP = 'groups/CREATE_GROUP'
+const GET_GROUP_EVENTS = "groups/GET_GROUP_EVENTS";
+const CREATE_GROUP = "groups/CREATE_GROUP";
+const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
+const UPDATE_GROUP = "groups/UPDATE_GROUP";
+const DELETE_GROUP = "groups/DELETE_GROUP";
 
 const initialState = {
   allGroups: {},
@@ -23,44 +26,57 @@ export const singleGroup = (group) => ({
 
 export const groupEvents = (events) => ({
   type: GET_GROUP_EVENTS,
-  payload: events
-})
+  payload: events,
+});
 
 export const createGroup = (group) => ({
   type: CREATE_GROUP,
-  payload: group
-})
+  payload: group,
+});
+
+export const resetSingleGroup = () => ({
+  type: RESET_SINGLE_GROUP,
+});
+
+export const updateGroup = (group) => ({
+  type: UPDATE_GROUP,
+  payload: group,
+});
+
+export const deleteGroup = (groupId) => ({
+  type: DELETE_GROUP,
+  payload: groupId,
+});
 
 /* ------ SELECTORS ------ */
-export const getAllGroups = () => async (dispatch) => {
+export const thunkGetAllGroups = () => async (dispatch) => {
   const response = await fetch("/api/groups");
 
   if (response.ok) {
     const data = await response.json();
-    dispatch(allGroups(data));
+    return dispatch(allGroups(data));
   }
 };
 
-export const getSingleGroup = (groupId) => async (dispatch) => {
+export const thunkGetSingleGroup = (groupId) => async (dispatch) => {
   const response = await fetch(`/api/groups/${groupId}`);
 
   if (response.ok) {
     const data = await response.json();
-    dispatch(singleGroup(data));
+    return dispatch(singleGroup(data));
   }
 };
 
-export const getGroupEvents = (groupId) => async (dispatch) => {
+export const thunkGetGroupEvents = (groupId) => async (dispatch) => {
   const response = await fetch(`/api/groups/${groupId}/events`);
 
   if (response.ok) {
     const data = await response.json();
     dispatch(groupEvents(data));
   }
-}
+};
 
-export const thunkCreateGroup = (groupInformation) => async dispatch => {
-  console.log('checking my fetch', groupInformation)
+export const thunkCreateGroup = (groupInformation) => async (dispatch) => {
   const response = await csrfFetch("/api/groups", {
     method: "POST",
     body: JSON.stringify(groupInformation),
@@ -68,9 +84,30 @@ export const thunkCreateGroup = (groupInformation) => async dispatch => {
 
   if (response.ok) {
     const data = await response.json();
-    dispatch(createGroup(data))
+    return dispatch(createGroup(data));
   }
-}
+};
+
+export const thunkUpdateGroup = (groupInformation) => async (dispatch) => {
+  const response = await csrfFetch(`/api/groups/${groupInformation.id}`, {
+    method: "PUT",
+    body: JSON.stringify(groupInformation),
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return dispatch(updateGroup(data));
+  }
+};
+
+export const thunkDeleteGroup = (groupId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/groups/${groupId}`, {
+    method: "DELETE",
+  });
+  if (response.ok) {
+    return dispatch(deleteGroup(groupId));
+  }
+};
 
 /* ------ REDUCER ------ */
 export default function groupReducer(state = initialState, action) {
@@ -85,14 +122,25 @@ export default function groupReducer(state = initialState, action) {
     case GET_GROUP_EVENTS: {
       const newObj = {};
       const events = action.payload.Events;
-      events.map(ele=> newObj[ele.id]=ele)
+      events.map((ele) => (newObj[ele.id] = ele));
       newState.groupEvents = newObj;
       return newState;
     }
     case CREATE_GROUP:
-      console.log('checking my payload', action.payload)
       newState.singleGroup = action.payload;
-      console.log("checking my state", newState);
+      return newState;
+    case RESET_SINGLE_GROUP:
+      newState.singleGroup = {};
+      return newState;
+    case UPDATE_GROUP:
+      newState.singleGroup = action.payload;
+      return newState;
+    case DELETE_GROUP:
+      if (newState.allGroups[action.payload]) {
+        newState.allGroups = { ...newState.allGroups }
+        delete newState.allGroups[action.payload];
+      }
+      newState.singleGroup = {};
       return newState;
     default:
       return state;
