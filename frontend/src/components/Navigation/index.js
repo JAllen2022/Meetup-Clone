@@ -33,7 +33,14 @@ function Navigation({ isLoaded }) {
           {sessionUser ? (
             <>
               <div className="nav-bar-create-group">
-                <Link id='create-group' to='/create-group' onClick={refreshGroup}> Start a new group - 30% off!</Link>
+                <Link
+                  id="create-group"
+                  to="/create-group"
+                  onClick={refreshGroup}
+                >
+                  {" "}
+                  Start a new group - 30% off!
+                </Link>
               </div>
               <ProfileButton
                 user={sessionUser}
@@ -43,12 +50,12 @@ function Navigation({ isLoaded }) {
           ) : (
             <>
               <OpenModalMenuItem
-                itemText="Log In"
+                itemText={<p className="log-in"> Log in</p>}
                 onItemClick={closeMenu}
                 modalComponent={<LoginFormModal />}
               />
               <OpenModalMenuItem
-                itemText="Sign Up"
+                itemText={<p className="log-in"> Sign up</p>}
                 onItemClick={closeMenu}
                 modalComponent={<SignupFormModal />}
               />

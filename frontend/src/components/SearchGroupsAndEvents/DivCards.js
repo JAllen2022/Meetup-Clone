@@ -25,12 +25,20 @@ function DivCards({ event, group }) {
         {
           <img
             className="div-card-indiv-image"
-            src={previewImage ? previewImage : defaultImage}
+            src={
+              previewImage
+                ? previewImage
+                : "https://secure.meetupstatic.com/next/images/fallbacks/group-cover-2-wide.webp"
+            }
             alt="group image"
           />
         }
       </div>
-      {group ? <DivCardBodyGroup group={group} /> : <DivCardBodyEvents event={event} />}
+      {group ? (
+        <DivCardBodyGroup group={group} />
+      ) : (
+        <DivCardBodyEvents event={event} />
+      )}
     </div>
   );
 }

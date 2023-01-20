@@ -3,30 +3,38 @@
 }
 
 .group-details-header-outer {
+
   border-bottom: solid 1px lightgray;
   border-top: solid 1px lightgray;
   padding: 1.5% 0;
-  width: 100%;
+
 }
 .group-details-header {
+
   display: flex;
-  justify-content: space-around;
-  max-width: 850px;
+  justify-content: space-between;
+  width: 70%;
   margin: auto;
   color: #212121;
 }
 
 .group-details-header-image-container {
-  width: 65%;
+  width: 60%;
+  height:16rem;
 }
 
 #group-details-header-image {
-  max-width: 25rem;
+
   border-radius: 10px;
+    width: 100%;
+  height:100%;
+  object-fit: cover;
 }
 
 .group-details-header-title-body {
-  width: 35%;
+  box-sizing: border-box;
+  width: 40%;
+  padding:0 1rem;
 }
 
 
@@ -35,27 +43,27 @@
 }
 
 .group-details-nav-bar-container {
-  display: flex;
   border-bottom: solid 1px lightgray;
-  padding: 0.5% 0;
   width: 100%;
 }
 
-.group-details-nav-bar,
-.group-details-main-body-wrapper {
+.group-details-nav-bar {
+  padding: .25rem 0;
   display: flex;
-  max-width: 850px;
-  width: 100%;
+  width: 70%;
   margin: auto;
 }
 
 
-.group-details-nav-bar-buttons-container {
-  display: flex;
+.group-details-main-body-wrapper {
+  display:flex;
+  width: 70%;
+  margin: auto;
 }
+
 .group-details-nav-bar-buttons {
   display: flex;
-  width: 65%;
+  width: 60%;
   justify-content: space-between;
   align-items:center;
 }
@@ -69,25 +77,28 @@
   padding:0;
   height:fit-content
 }
-.group-page-navLinks >span {
+.group-page-navLinks > span {
   vertical-align: middle;
     margin:0;
   padding:0;
 }
+
 
 .active {
   color: #0098ab;
 }
 
 .group-details-main-body-left {
+  /* border:1px red solid; */
+
   display: flex;
   flex-direction: column;
-  width: 65%;
+  width: 60%;
 }
 
 .group-details-body-container {
   background-color: #f6f7f8;
-  width: 100vw;
+  width: 100%;
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -96,7 +107,7 @@
   width: 40%;
 }
 .group-details-main-body-right {
-    width:35%;
+    width:40%;
     padding-left:40px;
 }
 .group-details-main-body-right-sticky-menu {
@@ -105,11 +116,12 @@
 }
 
 .event-card-container {
+  box-sizing: border-box;
   border-radius: 5px;
   background-color: white;
-  width:97%;
+  width:99%;
   height:9rem;
-  padding:.35rem;
+  padding:.65rem;
   margin:.35rem 0;
 }
 
@@ -159,6 +171,7 @@
 }
 
 .group-detail-nav-bar-inner-button-div > .fa-angle-down {
+  margin-left:.25rem;
   display:flex;
   flex-direction: column;
   justify-content: center;
@@ -168,7 +181,7 @@
   background-color: #f6f7f8;
   border: 1px solid #e6e6e6;
   border-radius: .25rem;
-  margin-left:2rem;
+  margin-left:1rem;
 
 }
 
@@ -179,6 +192,7 @@
 }
 
 .group-details-main-body-title {
+
   overflow:hidden;
   text-overflow: ellipsis;
 }
@@ -190,7 +204,7 @@
 .group-detail-nav-bar-dropdown-container-items {
   position: absolute;
   border-radius: 0.25rem;
-  margin-left: 2.25rem;
+  margin-left: 1rem;
   width:8rem;
   top:.25rem;
   z-index: 4;
@@ -200,4 +214,10 @@
     background-color: #fff;
 }
 
+.profile-button-drop-down-elements {
+  text-align: center;
+}
 
+.profile-button-drop-down-elements:hover{
+  font-weight: 600;
+}

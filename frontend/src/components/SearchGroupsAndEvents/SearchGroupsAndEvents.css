@@ -1,10 +1,11 @@
 
-.all-groups-main-outer-body{
-    padding-top: 25px;
-    max-width:1120px;
-    padding-left:7vh;
-    padding-right:7vh;
+.search-main-outer-body{
+    width:100%;
+}
+.search-main-inner-body {
+    width:80%;
     margin:auto;
+    margin-top:1rem;
 }
 
 .all-groups-tab-event-group {
@@ -34,7 +35,7 @@
     display:flex;
     border-top: 1px solid lightgray;
     border-bottom: 1px solid lightgray;
-    padding-top:.5rem;
+    padding:.75rem 0;
 }
 
 .div-card:hover {
@@ -49,7 +50,7 @@
 
 .div-card-body {
     display:flex;
-    padding-left:10px;
+    padding-left:1rem;
     flex-direction: column;
     justify-content: space-between;
 

@@ -1,9 +1,11 @@
 import { useParams, useHistory, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { thunkGetSingleEvent } from "../../store/events";
-import "./EventPage.css";
 import { useEffect, useState, useRef } from "react";
+import { thunkGetSingleEvent } from "../../store/events";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import DeleteModal from "../DeleteModal";
 import formatDateString from "../../util/formatDateString.js";
+import "./EventPage.css";
 
 function EventPage() {
   const { eventId } = useParams();
@@ -17,6 +19,7 @@ function EventPage() {
   const [showMenu, setShowMenu] = useState(false);
   const groupInfo = event.Group;
   const venueInfo = event.Venue;
+  const closeMenu = () => setShowMenu(false)
   // console.log('checking event0', event)
   let venueCity = "";
   let venueState = "";
@@ -28,6 +31,12 @@ function EventPage() {
     venueCity = event.Venue.city;
     venueState = event.Venue.state;
   }
+  const eventLocation =
+    event.type === "In person"
+      ? venueCity
+        ? venueCity + ", " + venueState
+        : "TBD"
+      : "Online";
 
   // Helper functions here for group options button
   const optionsMember = (
@@ -82,23 +91,23 @@ function EventPage() {
     // }
   }, [user, event]);
 
-    useEffect(() => {
-      if (!showMenu) return;
+  useEffect(() => {
+    if (!showMenu) return;
 
-      const closeMenu = (e) => {
-        if (ulRef.current) {
-          if (!ulRef.current.contains(e.target)) {
-            setShowMenu(false);
-          }
-        } else {
-          return () => document.removeEventListener("click", closeMenu);
+    const closeMenu = (e) => {
+      if (ulRef.current) {
+        if (!ulRef.current.contains(e.target)) {
+          setShowMenu(false);
         }
-      };
+      } else {
+        return () => document.removeEventListener("click", closeMenu);
+      }
+    };
 
-      document.addEventListener("click", closeMenu);
+    document.addEventListener("click", closeMenu);
 
-      return () => document.removeEventListener("click", closeMenu);
-    }, [showMenu]);
+    return () => document.removeEventListener("click", closeMenu);
+  }, [showMenu]);
 
   useEffect(() => {
     setEventImage(
@@ -131,14 +140,15 @@ function EventPage() {
         <div className="event-body">
           <div className="event-body-left">
             <div className="event-body-left-event-details">
-              {eventImage ? (
-                <img
-                  className="event-body-left-event-details-image"
-                  src={eventImage.url}
-                />
-              ) : (
-                eventImage
-              )}
+              <img
+                className="event-body-left-event-details-image"
+                src={
+                  eventImage
+                    ? eventImage.url
+                    : "https://secure.meetupstatic.com/next/images/fallbacks/group-cover-2-wide.webp"
+                }
+              />
+
               <h2>Details</h2>
               <p>{event.description}</p>
             </div>
@@ -185,7 +195,7 @@ function EventPage() {
                   <div class="icon">
                     <i class="fa-regular fa-clock fa-solid-event"></i>{" "}
                   </div>
-                  <div class="goodbye">
+                  <div class="event-body-right-event-info-right">
                     <div> Begins: {startTimeString} </div>
                     <div> Ends: {endTimeString} </div>
                   </div>
@@ -194,9 +204,8 @@ function EventPage() {
                   <div class="icon">
                     <i className="fa-solid fa-location-dot fa-solid-event"></i>{" "}
                   </div>
-                  <div class="goodbye">
-                    {" "}
-                    {venueCity}, {venueState}
+                  <div class="event-body-right-event-info-right">
+                    {eventLocation}
                   </div>
                 </div>
               </div>
@@ -224,8 +233,20 @@ function EventPage() {
               <div className="event-sticky-footer-event-option-menu-container">
                 <div className="event-sticky-footer-event-option-menu-inner-container">
                   {/* {userType} */}
-                  <Link className="event-sticky-menu-link">Edit Event</Link>
-                  <Link className="event-sticky-menu-link">Delete Event</Link>
+                  <Link
+                    className="event-sticky-menu-link"
+                    to={`/events/${eventId}/edit`}
+                  >
+                    Edit Event
+                  </Link>
+                  <div>
+                    <OpenModalMenuItem
+                      itemText={<div className='event-sticky-menu-link'>Delete Event</div>}
+                      onItemClick={closeMenu}
+                      modalComponent={<DeleteModal eventId={event.id} type={'Event'} />}
+                      />
+
+                  </div>
                   <Link className="event-sticky-menu-link">Add Image</Link>
                 </div>
               </div>
@@ -237,5 +258,4 @@ function EventPage() {
     </div>
   );
 }
-
 export default EventPage;

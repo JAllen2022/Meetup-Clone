@@ -1,11 +1,17 @@
+import { useHistory } from "react-router-dom";
 import formatDateString from "../../util/formatDateString";
 import "./GroupPage.css";
 
 function EventCards({ event }) {
   const eventTime = formatDateString(event.startDate);
+  const history = useHistory();
+
+  const navigateToEvent = () => {
+    history.push(`/events/${event.id}`)
+  }
 
   return (
-    <div className="event-card-container">
+    <div className="event-card-container" onClick={navigateToEvent}>
       <div>
         <div className="event-card-top-half">
           <div className="event-card-top-half-left">

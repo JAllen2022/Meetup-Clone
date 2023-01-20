@@ -4,8 +4,9 @@ const GET_ALL_EVENTS = "events/GET_ALL_EVENTS";
 const GET_SINGLE_EVENT = "events/GET_SINGLE_EVENT";
 const CREATE_EVENT = 'events/CREATE_EVENT'
 const EDIT_EVENT = "events/EDIT_EVENT";
-const ADD_EVENT_IMAGE = 'events/ADD_EVENT_IMAGE'
-const RESET_SINGLE_EVENT ='events/RESET_SINGLE_EVENT'
+const ADD_EVENT_IMAGE = 'events/ADD_EVENT_IMAGE';
+const RESET_SINGLE_EVENT = 'events/RESET_SINGLE_EVENT';
+const DELETE_EVENT = 'events/DELETE_EVENT';
 
 const initialState = {
   allEvents: {},
@@ -42,6 +43,11 @@ export const resetSingleEvent = () => ({
   type: RESET_SINGLE_EVENT
 })
 
+export const deleteEvent = (eventId) => ({
+  type: DELETE_EVENT,
+  payload: eventId
+})
+
 /* ------ SELECTORS ------ */
 export const thunkGetAllEvents = () => async (dispatch) => {
   const response = await fetch("/api/events");
@@ -62,13 +68,10 @@ export const thunkGetSingleEvent = (eventId) => async (dispatch) => {
 };
 
 export const thunkCreateEvent = (event, groupId) => async (dispatch) => {
-  console.log('checking my create objects', event, groupId)
   const response = await csrfFetch(`/api/groups/${groupId}/events`, {
     method: 'POST',
     body: JSON.stringify(event)
   });
-  console.log("checking my create objects", event, groupId);
-
 
   if (response.ok) {
     const eventImage = await response.json();
@@ -96,6 +99,17 @@ export const thunkAddEventImage = (imageURL, eventId) => async (dispatch) => {
   if (response.ok) {
     const eventImage = await response.json();
     dispatch(addEventImage(eventImage, eventId));
+  }
+}
+
+export const thunkDeleteEvent = (eventId) => async (dispatch) => {
+  console.log('checking eventId', eventId)
+  const response = await csrfFetch(`/api/events/${eventId}`, {
+    method:'DELETE'
+  })
+
+  if (response.ok) {
+    return dispatch(deleteEvent(eventId));
   }
 }
 
@@ -134,6 +148,14 @@ export default function eventsReducer(state = initialState, action) {
       return newState;
     case RESET_SINGLE_EVENT:
       newState.singleEvent = {}
+      return newState;
+    case DELETE_EVENT:
+      newState.allEvents={...newState.allEvents}
+      newState.allEvents[action.payload] = {
+        ...newState.allEvents[action.payload],
+      };
+      delete newState.allEvents[action.payload];
+      newState.singleEvent = {};
       return newState;
     default:
       return newState;

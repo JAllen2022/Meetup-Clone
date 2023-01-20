@@ -508,7 +508,6 @@ router.get(
     // Lazy load numAttending as well as previewImage
     for (let i = 0; i < groupEvents.length; i++) {
       const event = groupEvents[i].toJSON();
-      // console.log('Checking event: ',event)
       const attendees = await Attendance.count({
         where: {
           eventId: event.id,

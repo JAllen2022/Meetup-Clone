@@ -20,6 +20,12 @@
     color: #212121;
     margin-right:20px;
     font-size:.875rem;
+    cursor: pointer;
+}
+
+.log-in:hover {
+    font-weight: 600;
+    color:#008294
 }
 
 .nav-bar-user-right {

@@ -40,7 +40,24 @@ function CreateAndUpdateEvent() {
       setStartDate(event.startDate ? event.startDate : false);
       setEndDate(event.endDate ? event.endDate : false);
     }
+
   }, [event]);
+     console.log(
+       "checking all information here",
+       {
+         venueId,
+         name,
+         type,
+         capacity,
+         price,
+         description,
+         startDate,
+         endDate,
+       },
+       event.startDate,
+       event.endDate,
+       event.venueId
+     );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -156,7 +173,9 @@ function CreateAndUpdateEvent() {
             value={venueId}
             onChange={(e) => setVenueId(e.target.value)}
           ></input>
-        </div>
+              </div>
+
+        {/* Will add this feature elsewhere
         <div>
           <label className="form-label">Event Image</label>
           <input
@@ -166,7 +185,7 @@ function CreateAndUpdateEvent() {
             value={eventImage}
             onChange={(e) => setEventImage(e.target.value)}
           ></input>
-        </div>
+        </div> */}
         <div>
           <label className="form-label">Description</label>
           <textarea

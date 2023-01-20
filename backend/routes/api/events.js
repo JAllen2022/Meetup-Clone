@@ -462,7 +462,6 @@ router.get("/:eventId", validateReqParamEventId, async (req, res, next) => {
   returnEvent.EventImages = eventImages;
   delete returnEvent.createdAt;
   delete returnEvent.updatedAt;
-  console.log("WHAT THE FUCK", imageUrl.url);
   if (!imageUrl) returnEvent.Group.previewImage = imageUrl.url;
   else returnEvent.Group.previewImage = imageUrl.url;
 

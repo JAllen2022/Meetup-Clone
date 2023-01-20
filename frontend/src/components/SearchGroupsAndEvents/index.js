@@ -35,7 +35,7 @@ function SearchGroupsAndEvents({ defaultTab }) {
   const clickedEvent = (e) => {
     if (selectedTabGroup) {
       setSelectedTabGroup(false);
-      history.push('/search/events')
+      history.push("/search/events");
     }
     setSelectedTabEvent(true);
   };
@@ -49,28 +49,30 @@ function SearchGroupsAndEvents({ defaultTab }) {
   }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);
 
   return (
-    <div className="all-groups-main-outer-body">
-      <div className="all-groups-tab-event-group">
-        <div
-          onClick={clickedGroup}
-          className={`all-groups-tab-group ${
-            selectedTabGroup ? "selected" : ""
-          }`}
-        >
-          Groups
+    <div className="search-main-outer-body">
+      <div className="search-main-inner-body">
+        <div className="all-groups-tab-event-group">
+          <div
+            onClick={clickedGroup}
+            className={`all-groups-tab-group ${
+              selectedTabGroup ? "selected" : ""
+            }`}
+          >
+            Groups
+          </div>
+          <div
+            onClick={clickedEvent}
+            className={`all-groups-tab-group ${
+              selectedTabEvent ? "selected" : ""
+            }`}
+          >
+            Events
+          </div>
         </div>
-        <div
-          onClick={clickedEvent}
-          className={`all-groups-tab-group ${
-            selectedTabEvent ? "selected" : ""
-          }`}
-        >
-          Events
-        </div>
-      </div>
       {selectedTabGroup
         ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
         : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />)}
+        </div>
     </div>
   );
 }

@@ -225,7 +225,6 @@ const validateEventInput = [
   },
   (req, res, next) => {
     const { type } = req.body;
-    console.log('~~~~~~~~~`',!(type === "Online" || type === "In person"));
     if (!type || !(type === "Online" || type === "In person")) {
       req.errorObj.type = "Type must be 'Online' or 'In person'";
       return next();

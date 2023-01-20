@@ -101,6 +101,7 @@
 
 .home-links:hover {
     text-decoration: underline;
+    opacity: .9;
 }
 
 .profileIcon {

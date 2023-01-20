@@ -1,7 +1,9 @@
 import { useParams, NavLink, useHistory } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import { thunkGetSingleGroup, thunkGetGroupEvents, thunkDeleteGroup } from "../../store/groups";
+import { thunkGetSingleGroup, thunkGetGroupEvents } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import DeleteModal from "../DeleteModal";
 import EventCards from "./EventCards";
 import "./GroupPage.css";
 
@@ -32,6 +34,7 @@ function GroupPage() {
   const groupEvents = useSelector((state) => state.groups.groupEvents);
   const user = useSelector((state) => state.session.user);
   const [showMenu, setShowMenu] = useState(false);
+  const closeMenu = () => setShowMenu(false);
 
   const optionsMember = (
     <div className="profile-button-drop-down-top-half">
@@ -45,15 +48,14 @@ function GroupPage() {
     </div>
   );
 
-  const createEvent = () => {};
+  const createEvent = () => {
+    history.push(`/groups/${groupId}/create-event`)
+  };
 
   const editGroup = () => {
     history.push(`/groups/${groupId}/edit`);
   };
 
-  const deleteGroup = () => {
-    dispatch((thunkDeleteGroup(groupId))).then(()=>history.push('/'));
-  };
 
   const optionsHost = (
     <div className="profile-button-drop-down-top-half group-drop-menu">
@@ -63,9 +65,15 @@ function GroupPage() {
       <p className="profile-button-drop-down-elements" onClick={editGroup}>
         Edit Group
       </p>
-      <p className="profile-button-drop-down-elements" onClick={deleteGroup}>
-        Delete Group
-      </p>
+      <OpenModalMenuItem
+        itemText={<p
+          className="profile-button-drop-down-elements"
+        >
+          Delete Group
+        </p>}
+        onItemClick={closeMenu}
+        modalComponent={<DeleteModal groupId={group.id} type={"Group"} />}
+      />
     </div>
   );
   const [userType, setUserType] = useState(optionsGuest);
@@ -120,7 +128,11 @@ function GroupPage() {
           <div className="group-details-header-image-container">
             <img
               id="group-details-header-image"
-              src={groupImage?.url ? groupImage.url : ""}
+              src={
+                groupImage?.url
+                  ? groupImage.url
+                  : "https://secure.meetupstatic.com/next/images/fallbacks/group-cover-2-wide.webp"
+              }
               alt="group image"
             />
           </div>
@@ -202,7 +214,9 @@ function GroupPage() {
             <div className="group-details-main-body-right-sticky-menu">
               <div className="group-details-main-body-right-organizer">
                 <h2>Organizers</h2>
+
                 <p>
+                  <i className="fa-solid fa-user fa-solid-profile"></i>
                   {group.Organizer?.firstName} {group.Organizer?.lastName}
                 </p>
               </div>
