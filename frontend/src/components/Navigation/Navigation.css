@@ -31,6 +31,7 @@
 .nav-bar-user-right {
     display:flex;
     flex-direction: row;
+    margin-right:1rem;
 }
 
 .nav-bar-create-group {

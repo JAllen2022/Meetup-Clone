@@ -28,7 +28,11 @@ function EventCards({ event }) {
           <div className="event-card-top-half-right">
             <img
               className="event-preview-image"
-              src={event.previewImage ? event.previewImage : ""}
+              src={
+                event.previewImage
+                  ? event.previewImage
+                  : "https://secure.meetupstatic.com/next/images/fallbacks/group-cover-2-wide.webp"
+              }
             />
           </div>
         </div>

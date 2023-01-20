@@ -5,6 +5,7 @@ import { thunkGetSingleEvent } from "../../store/events";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteModal from "../DeleteModal";
 import formatDateString from "../../util/formatDateString.js";
+import ProfileCard from "../ProfileCard";
 import "./EventPage.css";
 
 function EventPage() {
@@ -76,6 +77,7 @@ function EventPage() {
   );
 
   const [userType, setUserType] = useState(optionsGuest);
+  const directToGroup = () => history.push(`/groups/${groupInfo.id}/about`);
 
   // Three options for Group Actions button
   // If you are the owner, you can edit and delete the group
@@ -156,21 +158,12 @@ function EventPage() {
               <h3>Attendees ({event.numAttending})</h3>
             </div>
             <div className="event-attendees">
-              <div className="event-attendees-profile-card">
-                <div className="event-attendees-profile-inner-card">
-                  <div className="event-attendees-profile-image">
-                    <span>
-                      <i className="fa-sharp fa-solid fa-circle-user event-profile"></i>
-                    </span>
-                  </div>
-                  <div className="event-attendees-profile-name">Username</div>
-                </div>
-              </div>
+              <ProfileCard />
             </div>
           </div>
           <div className="event-body-right">
             <div className="event-body-right-sticky-container">
-              <div className="event-body-right-group-info-container">
+              <div onClick={directToGroup} className="event-body-right-group-info-container">
                 <div className="event-body-right-group-info-image-container">
                   {groupInfo?.previewImage ? (
                     <img

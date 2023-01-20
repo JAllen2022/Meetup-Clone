@@ -69,41 +69,6 @@
 .event-attendees > div {
   background-color: #fff;
 }
-.event-attendees-profile-card {
-  width: 100%;
-  /* border:1px red solid; */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: .25rem;
-}
-
-.event-attendees-profile-inner-card {
-  width: 80%;
-  height: 100%;
-  margin: auto;
-  /* border:1px red solid; */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.event-attendees-profile-image {
-  width: fit-content;
-  height: fit-content;
-}
-
-.event-profile {
-  font-size: 3rem;
-  margin: auto;
-  color: #008294;
-}
-
-.event-attendees-profile-name {
-  padding: 0.5rem;
-  font-size: 0.95rem;
-}
 
 .event-body-right {
   width: 40%;
@@ -130,6 +95,10 @@
   width: 60%;
   display: flex;
   font-size: 0.85rem;
+}
+.event-body-right-group-info-container:hover{
+  cursor: pointer;
+  background-color: rgb(230, 229, 229);
 }
 
 .event-body-right-group-info-image-container {
