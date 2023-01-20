@@ -45,7 +45,6 @@ const handleValidationErrors = (req, _res, next) => {
 // Custom Error Compiler
 const customValidationErrorCompiler = (req, rex, next) => {
   const checkErrors = Object.keys(req.errorObj);
-  console.log('the request', req)
   if (checkErrors.length > 0) {
     const err = Error("Validation Error");
     err.errors = req.errorObj;
@@ -171,8 +170,12 @@ validateReqParamEventImageId = async (req, res, next) => {
 
 // Validate that the venue in the request body exists
 const validateVenue = async (req, res, next) => {
+
   // Allow null values for VenueId
-  if (req.body.venueId === null) return next();
+  if (!req.body.venueId) {
+    req.body.venueId = null;
+    return next();
+  }
 
   // Find the venue by primary key
   const venue = await Venue.findByPk(req.body.venueId);
@@ -222,10 +225,12 @@ const validateEventInput = [
   },
   (req, res, next) => {
     const { type } = req.body;
-    if (!type || !(type === "Online" || type === "In Person")) {
-      req.errorObj.type = "Type must be Online or In person";
+    console.log('~~~~~~~~~`',!(type === "Online" || type === "In person"));
+    if (!type || !(type === "Online" || type === "In person")) {
+      req.errorObj.type = "Type must be 'Online' or 'In person'";
       return next();
     }
+
     next();
   },
   (req, res, next) => {
@@ -429,7 +434,6 @@ const validateEventQueryParamInput = [
         return next();
       }
       res.locals.name = req.query.name;
-      // console.log(res.locals.name);
     }
 
     next();

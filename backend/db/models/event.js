@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           //Validate that the type of event must be 'Online' or 'In person'
-          isIn: ["Online", "In person"],
+          isIn: [["Online", "In person"]],
         },
       },
       capacity: {

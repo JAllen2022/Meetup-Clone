@@ -437,7 +437,6 @@ router.post(
   requireUserAuth,
   validateEventInput,
   async (req, res, next) => {
-    // Paused until routes for Venues are added
     const {
       venueId,
       name,
