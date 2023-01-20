@@ -89,7 +89,7 @@
 }
 
 .group-details-main-body-left {
-  /* border:1px red solid; */
+  border:1px red solid;
 
   display: flex;
   flex-direction: column;
@@ -107,11 +107,13 @@
   width: 40%;
 }
 .group-details-main-body-right {
+  border:1px red solid;
     width:40%;
     padding-left:40px;
 }
 .group-details-main-body-right-sticky-menu {
   position: sticky;
+  top:1rem;
   width: 100%;
 }
 

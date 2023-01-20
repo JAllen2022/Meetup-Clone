@@ -4,13 +4,16 @@ import { thunkGetSingleGroup, thunkGetGroupEvents } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteModal from "../DeleteModal";
-import EventCards from "./EventCards";
+import About from './About'
+import Events from './Events'
+import Members from './Members'
+import Photos from './Photos'
 import "./GroupPage.css";
 
 const groupNavBar = [
   {
     name: "About",
-    to: "",
+    to: "/about",
   },
   {
     name: "Events",
@@ -26,15 +29,17 @@ const groupNavBar = [
   },
 ];
 
-function GroupPage() {
+function GroupPage({tab}) {
   const { groupId } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
   const group = useSelector((state) => state.groups.singleGroup);
-  const groupEvents = useSelector((state) => state.groups.groupEvents);
+
   const user = useSelector((state) => state.session.user);
   const [showMenu, setShowMenu] = useState(false);
   const closeMenu = () => setShowMenu(false);
+  const groupEvents = useSelector((state) => state.groups.groupEvents);
+  let groupEventsArray = Object.values(groupEvents);
 
   const optionsMember = (
     <div className="profile-button-drop-down-top-half">
@@ -55,6 +60,18 @@ function GroupPage() {
   const editGroup = () => {
     history.push(`/groups/${groupId}/edit`);
   };
+
+  let displayBody = [];
+
+  if (tab === 'about') {
+    displayBody = <About group={group} groupEventsArray={groupEventsArray} />;
+  } else if (tab === 'events') {
+    displayBody = <Events group={group} groupEventsArray={groupEventsArray} />;
+  } else if (tab === 'members') {
+    displayBody = <Members group={group} />
+  } else {
+    displayBody = <Photos group={group} />;
+  }
 
 
   const optionsHost = (
@@ -80,7 +97,6 @@ function GroupPage() {
   const ulRef = useRef();
 
   let groupImage = {};
-  let groupEventsArray = Object.values(groupEvents);
   if (group.GroupImages)
     groupImage = group.GroupImages.find((ele) => ele.preview === true);
 
@@ -198,31 +214,7 @@ function GroupPage() {
       </div>
       <div className="group-details-body-container">
         <div className="group-details-main-body-wrapper">
-          <div className="group-details-main-body-left">
-            <div className="group-details-main-body-title">
-              <h2 className="section-title">What we're about</h2>
-              <p className="group-description">{group.about}</p>
-            </div>
-            <h2>Upcoming Events</h2>
-            <div className="group-details-upcoming-events">
-              {groupEventsArray.map((ele) => (
-                <EventCards event={ele} />
-              ))}
-            </div>
-          </div>
-          <div className="group-details-main-body-right">
-            <div className="group-details-main-body-right-sticky-menu">
-              <div className="group-details-main-body-right-organizer">
-                <h2>Organizers</h2>
-
-                <p>
-                  <i className="fa-solid fa-user fa-solid-profile"></i>
-                  {group.Organizer?.firstName} {group.Organizer?.lastName}
-                </p>
-              </div>
-              <div className="group-detail-main-body-right-members">{}</div>
-            </div>
-          </div>
+             {displayBody}
         </div>
       </div>
     </div>

@@ -35,11 +35,17 @@ function App() {
           <Route path="/groups/:groupId/create-event">
             <CreateAndUpdateEvent />
           </Route>
-          <Route path="/groups/:groupId/edit">
-            <CreateAndUpdateGroup />
+          <Route path="/groups/:groupId/photos">
+            <GroupPage tab={"photos"} />
           </Route>
-          <Route path="/groups/:groupId">
-            <GroupPage />
+          <Route path="/groups/:groupId/members">
+            <GroupPage tab={"members"} />
+          </Route>
+          <Route path="/groups/:groupId/events">
+            <GroupPage tab={"events"} />
+          </Route>
+          <Route path="/groups/:groupId/about">
+            <GroupPage tab={"about"} />
           </Route>
           <Route path="/create-group">
             <CreateAndUpdateGroup />

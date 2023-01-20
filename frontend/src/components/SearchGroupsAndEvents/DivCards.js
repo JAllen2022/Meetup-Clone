@@ -11,7 +11,7 @@ function DivCards({ event, group }) {
 
   const directToGroup = () => {
     if (group) {
-      let directToGroup = `/groups/${group.id}`
+      let directToGroup = `/groups/${group.id}/about`
       history.push(directToGroup)
     } else {
       let directToGroup = `/events/${event.id}`;
