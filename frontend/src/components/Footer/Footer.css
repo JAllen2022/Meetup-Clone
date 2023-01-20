@@ -1,0 +1,24 @@
+.footer-outer-container{
+    color: rgb(246 247 248);
+    background-color: rgb(33 33 33);
+    width:100%;
+    height:8rem;
+    display:flex;
+    justify-content: center;
+}
+
+.footer-inner-container{
+    border-color:1px white solid;
+    width:70%;
+    display: flex;
+}
+.foooter-left-container{
+    border-color:1px white solid;
+    width:50%
+}
+
+.foooter-right-container{
+    border-color:1px white solid;
+
+    width:50%;
+}

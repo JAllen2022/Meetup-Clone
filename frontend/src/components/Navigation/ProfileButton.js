@@ -33,6 +33,7 @@ function ProfileButton({ user, state }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    history.push('/')
   };
 
   const navigateEvent = () => {

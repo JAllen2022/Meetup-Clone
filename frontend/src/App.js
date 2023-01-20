@@ -10,7 +10,7 @@ import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
 import CreateAndUpdateEvent from './components/CreateAndUpdateEvent'
 import EventPage from './components/EventPage';
 import UserHomePage from './components/UserHomePage'
-import Footer from "./Footer";
+import Footer from "./components/Footer";
 
 function App() {
   const dispatch = useDispatch();

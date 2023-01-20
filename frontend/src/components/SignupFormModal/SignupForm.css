@@ -1,12 +1,13 @@
-.signup-outer-div{
-    height:85vh;
-    min-height: 550px;
-    width:350px;
-    display:flex;
-    flex-direction: column;
-    align-items: center;
+.signup-outer-div {
+  height: 85vh;
+  min-height: 550px;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
 }
 
 .extended {
-    min-height:650px;
+  min-height: 650px;
 }

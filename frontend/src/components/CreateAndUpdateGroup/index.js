@@ -50,7 +50,7 @@ function CreateAndUpdateGroup() {
     if (!window.location.href.includes("edit")) {
       dispatch(thunkCreateGroup(payload))
         .then((data) => {
-          history.push(`/groups/${data.payload.id}`);
+          history.push(`/groups/${data.payload.id}/about`);
         })
         .catch(async (res) => {
           const data = await res.json();
