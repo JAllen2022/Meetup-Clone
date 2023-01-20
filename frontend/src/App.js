@@ -10,6 +10,7 @@ import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
 import CreateAndUpdateEvent from './components/CreateAndUpdateEvent'
 import EventPage from './components/EventPage';
 import UserHomePage from './components/UserHomePage'
+import Footer from "./Footer";
 
 function App() {
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ function App() {
           </Route>
         </Switch>
       )}
+      <Footer />
     </>
   );
 }

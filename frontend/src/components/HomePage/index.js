@@ -4,8 +4,9 @@ import { homePageDivElements } from './homePageDivElements';
 import TopRightBlob from "../../assets/SVGFiles/TopRightBlob";
 import BottomLeftBlob from '../../assets/SVGFiles/BottomLeftBlob';
 import MiddleBlob from '../../assets/SVGFiles/MiddleBlob';
-import './HomePage.css'
 import HomeImage from '../../assets/SVGFiles/HomeImage';
+import LinkUpWorks from './LinkUpWorks'
+import './HomePage.css'
 
 
 
@@ -33,6 +34,7 @@ function HomePage() {
               <ImageLinks props={ele} />
             ))}
           </div>
+          <LinkUpWorks />
         </div>
       </>
     );
