@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import SearchGroupsAndEvents from "./components/SearchGroupsAndEvents";
 import GroupPage from './components/GroupPage'
 import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
+import CreateAndUpdateEvent from './components/CreateAndUpdateEvent'
 import EventPage from './components/EventPage'
 
 function App() {
@@ -24,6 +25,9 @@ function App() {
           <Route exact path="/">
             <HomePage />
           </Route>
+          <Route path="/groups/:groupId/create-event">
+            <CreateAndUpdateEvent />
+          </Route>
           <Route path="/groups/:groupId/edit">
             <CreateAndUpdateGroup />
           </Route>
@@ -32,6 +36,9 @@ function App() {
           </Route>
           <Route path="/create-group">
             <CreateAndUpdateGroup />
+          </Route>
+          <Route path="/events/:eventId/edit">
+            <CreateAndUpdateEvent />
           </Route>
           <Route path="/events/:eventId">
             <EventPage />

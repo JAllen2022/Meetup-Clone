@@ -143,7 +143,7 @@ function EventPage() {
               <p>{event.description}</p>
             </div>
             <div>
-              <h3>Attendees</h3>
+              <h3>Attendees ({event.numAttending})</h3>
             </div>
             <div className="event-attendees">
               <div className="event-attendees-profile-card">
