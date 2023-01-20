@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import DivCards from "./DivCards";
 import "./SearchGroupsAndEvents.css";
 
-function SearchGroupsAndEvents({ defaultTab }) {
+function SearchGroupsAndEvents({ defaultTab, home }) {
   const [selectedTabGroup, setSelectedTabGroup] = useState(
     defaultTab === "groups" ? true : false
   );
@@ -27,7 +27,8 @@ function SearchGroupsAndEvents({ defaultTab }) {
   const clickedGroup = (e) => {
     if (selectedTabEvent) {
       setSelectedTabEvent(false);
-      history.push("/search/groups");
+      if (home) history.push("/groups");
+      else history.push("/search/groups");
     }
     setSelectedTabGroup(true);
   };
@@ -35,7 +36,8 @@ function SearchGroupsAndEvents({ defaultTab }) {
   const clickedEvent = (e) => {
     if (selectedTabGroup) {
       setSelectedTabGroup(false);
-      history.push("/search/events");
+      if (home) history.push("/events");
+      else history.push("/search/events");
     }
     setSelectedTabEvent(true);
   };

@@ -8,7 +8,8 @@ import SearchGroupsAndEvents from "./components/SearchGroupsAndEvents";
 import GroupPage from './components/GroupPage'
 import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
 import CreateAndUpdateEvent from './components/CreateAndUpdateEvent'
-import EventPage from './components/EventPage'
+import EventPage from './components/EventPage';
+import UserHomePage from './components/UserHomePage'
 
 function App() {
   const dispatch = useDispatch();
@@ -24,6 +25,12 @@ function App() {
         <Switch>
           <Route exact path="/">
             <HomePage />
+          </Route>
+          <Route exact path="/groups">
+            <UserHomePage defaultTab={"groups"} />
+          </Route>
+          <Route exact path="/events">
+            <UserHomePage defaultTab={"events"} />
           </Route>
           <Route path="/groups/:groupId/create-event">
             <CreateAndUpdateEvent />

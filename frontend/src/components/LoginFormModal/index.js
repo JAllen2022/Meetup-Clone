@@ -1,12 +1,14 @@
 // frontend/src/components/LoginFormModal/index.js
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import "./LoginForm.css";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
@@ -33,7 +35,10 @@ function LoginFormModal() {
     e.preventDefault();
 
     return dispatch(sessionActions.login({ credential:'demo@user.io', password:'password' })).then(
-      closeModal
+      () => {
+        closeModal();
+        history.push('/groups')
+      }
     );
   }
 
