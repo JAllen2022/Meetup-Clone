@@ -6,6 +6,7 @@ const CREATE_GROUP = "groups/CREATE_GROUP";
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
+const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
 
 const initialState = {
   allGroups: {},
@@ -46,6 +47,11 @@ export const updateGroup = (group) => ({
 export const deleteGroup = (groupId) => ({
   type: DELETE_GROUP,
   payload: groupId,
+});
+
+export const addGroupImage = (newImage, groupId) => ({
+  type: ADD_GROUP_IMAGE,
+  payload: newImage,
 });
 
 /* ------ SELECTORS ------ */
@@ -109,6 +115,18 @@ export const thunkDeleteGroup = (groupId) => async (dispatch) => {
   }
 };
 
+export const thunkAddGroupImage = (newImage, groupId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/groups/${groupId}/images`, {
+    method: "POST",
+    body: JSON.stringify(newImage),
+  });
+
+  if (response.ok) {
+    const imgObj = await response.json();
+    return dispatch(addGroupImage(imgObj));
+  }
+};
+
 /* ------ REDUCER ------ */
 export default function groupReducer(state = initialState, action) {
   const newState = { ...state };
@@ -138,19 +156,27 @@ export default function groupReducer(state = initialState, action) {
 
     case UPDATE_GROUP:
       newState.allGroups = { ...newState.allGroups };
-      newState.allGroups[action.payload.id]={...newState.allGroups[action.payload.id]}
+      newState.allGroups[action.payload.id] = {
+        ...newState.allGroups[action.payload.id],
+      };
       newState.allGroups[action.payload.id] = action.payload;
       newState.singleGroup = action.payload;
       return newState;
 
     case DELETE_GROUP:
       if (newState.allGroups[action.payload]) {
-        newState.allGroups = { ...newState.allGroups }
+        newState.allGroups = { ...newState.allGroups };
         delete newState.allGroups[action.payload];
       }
       newState.singleGroup = {};
       return newState;
+    case ADD_GROUP_IMAGE:
+      newState.singleGroup = { ...newState.singleGroup };
 
+      newState.singleGroup.GroupImages = newState.singleGroup.GroupImages
+        ? [...newState.singleGroup.GroupImages, action.payload]
+        : [action.payload];
+      return newState;
     default:
       return state;
   }

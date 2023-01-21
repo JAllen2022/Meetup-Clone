@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import {
+  thunkAddEventImage,
   thunkCreateEvent,
   thunkEditEvent,
 } from "../../store/events";
@@ -15,9 +16,7 @@ function CreateAndUpdateEvent() {
   const [capacity, setCapacity] = useState(0);
   const [price, setPrice] = useState(0);
   const [venueId, setVenueId] = useState("");
-  // Create ability to add a new venue as well
-  //   const [city, setCity] = useState("");
-  //   const [state, setState] = useState("");
+  const [preview, setPreview] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [eventImage, setEventImage] = useState("");
@@ -31,33 +30,21 @@ function CreateAndUpdateEvent() {
 
   useEffect(() => {
     if (editPage) {
+
+      const start = new Date(event.startDate).toJSON();
+      const end = new Date(event.endDate).toJSON()
       setVenueId(event.venueId ? event.venueId : "");
       setName(event.name ? event.name : "");
       setType(event.type ? event.type : "");
       setCapacity(event.capacity ? event.capacity : false);
       setPrice(event.price ? event.price : false);
       setDescription(event.description ? event.description : false);
-      setStartDate(event.startDate ? event.startDate : false);
-      setEndDate(event.endDate ? event.endDate : false);
+      setStartDate(event.startDate ? start.slice(0, 16) : false);
+      setEndDate(event.endDate ? end.slice(0,16) : false);
     }
 
+
   }, [event]);
-     console.log(
-       "checking all information here",
-       {
-         venueId,
-         name,
-         type,
-         capacity,
-         price,
-         description,
-         startDate,
-         endDate,
-       },
-       event.startDate,
-       event.endDate,
-       event.venueId
-     );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,11 +61,20 @@ function CreateAndUpdateEvent() {
       endDate,
     };
 
+    const imagePayload = {
+      url: eventImage,
+      preview
+    };
+
     setErrors([]);
     if (!editPage) {
       dispatch(thunkCreateEvent(payload, groupId))
         .then((data) => {
-          history.push(`/events/${data.payload.id}`);
+          dispatch(thunkAddEventImage(imagePayload, data.payload.id)).then(
+            () => {
+              history.push(`/events/${data.payload.id}`);
+            }
+          );
         })
         .catch(async (res) => {
           const data = await res.json();
@@ -86,7 +82,7 @@ function CreateAndUpdateEvent() {
           else setErrors([data.message]);
         });
     } else {
-      dispatch(thunkEditEvent(payload))
+      dispatch(thunkEditEvent(payload, eventId))
         .then((data) => {
           history.push(`/events/${data.payload.id}`);
         })
@@ -130,7 +126,7 @@ function CreateAndUpdateEvent() {
           <label className="form-label">Capacity</label>
           <input
             className="form-inputs"
-            type="text"
+            type="number"
             value={capacity}
             onChange={(e) => setCapacity(e.target.value)}
           ></input>
@@ -173,9 +169,16 @@ function CreateAndUpdateEvent() {
             value={venueId}
             onChange={(e) => setVenueId(e.target.value)}
           ></input>
-              </div>
-
-        {/* Will add this feature elsewhere
+        </div>
+        <div>
+          <label className="form-label">Description</label>
+          <textarea
+            className="form-inputs"
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
         <div>
           <label className="form-label">Event Image</label>
           <input
@@ -185,15 +188,15 @@ function CreateAndUpdateEvent() {
             value={eventImage}
             onChange={(e) => setEventImage(e.target.value)}
           ></input>
-        </div> */}
-        <div>
-          <label className="form-label">Description</label>
-          <textarea
-            className="form-inputs"
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
+        </div>
+        <div className="form-private-checkmark-container">
+          <label htmlFor="private">Preview Image: </label>
+          <input
+            type="checkbox"
+            id="private"
+            checked={preview}
+            onChange={(e) => setPreview((prevState) => !prevState)}
+          />
         </div>
         <div className="form-radio">
           <label htmlFor="online-option">Online</label>

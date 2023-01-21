@@ -36,15 +36,8 @@ router.get("/", async (req, res, next) => {
       {
         model: Membership,
         attributes: [],
-      },
-      {
-        model: GroupImage,
-        attributes: [],
-      },
-    ],
-    attributes: {
-      include: [[sequelize.col("url"), "previewImage"]],
-    },
+      }
+    ]
   });
   const returnArray = [];
 
@@ -57,7 +50,15 @@ router.get("/", async (req, res, next) => {
         groupId: group.id,
       },
     });
+
+    const previewImage = await GroupImage.findOne({
+      where: {
+        preview: true,
+        groupId:group.id,
+      },
+    });
     group.numMembers = memberCount;
+    group.previewImage = previewImage ? previewImage.url :null;
     returnArray.push(group);
   }
 

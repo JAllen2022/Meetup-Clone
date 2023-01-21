@@ -74,6 +74,7 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     const eventImage = await EventImage.findOne({
       where: {
         eventId: event.id,
+        preview:true
       },
       raw: true,
     });
@@ -462,7 +463,7 @@ router.get("/:eventId", validateReqParamEventId, async (req, res, next) => {
   returnEvent.EventImages = eventImages;
   delete returnEvent.createdAt;
   delete returnEvent.updatedAt;
-  if (!imageUrl) returnEvent.Group.previewImage = imageUrl.url;
+  if (!imageUrl) returnEvent.Group.previewImage = null;
   else returnEvent.Group.previewImage = imageUrl.url;
 
   res.json(returnEvent);

@@ -4,8 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import {
   thunkCreateGroup,
   thunkUpdateGroup,
-  resetSingleGroup,
-  thunkGetSingleGroup,
+  thunkAddGroupImage,
 } from "../../store/groups";
 import "./CreateAndUpdateGroup.css";
 
@@ -14,9 +13,11 @@ function CreateAndUpdateGroup() {
   const [about, setAbout] = useState("");
   const [type, setType] = useState("");
   const [privateVar, setPrivateVar] = useState(false);
+  const [preview, setPreview] = useState(false);
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [errors, setErrors] = useState([]);
+  const [groupImage, setGroupImage] = useState("");
   const group = useSelector((state) => state.groups.singleGroup);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -46,27 +47,37 @@ function CreateAndUpdateGroup() {
       state,
     };
 
+    const imagePayload = {
+      url: groupImage,
+      preview: preview,
+    };
+
     setErrors([]);
     if (!window.location.href.includes("edit")) {
       dispatch(thunkCreateGroup(payload))
         .then((data) => {
-          history.push(`/groups/${data.payload.id}/about`);
+          dispatch(thunkAddGroupImage(imagePayload, data.payload.id)).then(
+            (res) => {
+              console.log("checking returned data", res);
+              history.push(`/groups/${data.payload.id}/about`);
+            }
+          );
         })
         .catch(async (res) => {
           const data = await res.json();
           if (data && data.errors) setErrors(Object.values(data.errors));
           else setErrors([data.message]);
+
+
         });
     } else {
-      dispatch(thunkUpdateGroup(payload))
-        .then((data) => {
-          history.push(`/groups/${data.payload.id}`);
-        })
-        .catch(async (res) => {
-          const data = await res.json();
-          if (data && data.errors) setErrors(Object.values(data.errors));
-          else setErrors([data.message]);
-        });
+      dispatch(thunkUpdateGroup(payload)).catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) setErrors(Object.values(data.errors));
+        else setErrors([data.message]);
+      });
+
+      // history.push(`/groups/${data.payload.id}`);
     }
   };
 
@@ -124,6 +135,25 @@ function CreateAndUpdateGroup() {
             value={about}
             onChange={(e) => setAbout(e.target.value)}
           ></textarea>
+        </div>
+        <div>
+          <label className="form-label">Group Image</label>
+          <input
+            className="form-inputs"
+            type="url"
+            placeholder="https://myImageLink.url (note 'https://' is required)"
+            value={groupImage}
+            onChange={(e) => setGroupImage(e.target.value)}
+          ></input>
+        </div>
+        <div className="form-private-checkmark-container">
+          <label htmlFor="private">Preview Image: </label>
+          <input
+            type="checkbox"
+            id="private"
+            checked={preview}
+            onChange={(e) => setPreview((prevState) => !prevState)}
+          />
         </div>
         <div className="form-radio">
           <label htmlFor="online-option">Online</label>

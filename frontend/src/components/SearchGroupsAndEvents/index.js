@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import DivCards from "./DivCards";
 import "./SearchGroupsAndEvents.css";
-
+ // Call this Search
 function SearchGroupsAndEvents({ defaultTab, home }) {
   const [selectedTabGroup, setSelectedTabGroup] = useState(
     defaultTab === "groups" ? true : false
@@ -43,40 +43,47 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
   };
 
   useEffect(() => {
-    if (selectedTabGroup && !groupArray.length) {
+    if (
+      (defaultTab === "groups" && !groupArray.length) ||
+      (selectedTabGroup && !groupArray.length)
+    ) {
       dispatch(thunkGetAllGroups());
-    } else if (selectedTabGroup && !eventsArray.length) {
+    } else if (
+      (defaultTab === "events" && !eventsArray.length) ||
+      (selectedTabGroup && !eventsArray.length)
+    ) {
       dispatch(thunkGetAllEvents());
     }
   }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);
 
-  return (
-    <div className="search-main-outer-body">
-      <div className="search-main-inner-body">
-        <div className="all-groups-tab-event-group">
-          <div
-            onClick={clickedGroup}
-            className={`all-groups-tab-group ${
-              selectedTabGroup ? "selected" : ""
-            }`}
-          >
-            Groups
+  if (!groupArray.length && !eventsArray.length) return null;
+    return (
+      <div className="search-main-outer-body">
+        <div className="search-main-inner-body">
+          <div className="all-groups-tab-event-group">
+            <div
+              onClick={clickedGroup}
+              className={`all-groups-tab-group ${
+                selectedTabGroup ? "selected" : ""
+              }`}
+            >
+              Groups
+            </div>
+            <div
+              onClick={clickedEvent}
+              className={`all-groups-tab-group ${
+                selectedTabEvent ? "selected" : ""
+              }`}
+            >
+              Events
+            </div>
           </div>
-          <div
-            onClick={clickedEvent}
-            className={`all-groups-tab-group ${
-              selectedTabEvent ? "selected" : ""
-            }`}
-          >
-            Events
-          </div>
+          {selectedTabGroup
+            ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
+            : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />)}
         </div>
-      {selectedTabGroup
-        ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
-        : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />)}
-        </div>
-    </div>
-  );
+      </div>
+    );
 }
 
 export default SearchGroupsAndEvents;

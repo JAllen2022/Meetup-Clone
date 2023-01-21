@@ -1,6 +1,9 @@
 import { useParams, NavLink, useHistory } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import { thunkGetSingleGroup, thunkGetGroupEvents } from "../../store/groups";
+import {
+  thunkGetSingleGroup,
+  thunkGetGroupEvents,
+} from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteModal from "../DeleteModal";

@@ -2,16 +2,15 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_EVENTS = "events/GET_ALL_EVENTS";
 const GET_SINGLE_EVENT = "events/GET_SINGLE_EVENT";
-const CREATE_EVENT = 'events/CREATE_EVENT'
+const CREATE_EVENT = "events/CREATE_EVENT";
 const EDIT_EVENT = "events/EDIT_EVENT";
-const ADD_EVENT_IMAGE = 'events/ADD_EVENT_IMAGE';
-const RESET_SINGLE_EVENT = 'events/RESET_SINGLE_EVENT';
-const DELETE_EVENT = 'events/DELETE_EVENT';
+const ADD_EVENT_IMAGE = "events/ADD_EVENT_IMAGE";
+const RESET_SINGLE_EVENT = "events/RESET_SINGLE_EVENT";
+const DELETE_EVENT = "events/DELETE_EVENT";
 
 const initialState = {
   allEvents: {},
-  singleEvent: {
-  },
+  singleEvent: {},
 };
 
 /* ----- ACTIONS ------ */
@@ -27,26 +26,26 @@ export const getSingleEvent = (event) => ({
 
 export const createEvent = (event) => ({
   type: CREATE_EVENT,
-  payload: event
-})
+  payload: event,
+});
 export const editEvent = (event) => ({
   type: EDIT_EVENT,
   payload: event,
 });
 
-export const addEventImage = (eventImage,eventId) => ({
+export const addEventImage = (eventImage, eventId) => ({
   type: ADD_EVENT_IMAGE,
-  payload: { eventImage, eventId }
-})
+  payload: { eventImage, eventId },
+});
 
 export const resetSingleEvent = () => ({
-  type: RESET_SINGLE_EVENT
-})
+  type: RESET_SINGLE_EVENT,
+});
 
 export const deleteEvent = (eventId) => ({
   type: DELETE_EVENT,
-  payload: eventId
-})
+  payload: eventId,
+});
 
 /* ------ SELECTORS ------ */
 export const thunkGetAllEvents = () => async (dispatch) => {
@@ -69,20 +68,20 @@ export const thunkGetSingleEvent = (eventId) => async (dispatch) => {
 
 export const thunkCreateEvent = (event, groupId) => async (dispatch) => {
   const response = await csrfFetch(`/api/groups/${groupId}/events`, {
-    method: 'POST',
-    body: JSON.stringify(event)
+    method: "POST",
+    body: JSON.stringify(event),
   });
 
   if (response.ok) {
     const eventImage = await response.json();
     return dispatch(createEvent(eventImage));
   }
-}
+};
 
 export const thunkEditEvent = (event, eventId) => async (dispatch) => {
   const response = await csrfFetch(`/api/events/${eventId}`, {
     method: "PUT",
-    body: JSON.stringify(event)
+    body: JSON.stringify(event),
   });
 
   if (response.ok) {
@@ -91,27 +90,28 @@ export const thunkEditEvent = (event, eventId) => async (dispatch) => {
   }
 };
 
-export const thunkAddEventImage = (imageURL, eventId) => async (dispatch) => {
+export const thunkAddEventImage = (imageObj, eventId) => async (dispatch) => {
   const response = await csrfFetch(`/api/events/${eventId}/images`, {
-    method:'POST'
-  })
+    method: "POST",
+    body: JSON.stringify(imageObj),
+  });
 
   if (response.ok) {
     const eventImage = await response.json();
     dispatch(addEventImage(eventImage, eventId));
   }
-}
+};
 
 export const thunkDeleteEvent = (eventId) => async (dispatch) => {
-  console.log('checking eventId', eventId)
+  console.log("checking eventId", eventId);
   const response = await csrfFetch(`/api/events/${eventId}`, {
-    method:'DELETE'
-  })
+    method: "DELETE",
+  });
 
   if (response.ok) {
     return dispatch(deleteEvent(eventId));
   }
-}
+};
 
 /* ------ REDUCER ------ */
 export default function eventsReducer(state = initialState, action) {
@@ -126,31 +126,31 @@ export default function eventsReducer(state = initialState, action) {
     case CREATE_EVENT:
       newState.allEvents = { ...newState.allEvents };
       newState.allEvents[action.payload.id] = action.payload;
-      newState.singleEvent = {...newState.singleEvent, ...action.payload};
+      newState.singleEvent = { ...newState.singleEvent, ...action.payload };
       return newState;
     case EDIT_EVENT:
       newState.allEvents = { ...newState.allEvents };
       newState.allEvents[action.payload.id] = action.payload;
-      newState.singleEvent = {...newState.singleEvent, ...action.payload};
+      newState.singleEvent = { ...newState.singleEvent, ...action.payload };
       return newState;
     case ADD_EVENT_IMAGE:
       const { eventImage, eventId } = action.payload;
       newState.allEvents = { ...newState.allEvents };
-      newState.allEvents[eventId] = { ...newState.allEvents[eventId] }
+      newState.allEvents[eventId] = { ...newState.allEvents[eventId] };
       if (newState.allEvents[eventId].EventImages) {
         newState.allEvents[eventId].EventImages = [
           ...newState.allEvents[eventId].EventImages,
         ];
         newState.allEvents[eventId].EventImages.push(eventImage);
       } else if (!newState.allEvents[eventId].EventImages) {
-        newState.allEvents[eventId].EventImages=[eventImage];
+        newState.allEvents[eventId].EventImages = [eventImage];
       }
       return newState;
     case RESET_SINGLE_EVENT:
-      newState.singleEvent = {}
+      newState.singleEvent = {};
       return newState;
     case DELETE_EVENT:
-      newState.allEvents={...newState.allEvents}
+      newState.allEvents = { ...newState.allEvents };
       newState.allEvents[action.payload] = {
         ...newState.allEvents[action.payload],
       };

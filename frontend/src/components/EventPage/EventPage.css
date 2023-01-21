@@ -48,6 +48,8 @@
 
 .event-body-left-event-details {
   margin-top: 2rem;
+  overflow: hidden;
+  overflow-wrap: break-word;
   /* border:1px red solid; */
 }
 
