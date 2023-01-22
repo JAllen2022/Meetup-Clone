@@ -28,9 +28,9 @@ function CreateAndUpdateEvent() {
 
   const editPage = window.location.href.includes("edit") ? true : false;
 
+
   useEffect(() => {
     if (editPage) {
-
       const start = new Date(event.startDate).toJSON();
       const end = new Date(event.endDate).toJSON()
       setVenueId(event.venueId ? event.venueId : "");
@@ -179,25 +179,32 @@ function CreateAndUpdateEvent() {
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
-        <div>
-          <label className="form-label">Event Image</label>
-          <input
-            className="form-inputs"
-            type="url"
-            placeholder="www.image.url"
-            value={eventImage}
-            onChange={(e) => setEventImage(e.target.value)}
-          ></input>
-        </div>
-        <div className="form-private-checkmark-container">
-          <label htmlFor="private">Preview Image: </label>
-          <input
-            type="checkbox"
-            id="private"
-            checked={preview}
-            onChange={(e) => setPreview((prevState) => !prevState)}
-          />
-        </div>
+
+        {editPage ? (
+          ""
+        ) : (
+          <>
+            <div>
+              <label className="form-label">Event Image</label>
+              <input
+                className="form-inputs"
+                type="url"
+                placeholder="www.image.url"
+                value={eventImage}
+                onChange={(e) => setEventImage(e.target.value)}
+              ></input>
+            </div>
+            <div className="form-private-checkmark-container">
+              <label htmlFor="private">Preview Image: </label>
+              <input
+                type="checkbox"
+                id="private"
+                checked={preview}
+                onChange={(e) => setPreview((prevState) => !prevState)}
+              />
+            </div>
+          </>
+        )}
         <div className="form-radio">
           <label htmlFor="online-option">Online</label>
           <input

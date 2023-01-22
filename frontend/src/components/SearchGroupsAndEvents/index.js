@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { thunkGetAllGroups } from "../../store/groups";
-import { thunkGetAllEvents } from "../../store/events";
+import { resetGroupEvents, resetSingleGroup, thunkGetAllGroups } from "../../store/groups";
+import { resetSingleEvent, thunkGetAllEvents } from "../../store/events";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import DivCards from "./DivCards";
@@ -44,7 +44,7 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
 
   useEffect(() => {
     if (
-      (defaultTab === "groups" && !groupArray.length) ||
+      (defaultTab === "groups" && !groupArray) ||
       (selectedTabGroup && !groupArray.length)
     ) {
       dispatch(thunkGetAllGroups());
@@ -54,6 +54,9 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
     ) {
       dispatch(thunkGetAllEvents());
     }
+    dispatch(resetGroupEvents());
+    dispatch(resetSingleGroup());
+    dispatch(resetSingleEvent());
   }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);
 
   if (!groupArray.length && !eventsArray.length) return null;

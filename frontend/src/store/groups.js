@@ -1,9 +1,11 @@
 import { csrfFetch } from "./csrf";
+import {deleteAllGroupEvents} from './events'
 const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_EVENTS = "groups/GET_GROUP_EVENTS";
 const CREATE_GROUP = "groups/CREATE_GROUP";
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
+const RESET_GROUP_EVENTS = 'groups/RESET_GROUP_EVENTS';
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
@@ -39,6 +41,10 @@ export const resetSingleGroup = () => ({
   type: RESET_SINGLE_GROUP,
 });
 
+export const resetGroupEvents = () => ({
+  type: RESET_GROUP_EVENTS,
+});
+
 export const updateGroup = (group) => ({
   type: UPDATE_GROUP,
   payload: group,
@@ -51,7 +57,7 @@ export const deleteGroup = (groupId) => ({
 
 export const addGroupImage = (newImage, groupId) => ({
   type: ADD_GROUP_IMAGE,
-  payload: newImage,
+  payload: {newImage,groupId},
 });
 
 /* ------ SELECTORS ------ */
@@ -111,6 +117,7 @@ export const thunkDeleteGroup = (groupId) => async (dispatch) => {
     method: "DELETE",
   });
   if (response.ok) {
+    dispatch(deleteAllGroupEvents(groupId));
     return dispatch(deleteGroup(groupId));
   }
 };
@@ -123,7 +130,7 @@ export const thunkAddGroupImage = (newImage, groupId) => async (dispatch) => {
 
   if (response.ok) {
     const imgObj = await response.json();
-    return dispatch(addGroupImage(imgObj));
+    return dispatch(addGroupImage(imgObj, groupId));
   }
 };
 
@@ -136,31 +143,44 @@ export default function groupReducer(state = initialState, action) {
       return newState;
 
     case GET_SINGLE_GROUP:
+      console.log("checking previous state for get single group", state);
+
       newState.singleGroup = action.payload;
       return newState;
 
     case GET_GROUP_EVENTS: {
+      console.log("checking previous state for get events", state);
       const newObj = {};
       const events = action.payload.Events;
       events.map((ele) => (newObj[ele.id] = ele));
       newState.groupEvents = newObj;
       return newState;
     }
+
     case CREATE_GROUP:
-      newState.singleGroup = action.payload;
+      if (Object.values(newState.allGroups).length) {
+        newState.allGroups[action.payload.id] = action.payload;
+        console.log("checking all groups", newState);
+        console.log("checking all action.payload", action.payload);
+      }
       return newState;
 
     case RESET_SINGLE_GROUP:
       newState.singleGroup = {};
       return newState;
 
+    case RESET_GROUP_EVENTS:
+      newState.groupEvents = {};
+      return newState;
+
     case UPDATE_GROUP:
-      newState.allGroups = { ...newState.allGroups };
-      newState.allGroups[action.payload.id] = {
-        ...newState.allGroups[action.payload.id],
-      };
-      newState.allGroups[action.payload.id] = action.payload;
-      newState.singleGroup = action.payload;
+      if (newState.allGroups) {
+        newState.allGroups = { ...state.allGroups };
+        newState.allGroups[action.payload.id] = {
+          ...state.allGroups[action.payload.id],
+        };
+        newState.allGroups[action.payload.id] = {...newState.allGroups[action.payload.id],...action.payload};
+      }
       return newState;
 
     case DELETE_GROUP:
@@ -171,11 +191,13 @@ export default function groupReducer(state = initialState, action) {
       newState.singleGroup = {};
       return newState;
     case ADD_GROUP_IMAGE:
-      newState.singleGroup = { ...newState.singleGroup };
-
-      newState.singleGroup.GroupImages = newState.singleGroup.GroupImages
-        ? [...newState.singleGroup.GroupImages, action.payload]
-        : [action.payload];
+      // If new group created has an image preview property of true, then add it to all groups
+      if (Object.values(newState.allGroups).length) {
+        const { newImage, groupId } = action.payload;
+        console.log("groupId, new Image", newImage, groupId);
+        if (newImage.preview)
+          newState.allGroups[groupId].previewImage = newImage.url;
+      }
       return newState;
     default:
       return state;

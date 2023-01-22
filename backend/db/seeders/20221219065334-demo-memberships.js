@@ -10,64 +10,24 @@ if (process.env.NODE_ENV === "production") {
 
 const demo_memberships = [
   {
-    userId: 1,
+    userId: 12,
     groupId: 1,
     status: "host",
   },
   {
-    userId: 2,
-    groupId: 2,
-    status: "host",
+    userId: 13,
+    groupId: 1,
+    status: "co-host",
   },
   {
-    userId: 5,
-    groupId: 3,
-    status: "host",
-  },
-  {
-    userId: 8,
-    groupId: 4,
-    status: "host",
-  },
-  {
-    userId: 3,
-    groupId: 3,
-    status: "member",
+    userId: 14,
+    groupId: 1,
+    status: "co-host",
   },
   {
     userId: 1,
     groupId: 2,
-    status: "member",
-  },
-  {
-    userId: 4,
-    groupId: 4,
-    status: "member",
-  },
-  {
-    userId: 5,
-    groupId: 2,
-    status: "member",
-  },
-  {
-    userId: 6,
-    groupId: 2,
-    status: "member",
-  },
-  {
-    userId: 7,
-    groupId: 3,
-    status: "pending",
-  },
-  {
-    userId: 1,
-    groupId: 2,
-    status: "member",
-  },
-  {
-    userId: 1,
-    groupId: 3,
-    status: "member",
+    status: "host",
   },
   {
     userId: 1,

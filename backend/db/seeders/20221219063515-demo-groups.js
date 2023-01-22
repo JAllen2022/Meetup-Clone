@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "production") {
 
 const demo_groups = [
   {
-    organizerId: 1,
+    organizerId: 12,
     name: "Club Supra",
     about: `A club for Supra owners. IS THAT A SUPRA? We're here to answer that question. Car meets are every weekend at Treasure Island. Group occassionally does group trips down Highway 1`,
     type: "In person",
@@ -19,7 +19,7 @@ const demo_groups = [
     state: "CA",
   },
   {
-    organizerId: 2,
+    organizerId: 1,
     name: "Stonk Traders United",
     about:
       "Group for investors and the like. Any level of knowledge welcome. A group of traders meet daily and we have group meetings/networking sessions frequently",
@@ -34,7 +34,7 @@ const demo_groups = [
     about:
       "We are a running group based in San Francisco. Running groups meet throughout the week at various locations - all skill levels welcome - no runner is left behind",
     type: "In person",
-    private: false,
+    private: true,
     city: "San Francisco",
     state: "CA",
   },

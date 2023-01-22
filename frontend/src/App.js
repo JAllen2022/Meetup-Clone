@@ -45,6 +45,9 @@ function App() {
           <Route path="/groups/:groupId/events">
             <GroupPage tab={"events"} />
           </Route>
+          <Route path="/groups/:groupId/edit">
+            <CreateAndUpdateGroup />
+          </Route>
           <Route path="/groups/:groupId/about">
             <GroupPage tab={"about"} />
           </Route>

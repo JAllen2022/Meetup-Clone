@@ -7,8 +7,8 @@ import {
   thunkAddGroupImage,
 } from "../../store/groups";
 import "./CreateAndUpdateGroup.css";
-
 function CreateAndUpdateGroup() {
+  console.log('we made it here1')
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [type, setType] = useState("");
@@ -26,6 +26,8 @@ function CreateAndUpdateGroup() {
   const editPage = window.location.href.includes("edit") ? true : false;
 
   useEffect(() => {
+console.log("we made it here2");
+
     setName(group.name ? group.name : "");
     setAbout(group.about ? group.about : "");
     setCity(group.city ? group.city : "");
@@ -56,9 +58,9 @@ function CreateAndUpdateGroup() {
     if (!window.location.href.includes("edit")) {
       dispatch(thunkCreateGroup(payload))
         .then((data) => {
+
           dispatch(thunkAddGroupImage(imagePayload, data.payload.id)).then(
             (res) => {
-              console.log("checking returned data", res);
               history.push(`/groups/${data.payload.id}/about`);
             }
           );
@@ -71,13 +73,13 @@ function CreateAndUpdateGroup() {
 
         });
     } else {
-      dispatch(thunkUpdateGroup(payload)).catch(async (res) => {
+      dispatch(thunkUpdateGroup(payload)).then((data)=>history.push(`/groups/${data.payload.id}/about`)).catch(async (res) => {
         const data = await res.json();
         if (data && data.errors) setErrors(Object.values(data.errors));
         else setErrors([data.message]);
       });
 
-      // history.push(`/groups/${data.payload.id}`);
+      //
     }
   };
 
@@ -136,25 +138,29 @@ function CreateAndUpdateGroup() {
             onChange={(e) => setAbout(e.target.value)}
           ></textarea>
         </div>
-        <div>
-          <label className="form-label">Group Image</label>
-          <input
-            className="form-inputs"
-            type="url"
-            placeholder="https://myImageLink.url (note 'https://' is required)"
-            value={groupImage}
-            onChange={(e) => setGroupImage(e.target.value)}
-          ></input>
-        </div>
-        <div className="form-private-checkmark-container">
-          <label htmlFor="private">Preview Image: </label>
-          <input
-            type="checkbox"
-            id="private"
-            checked={preview}
-            onChange={(e) => setPreview((prevState) => !prevState)}
-          />
-        </div>
+        {!editPage && (
+          <>
+            <div>
+              <label className="form-label">Group Image</label>
+              <input
+                className="form-inputs"
+                type="url"
+                placeholder="https://myImageLink.url (note 'https://' is required)"
+                value={groupImage}
+                onChange={(e) => setGroupImage(e.target.value)}
+              ></input>
+            </div>
+            <div className="form-private-checkmark-container">
+              <label htmlFor="private">Preview Image: </label>
+              <input
+                type="checkbox"
+                id="private"
+                checked={preview}
+                onChange={(e) => setPreview((prevState) => !prevState)}
+              />
+            </div>
+          </>
+        )}
         <div className="form-radio">
           <label htmlFor="online-option">Online</label>
           <input

@@ -7,6 +7,7 @@ const EDIT_EVENT = "events/EDIT_EVENT";
 const ADD_EVENT_IMAGE = "events/ADD_EVENT_IMAGE";
 const RESET_SINGLE_EVENT = "events/RESET_SINGLE_EVENT";
 const DELETE_EVENT = "events/DELETE_EVENT";
+const DELETE_ALL_GROUP_EVENTS = "events/DELETE_ALL_GROUP_EVENTS";
 
 const initialState = {
   allEvents: {},
@@ -45,6 +46,11 @@ export const resetSingleEvent = () => ({
 export const deleteEvent = (eventId) => ({
   type: DELETE_EVENT,
   payload: eventId,
+});
+
+export const deleteAllGroupEvents = (groupId) => ({
+  type: DELETE_ALL_GROUP_EVENTS,
+  payload: groupId,
 });
 
 /* ------ SELECTORS ------ */
@@ -124,38 +130,50 @@ export default function eventsReducer(state = initialState, action) {
       newState.singleEvent = action.payload;
       return newState;
     case CREATE_EVENT:
-      newState.allEvents = { ...newState.allEvents };
+      newState.allEvents = { ...state.allEvents };
       newState.allEvents[action.payload.id] = action.payload;
-      newState.singleEvent = { ...newState.singleEvent, ...action.payload };
+      newState.singleEvent = action.payload;
       return newState;
     case EDIT_EVENT:
-      newState.allEvents = { ...newState.allEvents };
-      newState.allEvents[action.payload.id] = action.payload;
-      newState.singleEvent = { ...newState.singleEvent, ...action.payload };
+      newState.allEvents = { ...state.allEvents };
+      newState.allEvents[action.payload.id] = {
+        ...state.allEvents[action.payload.id],
+        ...action.payload,
+      };
       return newState;
     case ADD_EVENT_IMAGE:
       const { eventImage, eventId } = action.payload;
-      newState.allEvents = { ...newState.allEvents };
-      newState.allEvents[eventId] = { ...newState.allEvents[eventId] };
-      if (newState.allEvents[eventId].EventImages) {
-        newState.allEvents[eventId].EventImages = [
-          ...newState.allEvents[eventId].EventImages,
-        ];
-        newState.allEvents[eventId].EventImages.push(eventImage);
-      } else if (!newState.allEvents[eventId].EventImages) {
-        newState.allEvents[eventId].EventImages = [eventImage];
+      if (eventImage.preview) {
+        newState.allEvents = { ...state.allEvents };
+        newState.allEvents[eventId] = { ...state.allEvents[eventId] };
+        newState.allEvents[eventId].previewImage = eventImage.url;
       }
       return newState;
     case RESET_SINGLE_EVENT:
       newState.singleEvent = {};
       return newState;
     case DELETE_EVENT:
-      newState.allEvents = { ...newState.allEvents };
+      newState.allEvents = { ...state.allEvents };
       newState.allEvents[action.payload] = {
-        ...newState.allEvents[action.payload],
+        ...state.allEvents[action.payload],
       };
       delete newState.allEvents[action.payload];
-      newState.singleEvent = {};
+      return newState;
+    case DELETE_ALL_GROUP_EVENTS:
+      newState.allEvents = { ...state.allEvents };
+      const groupId = action.payload;
+      const eventIdsToDelete = [];
+      Object.values(newState.allEvents).forEach((event) => {
+        if (event.Group && (event.Group.id === groupId)) {
+          eventIdsToDelete.push(event.id);
+        } else if (event.groupId && (event.groupId === groupId)) {
+          eventIdsToDelete.push(event.id);
+        }
+      });
+      eventIdsToDelete.forEach((eventId) => {
+        newState.allEvents[eventId] = { ...state.allEvents[eventId] };
+        delete newState.allEvents[eventId];
+      });
       return newState;
     default:
       return newState;
