@@ -13,9 +13,11 @@ function About({ group, groupEventsArray }) {
         </div>
         <h2>Upcoming Events</h2>
         <div className="group-details-upcoming-events">
-          {groupEventsArray.map((ele) => (
-            <EventCards event={ele} />
-          ))}
+          {groupEventsArray.length > 0 ? (
+            groupEventsArray.map((ele) => <EventCards event={ele} />)
+          ) : (
+            <div className="event-card-container no-event"> No events yet!</div>
+          )}
         </div>
       </div>
       <div className="group-details-main-body-right">

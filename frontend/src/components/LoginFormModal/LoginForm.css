@@ -1,6 +1,6 @@
 .login-outer-div {
-    height:57vh;
-    min-height: 405px;
+    height:fit-content;
+    padding:2rem 0;
     width:350px;
     display:flex;
     flex-direction: column;
@@ -32,6 +32,15 @@
     display:flex;
     flex-direction: column;
     align-items: center;
+}
+
+.linkup-logo {
+    width:40%;
+    border: 1.5px solid  #f65858;
+    /* border-radius: .5rem; */
+    border-radius:  25% 10%;;
+    padding:.5rem;
+    margin-top:1rem;
 }
 
 .form-submit-button {

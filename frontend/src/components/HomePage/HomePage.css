@@ -1,3 +1,12 @@
+.blob-container {
+  position: absolute;
+  top:0;
+  right:0;
+  height:100%;
+  width:100%;
+  z-index: -4;
+}
+
 #svg-bottom-left {
   position: absolute;
   left: 2%;
@@ -7,12 +16,15 @@
 }
 #svg-top-right {
   position: absolute;
+  width:30rem;
   top: 0;
   right: 0;
   z-index: -1;
 }
 #svg-middle-blob {
   position: absolute;
+  min-width:30rem;
+  width:70vw;
   top: 30%;
   left: 15%;
   z-index: -2;
@@ -38,6 +50,10 @@
   display: flex;
   flex-direction: row;
   margin-bottom: 4rem;
+}
+
+.home-title {
+  font-weight: 700;
 }
 
 .home-page-image-divs {

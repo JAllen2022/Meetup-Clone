@@ -51,6 +51,11 @@ function SignupFormModal() {
   return (
     <div className={`signup-outer-div ${extendedDiv}`}>
       <div className="login-header">
+        <img
+          className="linkup-logo"
+          src="https://see.fontimg.com/api/renderfont4/rg9Rx/eyJyIjoiZnMiLCJoIjo2OCwidyI6MjAwMCwiZnMiOjM0LCJmZ2MiOiIjRjY1OTU5IiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/TFU/ananda-black-personal-use-regular.png"
+          alt="logo"
+        />
         <h1>Sign Up</h1>
       </div>
       <form className="modal-form" onSubmit={handleSubmit}>
@@ -65,7 +70,7 @@ function SignupFormModal() {
             className="form-inputs"
             type="text"
             value={email}
-            placeholder='example@email.com'
+            placeholder="example@email.com"
             onChange={(e) => setEmail(e.target.value)}
             required
           />

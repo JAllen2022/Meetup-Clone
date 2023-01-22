@@ -1,6 +1,6 @@
 .delete-modal-outer-container {
   width: 40vw;
-  height: 35vh;
+  height: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,12 +18,14 @@
 }
 
 .delete-modal-inner-text-title {
+  margin-top: 0;
   width: 100%;
+  text-align: center;
 }
 .delete-modal-button-options {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .delete-modal-cancel-button,

@@ -2,7 +2,12 @@
 html, body {
     margin:0;
     padding:0;
+    font-family:'Poppins' ;
+    font-size: .90rem;
 }
+
+/* h1.a {font-family: "Poppins", sans-serif;} */
+
 
 .full-rounded-profile {
     font-size:2rem;
@@ -10,4 +15,8 @@ html, body {
 
 .event-page-title-host-container {
     display: flex;
+}
+
+p {
+    font-weight: 300;
 }

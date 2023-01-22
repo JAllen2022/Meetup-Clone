@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
+
 import "./LoginForm.css";
 
 function LoginFormModal() {
@@ -45,8 +46,14 @@ function LoginFormModal() {
   return (
     <div className="login-outer-div">
       <div className="login-header">
+        <img
+          className="linkup-logo"
+          src="https://see.fontimg.com/api/renderfont4/rg9Rx/eyJyIjoiZnMiLCJoIjo2OCwidyI6MjAwMCwiZnMiOjM0LCJmZ2MiOiIjRjY1OTU5IiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/TFU/ananda-black-personal-use-regular.png"
+          alt="logo"
+        />
         <h1>Log In</h1>
-        <p style={{ margin: 0 }}>Not a member yet? Sign up</p>
+        {/* Add this Feature later */}
+        {/* <p style={{ margin: 0 }}>Not a member yet? Sign up</p> */}
       </div>
       <form className="modal-form" onSubmit={handleSubmit}>
         <div>
@@ -81,7 +88,11 @@ function LoginFormModal() {
             </button>
           </div>
           <div>
-            <button class="form-submit-button" onClick={demoUserClicked} type="submit">
+            <button
+              class="form-submit-button"
+              onClick={demoUserClicked}
+              type="submit"
+            >
               Demo User
             </button>
           </div>
