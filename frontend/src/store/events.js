@@ -145,10 +145,15 @@ export default function eventsReducer(state = initialState, action) {
       newState.singleEvent = action.payload;
       return newState;
     case CREATE_EVENT:
-      newState.allEvents = { ...state.allEvents };
-      newState.allEvents[action.payload.id] = action.payload;
-      newState.singleEvent = action.payload;
+      // Creating a new event ALWAYS resets all events object right now because object returned
+      // does not provide sufficient information to add into the AllEvents object
+      if (Object.values(newState.allEvents).length) {
+        newState.allEvents = { ...state.allEvents };
+        newState.allEvents ={};
+      }
+
       return newState;
+
     case EDIT_EVENT:
       newState.allEvents = { ...state.allEvents };
       newState.allEvents[action.payload.id] = {
@@ -157,12 +162,6 @@ export default function eventsReducer(state = initialState, action) {
       };
       return newState;
     case ADD_EVENT_IMAGE:
-      const { eventImage, eventId } = action.payload;
-      if (eventImage.preview) {
-        newState.allEvents = { ...state.allEvents };
-        newState.allEvents[eventId] = { ...state.allEvents[eventId] };
-        newState.allEvents[eventId].previewImage = eventImage.url;
-      }
       return newState;
     case RESET_SINGLE_EVENT:
       newState.singleEvent = {};

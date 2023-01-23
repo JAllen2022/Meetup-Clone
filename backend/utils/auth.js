@@ -134,7 +134,7 @@ const requireEventAuth = async function (req, res, next) {
       userId: req.user.id,
       eventId: req.params.eventId,
       status: {
-        [Op.in]: ["member", "attending"],
+        [Op.in]: ["host","member", "attending"],
       },
     },
   });

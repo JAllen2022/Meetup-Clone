@@ -14,7 +14,7 @@ function CreateAndUpdateEvent() {
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [capacity, setCapacity] = useState(0);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState('0.00');
   const [venueId, setVenueId] = useState("");
   const [preview, setPreview] = useState(false);
   const [startDate, setStartDate] = useState("");
@@ -28,11 +28,10 @@ function CreateAndUpdateEvent() {
 
   const editPage = window.location.href.includes("edit") ? true : false;
 
-
   useEffect(() => {
     if (editPage) {
       const start = new Date(event.startDate).toJSON();
-      const end = new Date(event.endDate).toJSON()
+      const end = new Date(event.endDate).toJSON();
       setVenueId(event.venueId ? event.venueId : "");
       setName(event.name ? event.name : "");
       setType(event.type ? event.type : "");
@@ -40,10 +39,8 @@ function CreateAndUpdateEvent() {
       setPrice(event.price ? event.price : false);
       setDescription(event.description ? event.description : false);
       setStartDate(event.startDate ? start.slice(0, 16) : false);
-      setEndDate(event.endDate ? end.slice(0,16) : false);
+      setEndDate(event.endDate ? end.slice(0, 16) : false);
     }
-
-
   }, [event]);
 
   const handleSubmit = async (e) => {
@@ -63,7 +60,7 @@ function CreateAndUpdateEvent() {
 
     const imagePayload = {
       url: eventImage,
-      preview
+      preview,
     };
 
     setErrors([]);
@@ -161,7 +158,7 @@ function CreateAndUpdateEvent() {
             onChange={(e) => setEndDate(e.target.value)}
           ></input>
         </div>
-        <div>
+        {/* <div>
           <label className="form-label">Venue Id</label>
           <input
             className="form-inputs"
@@ -169,7 +166,7 @@ function CreateAndUpdateEvent() {
             value={venueId}
             onChange={(e) => setVenueId(e.target.value)}
           ></input>
-        </div>
+        </div> */}
         <div>
           <label className="form-label">Description</label>
           <textarea

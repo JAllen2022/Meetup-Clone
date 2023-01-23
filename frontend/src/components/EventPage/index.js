@@ -158,14 +158,14 @@ function EventPage() {
                 className="event-body-right-group-info-container"
               >
                 <div className="event-body-right-group-info-image-container">
-                  {groupInfo?.previewImage ? (
-                    <img
-                      className="event-body-right-group-info-image"
-                      src={groupInfo.previewImage}
-                    />
-                  ) : (
-                    ""
-                  )}
+                  <img
+                    className="event-body-right-group-info-image"
+                    src={
+                      groupInfo?.previewImage
+                        ? groupInfo.previewImage
+                        : "https://secure.meetupstatic.com/next/images/fallbacks/group-cover-2-wide.webp"
+                    }
+                  />
                 </div>
                 <div className="event-body-right-group-info">
                   <div className="event-body-right-group-info-title">

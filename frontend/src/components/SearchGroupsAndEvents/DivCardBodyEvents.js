@@ -2,6 +2,7 @@ import  formatDateString  from "../../util/formatDateString";
 
 export default function DivCardBodyEvents({ event }) {
   const dateString = formatDateString(event.startDate);
+  // if (!event) return null;
   return (
     <>
       <div className="div-card-body">
@@ -11,7 +12,7 @@ export default function DivCardBodyEvents({ event }) {
         </div>
         <div classname="div-card-info">
           <p>
-            {event.Group.name} • {event.Group.city}, {event.Group.state}
+            {event.Group.name} • ${event.Group.city}, ${event.Group.state}
           </p>
         </div>
         <div className="div-card-footer">

@@ -55,23 +55,24 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
       clickedGroup();
     }
 
-  useEffect(() => {
-    if (
-      (defaultTab === "groups" && !groupArray) ||
-      (selectedTabGroup && !groupArray.length)
-    ) {
-      dispatch(thunkGetAllGroups());
-    } else if (
-      (defaultTab === "events" && !eventsArray.length) ||
-      (selectedTabGroup && !eventsArray.length)
-    ) {
-      dispatch(thunkGetAllEvents());
-    }
-    dispatch(resetSingleGroup());
-    dispatch(resetSingleEvent());
-  }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);
+    useEffect(() => {
+      if (
+        (defaultTab === "groups" && !groupArray) ||
+        (selectedTabGroup && !groupArray.length)
+      ) {
+        dispatch(thunkGetAllGroups());
+      } else if (
+        (defaultTab === "events" && !eventsArray.length) ||
+        (selectedTabGroup && !eventsArray.length)
+      ) {
+        dispatch(thunkGetAllEvents());
+      }
+      dispatch(resetSingleGroup());
+      dispatch(resetSingleEvent());
+    }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);
 
   if (!groupArray.length && !eventsArray.length) return null;
+  
     return (
       <div className="search-main-outer-body">
         <div className="search-main-inner-body">
