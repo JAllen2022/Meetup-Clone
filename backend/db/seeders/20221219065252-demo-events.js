@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === "production") {
 
 const demo_events = [
   {
-    venueId: 1,
+    venueId: null,
     groupId: 1,
     name: "Treasure Island Car Meet-up",
     description:
@@ -17,11 +17,11 @@ const demo_events = [
     type: "In person",
     capacity: 100,
     price: 19.95,
-    startDate: new Date("01-21-2022"),
-    endDate: new Date("2022,01,21"),
+    startDate: "2023-01-29 08:00:00",
+    endDate: "2023-01-29 12:00:00",
   },
   {
-    venueId: 2,
+    venueId: null,
     groupId: 2,
     name: "Traders United Sunday Brunch",
     description:
@@ -29,11 +29,11 @@ const demo_events = [
     type: "In person",
     capacity: 10,
     price: 35,
-    startDate: new Date("01-13-2022"),
-    endDate: new Date("01-14-2022"),
+    startDate: "2023-02-25 08:00:00",
+    endDate: "2023-02-25 12:00:00",
   },
   {
-    venueId: 3,
+    venueId: null,
     groupId: 3,
     name: "Golden Gate Park - Saturday Run",
     description:
@@ -41,22 +41,22 @@ const demo_events = [
     type: "In person",
     capacity: 20,
     price: 0,
-    startDate: new Date("2022-01-13"),
-    endDate: new Date("2022-01-14"),
+    startDate: "2023-03-25 08:00:00",
+    endDate: "2023-03-25 12:00:00",
   },
   {
-    venueId: 4,
+    venueId: null,
     groupId: 4,
     name: "Golden Gate Park - Soccer Tournament",
     description: "Golden gate park soccer tourney for adult league",
     type: "In person",
     capacity: 200,
     price: 15.0,
-    startDate: new Date("2022-01-27"),
-    endDate: new Date("2022-01-27"),
+    startDate: "2023-01-25 08:00:00",
+    endDate: "2023-01-25 12:00:00",
   },
   {
-    venueId: 4,
+    venueId: null,
     groupId: 4,
     name: "Golden Gate Soccer - Tuesday Nights",
     description:
@@ -64,8 +64,8 @@ const demo_events = [
     type: "In person",
     capacity: 100,
     price: 10.11,
-    startDate: new Date("2022-01-24"),
-    endDate: new Date("2022-01-24"),
+    startDate: "2023-01-23 08:00:00",
+    endDate: "2023-01-24 14:00:00",
   },
 ];
 

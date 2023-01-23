@@ -260,6 +260,7 @@ const validateEventInput = [
     const { startDate } = req.body;
     const inputDate = new Date(startDate);
     const currentDate = new Date();
+    console.log('checking this again' , startDate, '~~~~~~~~~~~~~~~~~)')
     if (inputDate.toString() === "Invalid Date") {
       req.errorObj.startDate = "Invalid Start Date";
       return next();

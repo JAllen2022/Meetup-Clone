@@ -14,7 +14,7 @@ function CreateAndUpdateEvent() {
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [capacity, setCapacity] = useState(0);
-  const [price, setPrice] = useState('0.00');
+  const [price, setPrice] = useState(0);
   const [venueId, setVenueId] = useState("");
   const [preview, setPreview] = useState(false);
   const [startDate, setStartDate] = useState("");

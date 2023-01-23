@@ -85,7 +85,7 @@ console.log("we made it here2");
 
   const cancelForm = (e) => {
     e.preventDefault();
-    if (editPage) history.push(`/groups/${group.id}`);
+    if (editPage) history.push(`/groups/${group.id}/about`);
     else history.goBack();
   };
 

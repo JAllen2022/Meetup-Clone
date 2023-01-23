@@ -65,17 +65,33 @@ You can log-in, signup, and navigate to a page to search groups and events. Ther
 
 # Sign-up
 
+![linkup-signup-page]
+
+[linkup-signup-page]: ./assets/linkup-signup-page.png
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Log-in
+
+![linkup-login-page]
+
+[linkup-login-page]: ./assets/linkup-login-page.png
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Group Details
 
+![linkup-groupdetails-page]
+
+[linkup-groupdetails-page]: ./assets/linkup-groupdetails-page.png
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-# Group Events
+# Event Details
+
+![linkup-eventdetails-page]
+
+[linkup-eventdetails-page]: ./assets/linkup-eventdetails-page.png
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
