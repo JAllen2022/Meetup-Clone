@@ -80,12 +80,13 @@ You can log-in, signup, and navigate to a page to search groups and events. Ther
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Future Features
-- Membership Features
+- Membership to Groups and Events
 - Create and manage venues
-- Improved group creation feature
+- Improved group creation feature to match Meetup's multi-page form
 - Calendar feature on user home page to filter upcoming events
 - Add image files instead of image url's and image management
-- Use profile page
+- A user profile page
+- Functional search bar at the top of the page
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
