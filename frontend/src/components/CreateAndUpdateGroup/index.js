@@ -54,11 +54,10 @@ function CreateAndUpdateGroup() {
     };
 
     setErrors([]);
-    dispatch(resetAllGroups())
     if (!window.location.href.includes("edit")) {
       dispatch(thunkCreateGroup(payload))
         .then((data) => {
-
+          console.log("what the fuck is the id here", data.payload.id);
           dispatch(thunkAddGroupImage(imagePayload, data.payload.id)).then(
             (res) => {
               history.push(`/groups/${data.payload.id}/about`);

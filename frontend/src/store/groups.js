@@ -5,7 +5,7 @@ const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_EVENTS = "groups/GET_GROUP_EVENTS";
 const CREATE_GROUP = "groups/CREATE_GROUP";
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
-const RESET_ALL_GROUPS='groups/RESET_ALL_GROUPS'
+const RESET_ALL_GROUPS = "groups/RESET_ALL_GROUPS";
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
@@ -64,8 +64,8 @@ export const getMemberships = (memberships) => ({
 });
 
 export const resetAllGroups = () => ({
-  type: RESET_ALL_GROUPS
-})
+  type: RESET_ALL_GROUPS,
+});
 
 /* ------ SELECTORS ------ */
 export const thunkGetAllGroups = () => async (dispatch) => {
@@ -134,6 +134,7 @@ export const thunkAddGroupImage = (newImage, groupId) => async (dispatch) => {
     method: "POST",
     body: JSON.stringify(newImage),
   });
+  console.log("what is my group id here", groupId);
 
   if (response.ok) {
     const imgObj = await response.json();
@@ -171,8 +172,10 @@ export default function groupReducer(state = initialState, action) {
     }
 
     case CREATE_GROUP:
-      newState.allGroups = { ...state.allGroups }
-      newState.allGroups[action.payload.id] = action.paylod;
+      if (Object.values(newState.allGroups).length) {
+        newState.allGroups = { ...state.allGroups };
+        newState.allGroups[action.payload.id] = action.payload;
+      }
       return newState;
 
     case RESET_SINGLE_GROUP:
@@ -203,8 +206,12 @@ export default function groupReducer(state = initialState, action) {
     case ADD_GROUP_IMAGE:
       // If new group created has an image preview property of true, then add it to all groups
       const { newImage, groupId } = action.payload;
-      newState.allGroups = { ...state.allGroups }
-      newState.allGroups[groupId].previewImage = newImage.preview ? newImage.url : null;
+      if (Object.values(newState.allGroups).length) {
+        newState.allGroups = { ...state.allGroups };
+        newState.allGroups[groupId].previewImage = newImage.preview
+          ? newImage.url
+          : null;
+      }
       return newState;
 
     case GET_MEMBERSHIPS:
@@ -216,7 +223,7 @@ export default function groupReducer(state = initialState, action) {
       return newState;
 
     case RESET_ALL_GROUPS:
-      newState.allGroups = {}
+      newState.allGroups = {};
       return newState;
     default:
       return state;
