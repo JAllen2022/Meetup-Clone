@@ -12,13 +12,19 @@
     width:70%;
     display: flex;
 }
-.foooter-left-container{
+.footer-left-right-container {
     border-color:1px white solid;
-    width:50%
+    width:50%;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-size: 1rem;
 }
 
-.foooter-right-container{
-    border-color:1px white solid;
-
-    width:50%;
+.footer-dev-links > a {
+    text-decoration: none;
+    font-size: 1.5rem;
+    color:white;
+    margin:0 .5rem;
 }

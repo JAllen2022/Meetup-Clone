@@ -40,7 +40,6 @@ function Navigation({ isLoaded }) {
                   to="/create-group"
                   onClick={refreshGroup}
                 >
-                  {" "}
                   Start a new group - 30% off!
                 </Link>
               </div>

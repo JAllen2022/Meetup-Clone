@@ -74,12 +74,12 @@ function LinkUpWorks() {
             </p>
           </div>
         </div>
-        <OpenModalMenuItem
+       {!user && ( <OpenModalMenuItem
           itemText={
             <div className="link-up-works-sign-up-button">Join LinkUp</div>
           }
           modalComponent={<SignupFormModal />}
-        />
+        />)}
       </div>
     );
 }

@@ -24,6 +24,10 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
   if (groupObj) groupArray = Object.values(groupObj);
   if (eventsObj) eventsArray = Object.values(eventsObj);
 
+  console.log("checking defaultTab", defaultTab);
+  console.log('checking selectedTabEvent', selectedTabEvent)
+  console.log("checking selectedTabGroup", selectedTabGroup);
+
   const clickedGroup = (e) => {
     if (selectedTabEvent) {
       setSelectedTabEvent(false);
@@ -41,6 +45,15 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
     }
     setSelectedTabEvent(true);
   };
+
+  // This handles if a user clicks events or groups in the drop down
+  // If the selected Group tab is TRUE, and differs from the switch in default Tab, then
+  // manually change the tab here
+    if (selectedTabGroup && (defaultTab==='events')) {
+      clickedEvent();
+    } else if (selectedTabEvent && (defaultTab === 'groups')) {
+      clickedGroup();
+    }
 
   useEffect(() => {
     if (
