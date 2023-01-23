@@ -34,6 +34,11 @@ const demo_memberships = [
     groupId: 4,
     status: "co-host",
   },
+  {
+    userId: 5,
+    groupId: 3,
+    status: 'host'
+  }
 ];
 
 module.exports = {
