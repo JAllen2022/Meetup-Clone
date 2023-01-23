@@ -11,49 +11,49 @@ if (process.env.NODE_ENV === "production") {
 const demo_attendance = [
   {
     eventId: 1,
-    userId: 2,
-    status: "member",
+    userId: 12,
+    status: "host",
   },
   {
     eventId: 2,
-    userId: 2,
-    status: "member",
+    userId: 1,
+    status: "host",
   },
   {
     eventId: 3,
-    userId: 3,
-    status: "member",
+    userId: 5,
+    status: "host",
   },
   {
     eventId: 4,
-    userId: 4,
+    userId: 8,
+    status: "host",
+  },
+  {
+    eventId: 4,
+    userId: 1,
     status: "member",
   },
   {
     eventId: 5,
-    userId: 5,
-    status: "member",
+    userId: 1,
+    status: "host",
   },
   {
-    eventId: 1,
-    userId: 6,
-    status: "member",
-  },
-  {
-    eventId: 2,
+    eventId: 5,
     userId: 8,
     status: "attending",
   },
   {
-    eventId: 3,
-    userId: 7,
-    status: "waitlist",
+    eventId: 1,
+    userId: 13,
+    status: "member",
   },
   {
-    eventId: 4,
-    userId: 7,
-    status: "pending",
-  },
+    eventId: 1,
+    userId: 14,
+    status: "attending",
+  }
 ];
 
 module.exports = {
