@@ -171,7 +171,8 @@ export default function groupReducer(state = initialState, action) {
     }
 
     case CREATE_GROUP:
-      newState.allGroups = {}
+      newState.allGroups = { ...state.allGroups }
+      newState.allGroups[action.payload.id] = action.paylod;
       return newState;
 
     case RESET_SINGLE_GROUP:
@@ -201,8 +202,9 @@ export default function groupReducer(state = initialState, action) {
       return newState;
     case ADD_GROUP_IMAGE:
       // If new group created has an image preview property of true, then add it to all groups
-      newState.allGroups = {};
-
+      const { newImage, groupId } = action.payload;
+      newState.allGroups = { ...state.allGroups }
+      newState.allGroups[groupId].previewImage = newImage.preview ? newImage.url : null;
       return newState;
 
     case GET_MEMBERSHIPS:
@@ -214,7 +216,7 @@ export default function groupReducer(state = initialState, action) {
       return newState;
 
     case RESET_ALL_GROUPS:
-      newState.allGroups = {};
+      newState.allGroups = {}
       return newState;
     default:
       return state;
