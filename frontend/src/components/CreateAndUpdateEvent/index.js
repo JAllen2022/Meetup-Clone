@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import {
+  resetAllEvents,
   thunkAddEventImage,
   thunkCreateEvent,
   thunkEditEvent,
@@ -64,7 +65,9 @@ function CreateAndUpdateEvent() {
     };
 
     setErrors([]);
+    dispatch(resetAllEvents());
     if (!editPage) {
+
       dispatch(thunkCreateEvent(payload, groupId))
         .then((data) => {
           dispatch(thunkAddEventImage(imagePayload, data.payload.id)).then(
@@ -89,6 +92,7 @@ function CreateAndUpdateEvent() {
           else setErrors([data.message]);
         });
     }
+
   };
 
   const cancelForm = (e) => {

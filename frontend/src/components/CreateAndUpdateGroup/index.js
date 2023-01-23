@@ -5,6 +5,7 @@ import {
   thunkCreateGroup,
   thunkUpdateGroup,
   thunkAddGroupImage,
+  resetAllGroups,
 } from "../../store/groups";
 import "./CreateAndUpdateGroup.css";
 function CreateAndUpdateGroup() {
@@ -53,6 +54,7 @@ function CreateAndUpdateGroup() {
     };
 
     setErrors([]);
+    dispatch(resetAllGroups())
     if (!window.location.href.includes("edit")) {
       dispatch(thunkCreateGroup(payload))
         .then((data) => {

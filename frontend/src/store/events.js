@@ -6,6 +6,7 @@ const CREATE_EVENT = "events/CREATE_EVENT";
 const EDIT_EVENT = "events/EDIT_EVENT";
 const ADD_EVENT_IMAGE = "events/ADD_EVENT_IMAGE";
 const RESET_SINGLE_EVENT = "events/RESET_SINGLE_EVENT";
+const RESET_ALL_EVENTS = 'events/RESET_ALL_EVENTS'
 const DELETE_EVENT = "events/DELETE_EVENT";
 const DELETE_ALL_GROUP_EVENTS = "events/DELETE_ALL_GROUP_EVENTS";
 const GET_ATTENDEES = "events/GET_ATTENDEES";
@@ -59,6 +60,10 @@ export const getAttendees = (attendees) => ({
   type: GET_ATTENDEES,
   payload: attendees,
 });
+
+export const resetAllEvents = () => ({
+  type: RESET_ALL_EVENTS
+})
 
 /* ------ SELECTORS ------ */
 export const thunkGetAllEvents = () => async (dispatch) => {
@@ -194,6 +199,9 @@ export default function eventsReducer(state = initialState, action) {
         attendeesObj[attendee.id] = attendee;
       });
       newState.singleEventAttendees = attendeesObj;
+      return newState;
+    case RESET_ALL_EVENTS:
+      newState.allEvents = {};
       return newState;
     default:
       return newState;

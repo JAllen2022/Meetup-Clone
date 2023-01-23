@@ -5,6 +5,7 @@ const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_EVENTS = "groups/GET_GROUP_EVENTS";
 const CREATE_GROUP = "groups/CREATE_GROUP";
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
+const RESET_ALL_GROUPS='groups/RESET_ALL_GROUPS'
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
@@ -61,6 +62,10 @@ export const getMemberships = (memberships) => ({
   type: GET_MEMBERSHIPS,
   payload: memberships,
 });
+
+export const resetAllGroups = () => ({
+  type: RESET_ALL_GROUPS
+})
 
 /* ------ SELECTORS ------ */
 export const thunkGetAllGroups = () => async (dispatch) => {
@@ -206,6 +211,10 @@ export default function groupReducer(state = initialState, action) {
         membersObj[ele.id] = ele;
       });
       newState.singleGroupMemberships = membersObj;
+      return newState;
+
+    case RESET_ALL_GROUPS:
+      newState.allGroups = {};
       return newState;
     default:
       return state;
