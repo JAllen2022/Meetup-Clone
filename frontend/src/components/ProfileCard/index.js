@@ -1,7 +1,6 @@
 import './ProfileCard.css'
 
 function ProfileCard({ member }) {
-  console.log('checking member here', member)
     return (
       <div className="event-attendees-profile-card">
         <div className="event-attendees-profile-inner-card">

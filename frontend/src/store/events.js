@@ -8,11 +8,12 @@ const ADD_EVENT_IMAGE = "events/ADD_EVENT_IMAGE";
 const RESET_SINGLE_EVENT = "events/RESET_SINGLE_EVENT";
 const DELETE_EVENT = "events/DELETE_EVENT";
 const DELETE_ALL_GROUP_EVENTS = "events/DELETE_ALL_GROUP_EVENTS";
-
+const GET_ATTENDEES = "events/GET_ATTENDEES";
 
 const initialState = {
   allEvents: {},
   singleEvent: {},
+  singleEventAttendees: {},
 };
 
 /* ----- ACTIONS ------ */
@@ -52,6 +53,11 @@ export const deleteEvent = (eventId) => ({
 export const deleteAllGroupEvents = (groupId) => ({
   type: DELETE_ALL_GROUP_EVENTS,
   payload: groupId,
+});
+
+export const getAttendees = (attendees) => ({
+  type: GET_ATTENDEES,
+  payload: attendees,
 });
 
 /* ------ SELECTORS ------ */
@@ -110,13 +116,21 @@ export const thunkAddEventImage = (imageObj, eventId) => async (dispatch) => {
 };
 
 export const thunkDeleteEvent = (eventId) => async (dispatch) => {
-  console.log("checking eventId", eventId);
   const response = await csrfFetch(`/api/events/${eventId}`, {
     method: "DELETE",
   });
 
   if (response.ok) {
     return dispatch(deleteEvent(eventId));
+  }
+};
+
+export const thunkGetAttendees = (eventId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/events/${eventId}/attendees`);
+
+  if (response.ok) {
+    const data = await response.json();
+    return dispatch(getAttendees(data.Attendees));
   }
 };
 
@@ -152,6 +166,7 @@ export default function eventsReducer(state = initialState, action) {
       return newState;
     case RESET_SINGLE_EVENT:
       newState.singleEvent = {};
+      newState.singleEventAttendees = {};
       return newState;
     case DELETE_EVENT:
       newState.allEvents = { ...state.allEvents };
@@ -165,9 +180,9 @@ export default function eventsReducer(state = initialState, action) {
       const groupId = action.payload;
       const eventIdsToDelete = [];
       Object.values(newState.allEvents).forEach((event) => {
-        if (event.Group && (event.Group.id === groupId)) {
+        if (event.Group && event.Group.id === groupId) {
           eventIdsToDelete.push(event.id);
-        } else if (event.groupId && (event.groupId === groupId)) {
+        } else if (event.groupId && event.groupId === groupId) {
           eventIdsToDelete.push(event.id);
         }
       });
@@ -175,6 +190,13 @@ export default function eventsReducer(state = initialState, action) {
         newState.allEvents[eventId] = { ...state.allEvents[eventId] };
         delete newState.allEvents[eventId];
       });
+      return newState;
+    case GET_ATTENDEES:
+      const attendeesObj = {};
+      action.payload.forEach((attendee) => {
+        attendeesObj[attendee.id] = attendee;
+      });
+      newState.singleEventAttendees = attendeesObj;
       return newState;
     default:
       return newState;

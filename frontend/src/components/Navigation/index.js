@@ -4,6 +4,7 @@ import { NavLink, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { resetSingleGroup } from "../../store/groups";
+import { resetSingleEvent } from "../../store/events";
 import ProfileButton from "./ProfileButton";
 import imageLogo from "../../assets/LinkUpLogo.png";
 import OpenModalMenuItem from "./OpenModalMenuItem";
@@ -19,6 +20,7 @@ function Navigation({ isLoaded }) {
 
   const refreshGroup = () => {
     dispatch(resetSingleGroup());
+
   }
 
   return (

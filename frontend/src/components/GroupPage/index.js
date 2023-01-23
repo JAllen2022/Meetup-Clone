@@ -12,6 +12,7 @@ import About from './About'
 import Events from './Events'
 import Members from './Members'
 import Photos from './Photos'
+import FeatureComingSoon from "../FeatureComingSoon";
 import "./GroupPage.css";
 
 const groupNavBar = [
@@ -47,7 +48,13 @@ function GroupPage({tab}) {
 
   const optionsMember = (
     <div className="profile-button-drop-down-top-half">
-      <p className="profile-button-drop-down-elements">Leave Group</p>
+      <OpenModalMenuItem
+        itemText={
+          <p className="profile-button-drop-down-elements">Coming Soon</p>
+        }
+        onItemClick={closeMenu}
+        modalComponent={<FeatureComingSoon />}
+      />
     </div>
   );
 

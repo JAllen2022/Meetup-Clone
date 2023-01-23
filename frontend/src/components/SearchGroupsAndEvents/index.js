@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { resetGroupEvents, resetSingleGroup, thunkGetAllGroups } from "../../store/groups";
+import { resetSingleGroup, thunkGetAllGroups } from "../../store/groups";
 import { resetSingleEvent, thunkGetAllEvents } from "../../store/events";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -54,7 +54,6 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
     ) {
       dispatch(thunkGetAllEvents());
     }
-    dispatch(resetGroupEvents());
     dispatch(resetSingleGroup());
     dispatch(resetSingleEvent());
   }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);

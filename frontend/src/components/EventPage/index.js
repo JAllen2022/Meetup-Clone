@@ -1,12 +1,14 @@
 import { useParams, useHistory, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useRef } from "react";
-import { thunkGetSingleEvent } from "../../store/events";
+import { thunkGetSingleEvent, thunkGetAttendees } from "../../store/events";
+import { thunkGetMemberships } from "../../store/groups";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteModal from "../DeleteModal";
 import formatDateString from "../../util/formatDateString.js";
 import ProfileCard from "../ProfileCard";
 import "./EventPage.css";
+import FeatureComingSoon from "../FeatureComingSoon";
 
 function EventPage() {
   const { eventId } = useParams();
@@ -15,12 +17,20 @@ function EventPage() {
   const ulRef = useRef();
   const event = useSelector((state) => state.events.singleEvent);
   const user = useSelector((state) => state.session.user);
-  // console.log("checking my eventimages", event.EventImages);
   const [eventImage, setEventImage] = useState();
   const [showMenu, setShowMenu] = useState(false);
+  const [allowEdit, setAllowEdit] = useState(false);
   const groupInfo = event.Group;
   const venueInfo = event.Venue;
-  const closeMenu = () => setShowMenu(false)
+  const closeMenu = () => setShowMenu(false);
+  const memberships = useSelector(
+    (state) => state.groups.singleGroupMemberships
+  );
+  const attendees = useSelector((state) => state.events.singleEventAttendees);
+  const attendeesArray = Object.values(attendees).slice(0, 4);
+  const host = Object.values(attendees).find(
+    (ele) => ele.Attendance.status === "host"
+  );
   // console.log('checking event0', event)
   let venueCity = "";
   let venueState = "";
@@ -39,59 +49,31 @@ function EventPage() {
         : "TBD"
       : "Online";
 
-  // Helper functions here for group options button
-  const optionsMember = (
-    <div className="">
-      <p className=""></p>
-    </div>
-  );
-
-  const optionsGuest = (
-    <div className="">
-      <p className=""></p>
-    </div>
-  );
-
-  const createEvent = () => {};
-
-  const editGroup = () => {
-    history.push(``);
-  };
-
-  const deleteGroup = () => {
-    dispatch("");
-  };
-
-  const optionsHost = (
-    <div className="">
-      <p className="" onClick={createEvent}>
-        Create Event
-      </p>
-      <p className="" onClick={editGroup}>
-        Edit Group
-      </p>
-      <p className="" onClick={deleteGroup}>
-        Delete Group
-      </p>
-    </div>
-  );
-
-  const [userType, setUserType] = useState(optionsGuest);
   const directToGroup = () => history.push(`/groups/${groupInfo.id}/about`);
+  console.log('checking allowed edit ',allowEdit)
 
-  // Three options for Group Actions button
-  // If you are the owner, you can edit and delete the group
-  // If you are a logged in user - you can request membership
-  // if you are not logged in - do not show the button
+  // This is where we set the 'Event Options button dependent on the user's status
   useEffect(() => {
-    // if (user && group.Organizer) {
-    //   if (user.id === event.Organizer.id) {
-    //     setUserType(optionsHost);
-    //   } else {
-    //     setUserType(optionsMember);
-    //   }
-    // }
-  }, [user, event]);
+    if (memberships) {
+      const membershipStatus = Object.values(memberships).find((ele) => {
+        return ele.id === user.id;
+      });
+      if (membershipStatus) {
+        if (
+          membershipStatus.Membership.status === "co-host" ||
+          membershipStatus.Membership.status === "host"
+        ) {
+          setAllowEdit(true);
+        }
+      }
+    }
+  }, [memberships]);
+
+  // Get Group Memberships - this is necessary to determine what permissions a user has throughout the page
+  // If user is co-host or organizer of the group, then they can edit the event
+  useEffect(() => {
+    if (event.Group) dispatch(thunkGetMemberships(event.Group.id));
+  }, [event]);
 
   useEffect(() => {
     if (!showMenu) return;
@@ -121,6 +103,8 @@ function EventPage() {
 
   useEffect(() => {
     dispatch(thunkGetSingleEvent(eventId));
+    dispatch(thunkGetAttendees(eventId));
+    setAllowEdit(false)
   }, [dispatch]);
   if (!event) return null;
 
@@ -133,7 +117,9 @@ function EventPage() {
             <i class="fa-regular fa-circle-user full-rounded-profile"></i>
             <div className="hosts-container">
               <div>Hosted by</div>
-              <div>Somebody</div>
+              <div>
+                {host ? `${host.firstName} ${host?.lastName}` : "Somebody"}
+              </div>
             </div>
           </div>
         </div>
@@ -158,12 +144,19 @@ function EventPage() {
               <h3>Attendees ({event.numAttending})</h3>
             </div>
             <div className="event-attendees">
-              <ProfileCard />
+              {attendees
+                ? attendeesArray.map((ele) => (
+                    <ProfileCard key={ele.id} member={ele} />
+                  ))
+                : null}
             </div>
           </div>
           <div className="event-body-right">
             <div className="event-body-right-sticky-container">
-              <div onClick={directToGroup} className="event-body-right-group-info-container">
+              <div
+                onClick={directToGroup}
+                className="event-body-right-group-info-container"
+              >
                 <div className="event-body-right-group-info-image-container">
                   {groupInfo?.previewImage ? (
                     <img
@@ -215,36 +208,50 @@ function EventPage() {
             <div className="event-sticky-footer-title-data">{event.name}</div>
           </div>
           <div className="event-sticky-footer-event-buttons-right">
-            <div
-              ref={ulRef}
-              className="event-sticky-footer-event-options"
-              onClick={() => setShowMenu((prev) => !prev)}
-            >
-              Event Actions <i class="fa-solid fa-angle-up"></i>
-            </div>
-            {showMenu && (
-              <div className="event-sticky-footer-event-option-menu-container">
-                <div className="event-sticky-footer-event-option-menu-inner-container">
-                  {/* {userType} */}
-                  <Link
-                    className="event-sticky-menu-link"
-                    to={`/events/${eventId}/edit`}
-                  >
-                    Edit Event
-                  </Link>
-                  <div>
-                    <OpenModalMenuItem
-                      itemText={<div className='event-sticky-menu-link'>Delete Event</div>}
-                      onItemClick={closeMenu}
-                      modalComponent={<DeleteModal eventId={event.id} type={'Event'} />}
-                      />
-
-                  </div>
-                  <Link className="event-sticky-menu-link">Add Image</Link>
+            {allowEdit && (
+              <>
+                <div
+                  ref={ulRef}
+                  className="event-sticky-footer-event-options"
+                  onClick={() => setShowMenu((prev) => !prev)}
+                >
+                  Event Actions <i class="fa-solid fa-angle-up"></i>
                 </div>
-              </div>
+                {showMenu && (
+                  <div className="event-sticky-footer-event-option-menu-container">
+                    <div className="event-sticky-footer-event-option-menu-inner-container">
+                      {/* {userType} */}
+                      <Link
+                        className="event-sticky-menu-link"
+                        to={`/events/${eventId}/edit`}
+                      >
+                        Edit Event
+                      </Link>
+                      <div>
+                        <OpenModalMenuItem
+                          itemText={
+                            <div className="event-sticky-menu-link">
+                              Delete Event
+                            </div>
+                          }
+                          onItemClick={closeMenu}
+                          modalComponent={
+                            <DeleteModal eventId={event.id} type={"Event"} />
+                          }
+                        />
+                      </div>
+                      {/* <Link className="event-sticky-menu-link">Add Image</Link> */}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
-            <div className="event-sticky-footer-attend-button">Attend</div>
+            <div className="event-sticky-footer-attend-button">
+              <OpenModalMenuItem
+                itemText={<div className="">Attend</div>}
+                modalComponent={<FeatureComingSoon eventId={event.id} />}
+              />
+            </div>
           </div>
         </div>
       </div>

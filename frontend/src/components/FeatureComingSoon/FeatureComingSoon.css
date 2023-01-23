@@ -1,0 +1,19 @@
+.feature-coming-soon-modal {
+  width: 40vw;
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(253, 228, 207);
+  border-radius: 0.5rem;
+}
+
+.feature-coming-soon-modal-inner-container {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}

@@ -5,7 +5,6 @@ const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_EVENTS = "groups/GET_GROUP_EVENTS";
 const CREATE_GROUP = "groups/CREATE_GROUP";
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
-const RESET_GROUP_EVENTS = "groups/RESET_GROUP_EVENTS";
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
@@ -41,10 +40,6 @@ export const createGroup = (group) => ({
 
 export const resetSingleGroup = () => ({
   type: RESET_SINGLE_GROUP,
-});
-
-export const resetGroupEvents = () => ({
-  type: RESET_GROUP_EVENTS,
 });
 
 export const updateGroup = (group) => ({
@@ -178,9 +173,6 @@ export default function groupReducer(state = initialState, action) {
 
     case RESET_SINGLE_GROUP:
       newState.singleGroup = {};
-      return newState;
-
-    case RESET_GROUP_EVENTS:
       newState.groupEvents = {};
       return newState;
 
@@ -212,7 +204,7 @@ export default function groupReducer(state = initialState, action) {
           newState.allGroups[groupId].previewImage = newImage.url;
       }
       return newState;
-    
+
     case GET_MEMBERSHIPS:
       const membersObj = {};
       action.payload.forEach((ele) => {

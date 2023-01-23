@@ -12,6 +12,7 @@ import App from "./App";
 import configureStore from "./store";
 import { restoreCSRF, csrfFetch } from "./store/csrf";
 import * as sessionActions from "./store/session";
+import ScrollToTop from "./components/ScrollToTop";
 
 const store = configureStore();
 
@@ -31,8 +32,10 @@ function Root() {
     <ModalProvider>
       <Provider store={store}>
         <BrowserRouter>
-          <App />
-          <Modal />
+          {/* <ScrollToTop> */}
+            <App />
+            <Modal />
+          {/* </ScrollToTop> */}
         </BrowserRouter>
       </Provider>
     </ModalProvider>

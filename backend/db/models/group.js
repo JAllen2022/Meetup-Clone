@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING(60),
         allowNull: false,
+        unique:true,
         validate: {
           //Validate name is 60 characters or less
           len: [0, 60],
