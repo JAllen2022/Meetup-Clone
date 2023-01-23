@@ -65,8 +65,8 @@ function CreateAndUpdateEvent() {
     };
 
     setErrors([]);
-    dispatch(resetAllEvents());
     if (!editPage) {
+      dispatch(resetAllEvents());
 
       dispatch(thunkCreateEvent(payload, groupId))
         .then((data) => {
