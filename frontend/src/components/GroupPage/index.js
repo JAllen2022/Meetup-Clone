@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   thunkGetSingleGroup,
   thunkGetGroupEvents,
+  thunkGetMemberships,
 } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
@@ -37,10 +38,10 @@ function GroupPage({tab}) {
   const dispatch = useDispatch();
   const history = useHistory();
   const group = useSelector((state) => state.groups.singleGroup);
-
   const user = useSelector((state) => state.session.user);
   const [showMenu, setShowMenu] = useState(false);
   const closeMenu = () => setShowMenu(false);
+  const memberships = useSelector((state) => state.groups.singleGroupMemberships)
   const groupEvents = useSelector((state) => state.groups.groupEvents);
   let groupEventsArray = Object.values(groupEvents);
 
@@ -71,7 +72,7 @@ function GroupPage({tab}) {
   } else if (tab === 'events') {
     displayBody = <Events group={group} groupEventsArray={groupEventsArray} />;
   } else if (tab === 'members') {
-    displayBody = <Members group={group} />
+    displayBody = <Members group={group} memberships={memberships} />;
   } else {
     displayBody = <Photos group={group} />;
   }
@@ -120,6 +121,7 @@ function GroupPage({tab}) {
   useEffect(() => {
     dispatch(thunkGetSingleGroup(groupId));
     dispatch(thunkGetGroupEvents(groupId));
+    dispatch(thunkGetMemberships(groupId));
   }, [dispatch]);
 
   useEffect(() => {
@@ -202,7 +204,7 @@ function GroupPage({tab}) {
             >
               <div className="group-detail-nav-bar-inner-button-div">
                 <span>Group Actions</span>
-                <i class="fa-solid fa-angle-down"></i>
+                <i className="fa-solid fa-angle-down"></i>
               </div>
             </button>
             {showMenu && (

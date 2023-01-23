@@ -7,6 +7,7 @@
   border-radius: .25rem;
   background-color: white;
   border-radius: .5rem;
+  /* padding:1rem; */
 }
 
 .event-attendees-profile-inner-card {
@@ -34,4 +35,5 @@
 .event-attendees-profile-name {
   padding: 0.5rem;
   font-size: 0.95rem;
+  text-align: center;
 }

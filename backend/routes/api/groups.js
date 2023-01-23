@@ -466,7 +466,7 @@ router.post(
     const attendee = await Attendance.create({
       eventId: newEvent.id,
       userId: req.user.id,
-      status: "member",
+      status: "host",
     });
 
     // Remove createdAt and updatedAt from the created event to match the desired output

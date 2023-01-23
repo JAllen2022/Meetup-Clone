@@ -9,6 +9,7 @@ const RESET_SINGLE_EVENT = "events/RESET_SINGLE_EVENT";
 const DELETE_EVENT = "events/DELETE_EVENT";
 const DELETE_ALL_GROUP_EVENTS = "events/DELETE_ALL_GROUP_EVENTS";
 
+
 const initialState = {
   allEvents: {},
   singleEvent: {},

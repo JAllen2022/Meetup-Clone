@@ -1,6 +1,7 @@
 import './ProfileCard.css'
 
-function ProfileCard() {
+function ProfileCard({ member }) {
+  console.log('checking member here', member)
     return (
       <div className="event-attendees-profile-card">
         <div className="event-attendees-profile-inner-card">
@@ -9,7 +10,9 @@ function ProfileCard() {
               <i className="fa-sharp fa-solid fa-circle-user event-profile"></i>
             </span>
           </div>
-          <div className="event-attendees-profile-name">Username</div>
+          <div className="event-attendees-profile-name">
+            {member.firstName} {member.lastName}
+          </div>
         </div>
       </div>
     );

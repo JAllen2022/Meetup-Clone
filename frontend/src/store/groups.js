@@ -1,19 +1,21 @@
 import { csrfFetch } from "./csrf";
-import {deleteAllGroupEvents} from './events'
+import { deleteAllGroupEvents } from "./events";
 const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_EVENTS = "groups/GET_GROUP_EVENTS";
 const CREATE_GROUP = "groups/CREATE_GROUP";
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
-const RESET_GROUP_EVENTS = 'groups/RESET_GROUP_EVENTS';
+const RESET_GROUP_EVENTS = "groups/RESET_GROUP_EVENTS";
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
+const GET_MEMBERSHIPS = "groups/GET_MEMBERSHIPS";
 
 const initialState = {
   allGroups: {},
   singleGroup: {},
   groupEvents: {},
+  singleGroupMemberships: {},
 };
 
 /* ----- ACTIONS ------ */
@@ -57,7 +59,12 @@ export const deleteGroup = (groupId) => ({
 
 export const addGroupImage = (newImage, groupId) => ({
   type: ADD_GROUP_IMAGE,
-  payload: {newImage,groupId},
+  payload: { newImage, groupId },
+});
+
+export const getMemberships = (memberships) => ({
+  type: GET_MEMBERSHIPS,
+  payload: memberships,
 });
 
 /* ------ SELECTORS ------ */
@@ -134,6 +141,15 @@ export const thunkAddGroupImage = (newImage, groupId) => async (dispatch) => {
   }
 };
 
+export const thunkGetMemberships = (groupId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/groups/${groupId}/members`);
+
+  if (response.ok) {
+    const data = await response.json();
+    return dispatch(getMemberships(data.Members));
+  }
+};
+
 /* ------ REDUCER ------ */
 export default function groupReducer(state = initialState, action) {
   const newState = { ...state };
@@ -143,13 +159,10 @@ export default function groupReducer(state = initialState, action) {
       return newState;
 
     case GET_SINGLE_GROUP:
-      console.log("checking previous state for get single group", state);
-
       newState.singleGroup = action.payload;
       return newState;
 
     case GET_GROUP_EVENTS: {
-      console.log("checking previous state for get events", state);
       const newObj = {};
       const events = action.payload.Events;
       events.map((ele) => (newObj[ele.id] = ele));
@@ -160,8 +173,6 @@ export default function groupReducer(state = initialState, action) {
     case CREATE_GROUP:
       if (Object.values(newState.allGroups).length) {
         newState.allGroups[action.payload.id] = action.payload;
-        console.log("checking all groups", newState);
-        console.log("checking all action.payload", action.payload);
       }
       return newState;
 
@@ -179,7 +190,10 @@ export default function groupReducer(state = initialState, action) {
         newState.allGroups[action.payload.id] = {
           ...state.allGroups[action.payload.id],
         };
-        newState.allGroups[action.payload.id] = {...newState.allGroups[action.payload.id],...action.payload};
+        newState.allGroups[action.payload.id] = {
+          ...newState.allGroups[action.payload.id],
+          ...action.payload,
+        };
       }
       return newState;
 
@@ -194,10 +208,17 @@ export default function groupReducer(state = initialState, action) {
       // If new group created has an image preview property of true, then add it to all groups
       if (Object.values(newState.allGroups).length) {
         const { newImage, groupId } = action.payload;
-        console.log("groupId, new Image", newImage, groupId);
         if (newImage.preview)
           newState.allGroups[groupId].previewImage = newImage.url;
       }
+      return newState;
+    
+    case GET_MEMBERSHIPS:
+      const membersObj = {};
+      action.payload.forEach((ele) => {
+        membersObj[ele.id] = ele;
+      });
+      newState.singleGroupMemberships = membersObj;
       return newState;
     default:
       return state;
