@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 function Photos() {
     const groupImages = useSelector(state => state.groups.singleGroup.GroupImages)
-    console.log("what is this output", groupImages);
     return (
       <div className="group-details-pictures-tab-container">
         {groupImages?.map((imageObject, index) => (

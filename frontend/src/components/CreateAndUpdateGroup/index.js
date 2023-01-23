@@ -8,7 +8,6 @@ import {
 } from "../../store/groups";
 import "./CreateAndUpdateGroup.css";
 function CreateAndUpdateGroup() {
-  console.log('we made it here1')
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [type, setType] = useState("");
@@ -26,7 +25,6 @@ function CreateAndUpdateGroup() {
   const editPage = window.location.href.includes("edit") ? true : false;
 
   useEffect(() => {
-console.log("we made it here2");
 
     setName(group.name ? group.name : "");
     setAbout(group.about ? group.about : "");

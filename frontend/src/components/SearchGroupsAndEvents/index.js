@@ -24,10 +24,6 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
   if (groupObj) groupArray = Object.values(groupObj);
   if (eventsObj) eventsArray = Object.values(eventsObj);
 
-  console.log("checking defaultTab", defaultTab);
-  console.log('checking selectedTabEvent', selectedTabEvent)
-  console.log("checking selectedTabGroup", selectedTabGroup);
-
   const clickedGroup = (e) => {
     if (selectedTabEvent) {
       setSelectedTabEvent(false);
@@ -72,7 +68,7 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
     }, [selectedTabEvent, selectedTabGroup, groupObj, eventsObj]);
 
   if (!groupArray.length && !eventsArray.length) return null;
-  
+
     return (
       <div className="search-main-outer-body">
         <div className="search-main-inner-body">

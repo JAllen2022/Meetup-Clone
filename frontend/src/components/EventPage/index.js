@@ -50,7 +50,6 @@ function EventPage() {
       : "Online";
 
   const directToGroup = () => history.push(`/groups/${groupInfo.id}/about`);
-  console.log('checking allowed edit ',allowEdit)
 
   // This is where we set the 'Event Options button dependent on the user's status
   useEffect(() => {
