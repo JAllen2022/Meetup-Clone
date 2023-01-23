@@ -166,9 +166,7 @@ export default function groupReducer(state = initialState, action) {
     }
 
     case CREATE_GROUP:
-      if (Object.values(newState.allGroups).length) {
-        newState.allGroups[action.payload.id] = action.payload;
-      }
+      newState.allGroups = {}
       return newState;
 
     case RESET_SINGLE_GROUP:

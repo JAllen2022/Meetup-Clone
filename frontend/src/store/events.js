@@ -147,8 +147,6 @@ export default function eventsReducer(state = initialState, action) {
     case CREATE_EVENT:
       // Creating a new event ALWAYS resets all events object right now because object returned
       // does not provide sufficient information to add into the AllEvents object
-      
-        newState.allEvents = { ...state.allEvents };
         newState.allEvents ={};
 
 
