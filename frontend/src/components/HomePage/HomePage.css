@@ -122,6 +122,7 @@
   border-radius: 0.25rem;
   box-shadow: 0 0 5px rgb(197, 195, 195);
   background-color: #fff;
+  z-index:5;
 }
 
 .profile-button-drop-down-top-half {
