@@ -134,7 +134,6 @@ export const thunkAddGroupImage = (newImage, groupId) => async (dispatch) => {
     method: "POST",
     body: JSON.stringify(newImage),
   });
-  console.log("what is my group id here", groupId);
 
   if (response.ok) {
     const imgObj = await response.json();
