@@ -1,9 +1,11 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem';
 import SignupFormModal from '../SignupFormModal'
 import './HomePage.css'
 
 function LinkUpWorks() {
+    const user = useSelector(state=>state.session.user)
     return (
       <div className="link-up-works-container">
         <h2 className="link-up-works-title">How Linkup Works</h2>
@@ -49,24 +51,35 @@ function LinkUpWorks() {
             <div className="link-up-works-image-container">
               <img src="https://secure.meetupstatic.com/next/images/shared/joinGroup.svg?w=256" />
             </div>
-            <Link
-              className="link-up-works-image-container-title"
-              to="/create-group"
-            >
-              Start a group
-            </Link>
+            {user ? (
+              <Link
+                className="link-up-works-image-container-title"
+                to="/create-group"
+              >
+                Start a group
+              </Link>
+            ) : (
+              <OpenModalMenuItem
+                itemText={
+                  <div className="link-up-works-image-container-title">
+                    Start a group
+                  </div>
+                }
+                modalComponent={<SignupFormModal />}
+              />
+            )}
             <p className="link-up-works-description">
               You don’t have to be an expert to gather people together and
               explore shared interests.
             </p>
           </div>
         </div>
-          <OpenModalMenuItem
-            itemText={
-              <div className="link-up-works-sign-up-button">Join LinkUp</div>
-            }
-            modalComponent={<SignupFormModal />}
-          />
+        <OpenModalMenuItem
+          itemText={
+            <div className="link-up-works-sign-up-button">Join LinkUp</div>
+          }
+          modalComponent={<SignupFormModal />}
+        />
       </div>
     );
 }
