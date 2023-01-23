@@ -196,11 +196,8 @@ export default function groupReducer(state = initialState, action) {
       return newState;
     case ADD_GROUP_IMAGE:
       // If new group created has an image preview property of true, then add it to all groups
-      if (Object.values(newState.allGroups).length) {
-        const { newImage, groupId } = action.payload;
-        if (newImage.preview)
-          newState.allGroups[groupId].previewImage = newImage.url;
-      }
+      newState.allGroups = {};
+
       return newState;
 
     case GET_MEMBERSHIPS:
