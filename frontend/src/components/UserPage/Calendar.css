@@ -1,0 +1,47 @@
+
+
+.calendar-container {
+    width:300px;
+    height:200px;
+    border:1px solid lightgray;
+    border-radius: .35rem;
+    display:flex;
+    justify-content: center;
+}
+
+.calendar-inner-container {
+    width:90%;
+    border:1px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar-title-container {
+    color:#008294;
+    border:1px solid red;
+
+}
+
+.calendar-month-text {
+    padding-right:10px;
+}
+
+.calendar-arrows{
+    padding: 0 .25rem;
+}
+
+.calendar-day-container {
+    flex-grow: 1;
+    border:1px solid red;
+    width:100%;
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6,1fr)
+}
+
+.days {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

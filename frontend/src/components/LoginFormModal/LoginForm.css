@@ -67,3 +67,7 @@
 .modal-form {
     width:75%
 }
+
+.form-errors {
+    color:red
+}

@@ -10,6 +10,7 @@ import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
 import CreateAndUpdateEvent from './components/CreateAndUpdateEvent'
 import EventPage from './components/EventPage';
 import UserHomePage from './components/UserHomePage'
+import UserPage from "./components/UserPage";
 import Footer from "./components/Footer";
 
 function App() {
@@ -65,6 +66,9 @@ function App() {
           </Route>
           <Route path="/search/events">
             <SearchGroupsAndEvents defaultTab={"events"} />
+          </Route>
+          <Route path='/home'>
+            <UserPage />
           </Route>
         </Switch>
       )}
