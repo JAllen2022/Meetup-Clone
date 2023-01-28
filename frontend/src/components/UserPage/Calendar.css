@@ -11,7 +11,7 @@
 
 .calendar-inner-container {
     width:90%;
-    border:1px solid red;
+    /* border:1px solid red; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,7 +19,7 @@
 
 .calendar-title-container {
     color:#008294;
-    border:1px solid red;
+    /* border:1px solid red; */
 
 }
 

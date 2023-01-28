@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import Calendar from "./Calendar";
+import UserJoined from './UserJoined'
 import "./UserPage.css";
 
 export default function UserPage() {
@@ -15,6 +16,7 @@ export default function UserPage() {
         <div className="user-page-content-body-container">
           <div className="user-page-content-body-container-left">
             <Calendar />
+            <UserJoined />
           </div>
           <div className="user-page-content-body-container-right">Today</div>
         </div>
