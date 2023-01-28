@@ -2,7 +2,7 @@
 
 .calendar-container {
     width:300px;
-    height:200px;
+    min-height:200px;
     border:1px solid lightgray;
     border-radius: .35rem;
     display:flex;
@@ -31,17 +31,26 @@
     padding: 0 .25rem;
 }
 
+.calendar-arrows:hover {
+    cursor: pointer;
+    opacity: .8;
+}
+
 .calendar-day-container {
     flex-grow: 1;
-    border:1px solid red;
+    /* border:1px solid red; */
     width:100%;
     display:grid;
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(6,1fr)
 }
 
-.days {
+.days, .weekdays {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.weekdays, .non-current {
+    color: #8B9898;
 }
