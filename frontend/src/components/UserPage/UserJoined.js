@@ -8,7 +8,7 @@ export default function UserJoined() {
         <div>
           <h3>Your next event</h3>
         </div>
-        <Link className='user-page-link'>See all your events</Link>
+        <Link className='user-page-link'>See all you</Link>
       </div>
     </div>
   );
