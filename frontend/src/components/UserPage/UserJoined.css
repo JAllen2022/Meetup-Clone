@@ -1,20 +1,69 @@
-
 .user-page-left-details {
-    width:100%;
-    margin-top:2.5rem;
-    background-color: #f6f7f8;
-    border-radius: .25rem;
+  width: 100%;
+  margin-top: 2.5rem;
+  background-color: #f6f7f8;
+  /* border: 1px red solid; */
+  border-radius: 0.25rem;
 }
 
 .user-page-event-title-container {
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    margin:.5rem
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* border: 1px red solid; */
+  margin: auto;
+  width: 96%;
 }
 
-
 .user-page-link {
-    text-decoration: none;
-    color:#008294;
+  text-decoration: none;
+  color: #008294;
+  /* border: 1px red solid; */
+}
+
+.user-page-left-event-card-preview {
+  border: 1.75px rgb(197, 195, 195) solid;
+  border-radius: 0.25rem;
+  margin: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+}
+
+.user-page-left-event-card-title-container {
+  border-bottom: 1.75px rgb(197, 195, 195) solid;
+  width: 96%;
+  display: flex;
+}
+
+#user-page-left-event-card-image {
+  border-radius: 0.75rem;
+  width: 4rem;
+}
+
+.user-page-left-event-card-title-text {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+
+.user-page-left-event-card-event-info-container {
+  width: 96%;
+  margin: 0.5rem 0;
+}
+
+.user-page-group-container-cards {
+  width: 96%;
+  margin: auto;
+  margin-bottom:1rem;
+
+}
+
+.user-page-group-card {
+  width: 100%;
+  border: 1px rgb(197, 195, 195) solid;
+  background-color: white;
+  border-radius: .25rem;
+  display:flex;
 }

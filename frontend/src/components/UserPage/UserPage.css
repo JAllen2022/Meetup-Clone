@@ -22,10 +22,10 @@
     width:300px;
     /* border:1px red solid; */
     margin-right:1.5rem;
+    margin-top:2rem;
 }
 
 .user-page-content-body-container-right{
     /* border:1px red solid; */
     flex-grow:1;
 }
-

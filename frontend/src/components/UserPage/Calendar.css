@@ -7,10 +7,12 @@
     border-radius: .35rem;
     display:flex;
     justify-content: center;
+    /* border:1px solid red; */
+
 }
 
 .calendar-inner-container {
-    width:90%;
+    width:80%;
     /* border:1px solid red; */
     display: flex;
     flex-direction: column;
@@ -20,6 +22,7 @@
 .calendar-title-container {
     color:#008294;
     /* border:1px solid red; */
+    margin: .5rem 0;
 
 }
 
@@ -42,7 +45,9 @@
     width:100%;
     display:grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(6,1fr)
+    grid-auto-rows: 2rem;
+
+    font-size: .80rem;
 }
 
 .days, .weekdays {
