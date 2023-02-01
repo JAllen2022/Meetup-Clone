@@ -1,7 +1,20 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import UserPageGroupCard from "./UserPageGroupCard";
 import "./UserJoined.css";
+import { useEffect } from "react";
+import { thunkGetUserGroups } from "../../store/groups";
 
 export default function UserJoined() {
+  const myGroups = useSelector((state) => state.groups.userGroups);
+  const myGroupsArray = Object.values(myGroups).slice(0, 4) || [];
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+      dispatch(thunkGetUserGroups());
+  }, []);
+
   return (
     <div className="user-page-left-details">
       <div className="user-page-event-title-container">
@@ -14,7 +27,7 @@ export default function UserJoined() {
         <div className="user-page-left-event-card-title-container">
           <div className="user-page-left-event-card-image">
             <img
-              id="user-page-left-event-card-image"
+              className="user-page-left-event-card-image"
               src="https://secure.meetupstatic.com/next/images/home/Calendar2.svg?w=256"
             ></img>
           </div>
@@ -37,17 +50,9 @@ export default function UserJoined() {
         <Link className="user-page-link">See all your groups</Link>
       </div>
       <div className="user-page-group-container-cards">
-        <div className="user-page-group-card">
-          <div className="user-page-left-event-card-image">
-            <img
-              id="user-page-left-event-card-image"
-              src="https://secure.meetupstatic.com/next/images/home/Calendar2.svg?w=256"
-            ></img>
-          </div>
-          <div className="user-page-left-event-card-title-text">
-            My Group Title
-          </div>
-        </div>
+        {myGroupsArray.map((group) => (
+          <UserPageGroupCard key={group.id} group={group} />
+        ))}
       </div>
     </div>
   );

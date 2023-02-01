@@ -10,12 +10,14 @@ const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
 const GET_MEMBERSHIPS = "groups/GET_MEMBERSHIPS";
+const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
 
 const initialState = {
   allGroups: {},
   singleGroup: {},
   groupEvents: {},
   singleGroupMemberships: {},
+  userGroups: {},
 };
 
 /* ----- ACTIONS ------ */
@@ -65,6 +67,11 @@ export const getMemberships = (memberships) => ({
 
 export const resetAllGroups = () => ({
   type: RESET_ALL_GROUPS,
+});
+
+export const getUserGroups = (groups) => ({
+  type: GET_USER_GROUPS,
+  payload: groups,
 });
 
 /* ------ SELECTORS ------ */
@@ -150,6 +157,15 @@ export const thunkGetMemberships = (groupId) => async (dispatch) => {
   }
 };
 
+export const thunkGetUserGroups = () => async (dispatch) => {
+  const response = await csrfFetch(`/api/groups/current`);
+
+  if (response.ok) {
+    const groups = await response.json();
+    return dispatch(getUserGroups(groups));
+  }
+};
+
 /* ------ REDUCER ------ */
 export default function groupReducer(state = initialState, action) {
   const newState = { ...state };
@@ -224,6 +240,14 @@ export default function groupReducer(state = initialState, action) {
     case RESET_ALL_GROUPS:
       newState.allGroups = {};
       return newState;
+
+    case GET_USER_GROUPS:
+      const newObj = {};
+      const groups = action.payload.Groups;
+      groups.map((ele) => (newObj[ele.id] = ele));
+      newState.userGroups = newObj;
+      return newState;
+
     default:
       return state;
   }
