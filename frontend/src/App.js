@@ -12,6 +12,7 @@ import EventPage from './components/EventPage';
 import UserHomePage from './components/UserHomePage'
 import UserPage from "./components/UserPage";
 import Footer from "./components/Footer";
+import Groups from "./components/Groups";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ function App() {
             <HomePage />
           </Route>
           <Route exact path="/groups">
-            <UserHomePage defaultTab={"groups"} />
+            <Groups />
           </Route>
           <Route exact path="/events">
             <UserHomePage defaultTab={"events"} />

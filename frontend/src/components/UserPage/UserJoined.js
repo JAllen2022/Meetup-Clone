@@ -47,7 +47,7 @@ export default function UserJoined() {
         <div>
           <h3>Your groups</h3>
         </div>
-        <Link className="user-page-link">See all your groups</Link>
+        <Link className="user-page-link" to='/groups'>See all your groups</Link>
       </div>
       <div className="user-page-group-container-cards">
         {myGroupsArray.map((group) => (
