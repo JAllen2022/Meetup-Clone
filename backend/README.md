@@ -1057,6 +1057,71 @@ Returns the details of an event specified by its id.
     }
     ```
 
+### Get all Events joined or organized by Current User
+
+Returns all the events.
+
+- Require Authentication: true
+- Request
+
+  - Method: GET
+  - URL: /api/events/current
+  - Body: none
+
+- Successful Response
+
+  - Status Code: 200
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "Events": [
+        {
+          "id": 1,
+          "groupId": 1,
+          "venueId": null,
+          "name": "Tennis Group First Meet and Greet",
+          "type": "Online",
+          "startDate": "2021-11-19 20:00:00",
+          "endDate": "2021-11-19 22:00:00",
+          "numAttending": 8,
+          "previewImage": "image url",
+          "Group": {
+            "id": 1,
+            "name": "Evening Tennis on the Water",
+            "city": "New York",
+            "state": "NY"
+          },
+          "Venue": null
+        },
+        {
+          "id": 1,
+          "groupId": 1,
+          "venueId": 1,
+          "name": "Tennis Singles",
+          "type": "In Person",
+          "startDate": "2021-11-20 20:00:00",
+          "endDate": "2021-11-19 22:00:00",
+          "numAttending": 4,
+          "previewImage": "image url",
+          "Group": {
+            "id": 1,
+            "name": "Evening Tennis on the Water",
+            "city": "New York",
+            "state": "NY"
+          },
+          "Venue": {
+            "id": 1,
+            "city": "New York",
+            "state": "NY"
+          }
+        }
+      ]
+    }
+    ```
+
 ### Create an Event for a Group specified by its id
 
 Creates and returns a new event for a group specified by its id

@@ -22,6 +22,10 @@
   /* border: 1px red solid; */
 }
 
+.user-page-link:hover {
+  text-decoration: underline;
+}
+
 .user-page-left-event-card-preview {
   border: 1.75px rgb(197, 195, 195) solid;
   border-radius: 0.25rem;

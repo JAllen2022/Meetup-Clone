@@ -74,7 +74,49 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     const eventImage = await EventImage.findOne({
       where: {
         eventId: event.id,
-        preview:true
+        preview: true
+      },
+      raw: true,
+    });
+    if (eventImage) event.previewImage = eventImage.url;
+    else event.previewImage = null;
+
+    returnArray.push(event);
+  }
+
+  res.json({ Events: returnArray });
+});
+
+router.get("/current", requireAuth, async (req, res, next) => {
+  // Format query for search to include req.query parameters
+
+  const allEvents = await Event.findAll({
+    include: {
+      model: Attendance,
+      attributes: [],
+      where: {
+        userId: req.user.id
+      }
+    }
+  });
+
+  const returnArray = [];
+  // Lazy load preview image for event
+  for (let i = 0; i < allEvents.length; i++) {
+    const event = allEvents[i].toJSON();
+    //Lazy load each aggregate for numAttending
+    const attendees = await Attendance.count({
+      where: {
+        eventId: event.id,
+      },
+    });
+    event.numAttending = attendees;
+
+    // Lazy load each Image
+    const eventImage = await EventImage.findOne({
+      where: {
+        eventId: event.id,
+        preview: true,
       },
       raw: true,
     });
