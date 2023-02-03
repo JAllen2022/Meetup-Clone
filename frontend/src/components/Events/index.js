@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { thunkGetUserEvents } from "../../store/events";
+import DivCards from "../SearchGroupsAndEvents/DivCards";
 import "./Events.css";
 
 export default function Events() {
@@ -9,7 +10,7 @@ export default function Events() {
   const userEventsArray = Object.values(userEvents) || [];
   const dispatch = useDispatch();
 
-  console.log("checking user events:", userEvents);
+  console.log("checking user events:", userEventsArray);
 
   useEffect(() => {
     if (userEventsArray.length < 1) dispatch(thunkGetUserEvents());
@@ -30,8 +31,10 @@ export default function Events() {
       </div>
       <div className="user-group-page-right-container">
         <h1>Your Events</h1>
-        <div className="user-group-page-group-card-container">
-
+        <div className="user-event-page-group-card-container">
+          {userEventsArray.map((event, index) => (
+            <DivCards key={index} event={event} userAttendingInfo={true} />
+          ))}
         </div>
       </div>
     </div>

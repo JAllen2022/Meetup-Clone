@@ -15,7 +15,7 @@ const {
   Venue,
   Membership,
   User,
-  GroupImage
+  GroupImage,
 } = require("../../db/models");
 
 const {
@@ -74,7 +74,7 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     const eventImage = await EventImage.findOne({
       where: {
         eventId: event.id,
-        preview: true
+        preview: true,
       },
       raw: true,
     });
@@ -91,13 +91,27 @@ router.get("/current", requireAuth, async (req, res, next) => {
   // Format query for search to include req.query parameters
 
   const allEvents = await Event.findAll({
-    include: {
-      model: Attendance,
-      attributes: [],
-      where: {
-        userId: req.user.id
-      }
-    }
+    attributes: {
+      exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
+    },
+    include: [
+      {
+        model: Attendance,
+        attributes: [],
+        where: {
+          userId: req.user.id,
+        },
+      },
+      {
+        model: Group,
+        attributes: ["id", "name", "city", "state"],
+      },
+      {
+        model: Venue,
+        attributes: ["id", "city", "state"],
+      },
+    ],
+    order: [["startDate", "ASC"]],
   });
 
   const returnArray = [];
@@ -479,8 +493,8 @@ router.get("/:eventId", validateReqParamEventId, async (req, res, next) => {
     attributes: ["url"],
     where: {
       groupId: group.id,
-      preview: true
-    }
+      preview: true,
+    },
   });
 
   // Lazy load Venue
@@ -500,7 +514,7 @@ router.get("/:eventId", validateReqParamEventId, async (req, res, next) => {
   // Add all found attributes to returned Event object
 
   returnEvent.numAttending = attendees;
-  returnEvent.Group = group.toJSON();;
+  returnEvent.Group = group.toJSON();
   returnEvent.Venue = venue;
   returnEvent.EventImages = eventImages;
   delete returnEvent.createdAt;

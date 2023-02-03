@@ -1,0 +1,36 @@
+.div-card-event-body {
+  display: flex;
+  padding-left: 1rem;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.div-card-event-body > div > h3,
+p {
+  margin-top: 0;
+  padding: 0;
+}
+
+.div-card-event-title-time {
+  margin: 0;
+  padding: 0;
+  color: #877457;
+  font-size: 0.8rem;
+}
+
+.div-card-event-information,
+.div-card-event-footer {
+  color: #757575;
+  font-size: 0.8rem;
+  line-height: 1.25rem;
+  max-height: 2.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.div-card-event-title-name {
+  margin-bottom: 0;
+}
+
+.div-card-event-footer {
+  margin-top: 1rem;
+}

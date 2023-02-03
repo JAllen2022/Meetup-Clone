@@ -1,9 +1,9 @@
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory } from "react-router-dom";
 import defaultImage from "../../assets/DefaultGroupImage.png";
 import DivCardBodyGroup from "./DivCardBodyGroup";
-import EventCard from '../EventCard';
+import EventCard from "../EventCard";
 
-function DivCards({ event, group }) {
+function DivCards({ event, group, userAttendingInfo }) {
   const history = useHistory();
   let previewImage;
   if (event) previewImage = event.previewImage;
@@ -11,13 +11,13 @@ function DivCards({ event, group }) {
 
   const directToGroup = () => {
     if (group) {
-      let directToGroup = `/groups/${group.id}/about`
-      history.push(directToGroup)
+      let directTo = `/groups/${group.id}/about`;
+      history.push(directTo);
     } else {
-      let directToGroup = `/events/${event.id}`;
-      history.push(directToGroup);
+      let directTo = `/events/${event.id}`;
+      history.push(directTo);
     }
-  }
+  };
 
   return (
     <div onClick={directToGroup} className="div-card">
@@ -37,7 +37,7 @@ function DivCards({ event, group }) {
       {group ? (
         <DivCardBodyGroup group={group} />
       ) : (
-        <EventCard event={event} />
+        <EventCard event={event} userAttendingInfo={userAttendingInfo} />
       )}
     </div>
   );
