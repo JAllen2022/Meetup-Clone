@@ -4,15 +4,19 @@ import UserPageGroupCard from "./UserPageGroupCard";
 import "./UserJoined.css";
 import { useEffect } from "react";
 import { thunkGetUserGroups } from "../../store/groups";
+import { thunkGetUserEvents } from "../../store/events";
 
 export default function UserJoined() {
   const myGroups = useSelector((state) => state.groups.userGroups);
+  const myEvents = useSelector((state) => state.events.userEvents);
   const myGroupsArray = Object.values(myGroups).slice(0, 4) || [];
+  const myEventsArray = Object.values(myEvents) || [];
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-      dispatch(thunkGetUserGroups());
+    if (myGroupsArray.length < 1) dispatch(thunkGetUserGroups());
+    if (myEventsArray.length < 1) dispatch(thunkGetUserEvents());
   }, []);
 
   return (
@@ -21,7 +25,9 @@ export default function UserJoined() {
         <div>
           <h3>Your next event</h3>
         </div>
-        <Link className="user-page-link">See all your events</Link>
+        <Link className="user-page-link" to="/events">
+          See all your events
+        </Link>
       </div>
       <div className="user-page-left-event-card-preview">
         <div className="user-page-left-event-card-title-container">
@@ -47,7 +53,9 @@ export default function UserJoined() {
         <div>
           <h3>Your groups</h3>
         </div>
-        <Link className="user-page-link" to='/groups'>See all your groups</Link>
+        <Link className="user-page-link" to="/groups">
+          See all your groups
+        </Link>
       </div>
       <div className="user-page-group-container-cards">
         {myGroupsArray.map((group) => (

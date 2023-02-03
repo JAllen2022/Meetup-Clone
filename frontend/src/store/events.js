@@ -6,15 +6,17 @@ const CREATE_EVENT = "events/CREATE_EVENT";
 const EDIT_EVENT = "events/EDIT_EVENT";
 const ADD_EVENT_IMAGE = "events/ADD_EVENT_IMAGE";
 const RESET_SINGLE_EVENT = "events/RESET_SINGLE_EVENT";
-const RESET_ALL_EVENTS = 'events/RESET_ALL_EVENTS'
+const RESET_ALL_EVENTS = "events/RESET_ALL_EVENTS";
 const DELETE_EVENT = "events/DELETE_EVENT";
 const DELETE_ALL_GROUP_EVENTS = "events/DELETE_ALL_GROUP_EVENTS";
 const GET_ATTENDEES = "events/GET_ATTENDEES";
+const GET_USER_EVENTS = "events/GET_USER_EVENTS";
 
 const initialState = {
   allEvents: {},
   singleEvent: {},
   singleEventAttendees: {},
+  userEvents: {},
 };
 
 /* ----- ACTIONS ------ */
@@ -62,8 +64,13 @@ export const getAttendees = (attendees) => ({
 });
 
 export const resetAllEvents = () => ({
-  type: RESET_ALL_EVENTS
-})
+  type: RESET_ALL_EVENTS,
+});
+
+export const getUserEvents = (events) => ({
+  type: GET_USER_EVENTS,
+  payload: events,
+});
 
 /* ------ SELECTORS ------ */
 export const thunkGetAllEvents = () => async (dispatch) => {
@@ -139,6 +146,15 @@ export const thunkGetAttendees = (eventId) => async (dispatch) => {
   }
 };
 
+export const thunkGetUserEvents = () => async (dispatch) => {
+  const response = await csrfFetch(`/api/events/current`);
+
+  if (response.ok) {
+    const events = await response.json();
+    return dispatch(getUserEvents(events));
+  }
+};
+
 /* ------ REDUCER ------ */
 export default function eventsReducer(state = initialState, action) {
   const newState = { ...state };
@@ -152,8 +168,7 @@ export default function eventsReducer(state = initialState, action) {
     case CREATE_EVENT:
       // Creating a new event ALWAYS resets all events object right now because object returned
       // does not provide sufficient information to add into the AllEvents object
-      newState.allEvents ={};
-
+      newState.allEvents = {};
 
       return newState;
 
@@ -202,6 +217,13 @@ export default function eventsReducer(state = initialState, action) {
       return newState;
     case RESET_ALL_EVENTS:
       newState.allEvents = {};
+      return newState;
+
+    case GET_USER_EVENTS:
+      const eventsObj = {};
+      const events = action.payload.Events;
+      events.forEach((event) => (eventsObj[event.id] = event));
+      newState.userEvents = eventsObj;
       return newState;
     default:
       return newState;

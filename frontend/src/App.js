@@ -9,7 +9,7 @@ import GroupPage from './components/GroupPage'
 import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
 import CreateAndUpdateEvent from './components/CreateAndUpdateEvent'
 import EventPage from './components/EventPage';
-import UserHomePage from './components/UserHomePage'
+import Events from './components/Events'
 import UserPage from "./components/UserPage";
 import Footer from "./components/Footer";
 import Groups from "./components/Groups";
@@ -33,7 +33,7 @@ function App() {
             <Groups />
           </Route>
           <Route exact path="/events">
-            <UserHomePage defaultTab={"events"} />
+            <Events />
           </Route>
           <Route path="/groups/:groupId/create-event">
             <CreateAndUpdateEvent />

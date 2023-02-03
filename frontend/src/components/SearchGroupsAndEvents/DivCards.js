@@ -1,7 +1,7 @@
 import { Link, useHistory } from 'react-router-dom'
 import defaultImage from "../../assets/DefaultGroupImage.png";
 import DivCardBodyGroup from "./DivCardBodyGroup";
-import DivCardBodyEvents from './DivCardBodyEvents';
+import EventCard from '../EventCard';
 
 function DivCards({ event, group }) {
   const history = useHistory();
@@ -37,7 +37,7 @@ function DivCards({ event, group }) {
       {group ? (
         <DivCardBodyGroup group={group} />
       ) : (
-        <DivCardBodyEvents event={event} />
+        <EventCard event={event} />
       )}
     </div>
   );
