@@ -1,7 +1,6 @@
 .user-page-container {
     width:100%;
     min-height:120vh;
-
 }
 
 .user-page-body-container {
@@ -9,6 +8,7 @@
     margin:auto;
     /* border:1px red solid; */
     height:100%;
+    max-width: 70rem;
 }
 
 .user-page-content-body-container{
@@ -26,5 +26,5 @@
 
 .user-page-content-body-container-right{
     /* border:1px red solid; */
-    flex-grow:1;
+    max-width: 30rem;
 }

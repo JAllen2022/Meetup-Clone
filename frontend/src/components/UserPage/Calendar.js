@@ -35,8 +35,6 @@ export default function Calendar() {
     setDisplayYear(new Date(year, month + 1, 0).getFullYear());
   }, [month]);
 
-  console.log("checking date", displayYear);
-
   const decreaseMonth = () => setMonth(month - 1);
   const increaseMonth = () => setMonth(month + 1);
 

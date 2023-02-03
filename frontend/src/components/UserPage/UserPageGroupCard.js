@@ -1,7 +1,6 @@
 import './UserPageGroupCard.css'
 
 export default function UserPageGroupCard({ group }) {
-    console.log('checking group', group)
     return (
       <div className="user-page-group-card">
         <div className="user-page-left-event-card-image-container">
