@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import UserPageGroupCard from "./UserPageGroupCard";
-import "./UserJoined.css";
 import { useEffect } from "react";
 import { thunkGetUserGroups } from "../../store/groups";
 import { thunkGetUserEvents } from "../../store/events";
+import formatDateString from "../../util/formatDateString";
+import UserPageGroupCard from "./UserPageGroupCard";
+import "./UserJoined.css";
 
 export default function UserJoined() {
   const myGroups = useSelector((state) => state.groups.userGroups);
@@ -15,9 +16,65 @@ export default function UserJoined() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (myGroupsArray.length < 1) dispatch(thunkGetUserGroups());
-    if (myEventsArray.length < 1) dispatch(thunkGetUserEvents());
+    if (!myGroupsArray.length) dispatch(thunkGetUserGroups());
+    if (!myEventsArray.length) dispatch(thunkGetUserEvents());
   }, []);
+
+  let featuredEvent = (
+    <div className="user-page-left-event-card-preview">
+      <div className="user-page-left-event-card-title-container1">
+        <div className="user-page-left-event-card-image">
+          <img
+            className="user-page-left-event-card-image"
+            src="https://secure.meetupstatic.com/next/images/home/Calendar2.svg?w=256"
+          ></img>
+        </div>
+        <div className="user-page-left-event-card-title-text">
+          No events yet!
+        </div>
+      </div>
+    </div>
+  );
+  if (myEventsArray.length) {
+    const event = myEventsArray[0];
+
+    const startDate = formatDateString(event.startDate);
+    const eventLocation =
+      event.type === "In person"
+        ? event.Venue
+          ? event.Venue.city + ", " + event.Venue.state
+          : "TBD"
+        : "Online";
+
+    featuredEvent = (
+      <div className="user-page-left-event-card-preview">
+        <div className="user-page-left-event-card-title-container2">
+          <div className="user-page-left-event-card-image">
+            <img
+              className="user-page-left-event-card-image"
+              src={
+                event.previewImage
+                  ? event.previewImage
+                  : "https://secure.meetupstatic.com/next/images/home/Calendar2.svg?w=256"
+              }
+            ></img>
+          </div>
+          <div className="user-page-left-event-card-title-text">
+            {event.Group.name}
+          </div>
+        </div>
+        <div className="user-page-left-event-card-event-info-container">
+          <div className="div-card-event-title-time">{startDate}</div>
+          <div className="">{event.name}</div>
+          <div className="div-card-event-information">{event.Group.name}</div>
+          <div className="div-card-event-information">
+            <i className="fa-solid fa-location-dot fa-solid-event"></i>{" "}
+            {eventLocation}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="user-page-left-details">
@@ -29,26 +86,7 @@ export default function UserJoined() {
           See all your events
         </Link>
       </div>
-      <div className="user-page-left-event-card-preview">
-        <div className="user-page-left-event-card-title-container">
-          <div className="user-page-left-event-card-image">
-            <img
-              className="user-page-left-event-card-image"
-              src="https://secure.meetupstatic.com/next/images/home/Calendar2.svg?w=256"
-            ></img>
-          </div>
-          <div className="user-page-left-event-card-title-text">
-            My Event Title
-          </div>
-        </div>
-        <div className="user-page-left-event-card-event-info-container">
-          <div>Event Time</div>
-          <div>Event Title</div>
-          <div>Event Group Name</div>
-          <div>Online event</div>
-          <div> attending</div>
-        </div>
-      </div>
+      {featuredEvent}
       <div className="user-page-event-title-container">
         <div>
           <h3>Your groups</h3>

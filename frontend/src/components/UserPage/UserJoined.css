@@ -1,10 +1,12 @@
 .user-page-left-details {
+  box-sizing: border-box;
   width: 100%;
   margin-top: 2.5rem;
   background-color: #f6f7f8;
   /* border: 1px red solid; */
   border-radius: 0.25rem;
   padding-bottom: 1rem;
+  padding:.5rem;
 }
 
 .user-page-event-title-container {
@@ -36,9 +38,16 @@
   background-color: white;
 }
 
-.user-page-left-event-card-title-container {
+.user-page-left-event-card-title-container1 {
+  width: 94%;
+  display: flex;
+}
+
+.user-page-left-event-card-title-container2 {
+  box-sizing: border-box;
   border-bottom: 1.75px rgb(197, 195, 195) solid;
-  width: 96%;
+  width: 94%;
+  padding:1rem 0;
   display: flex;
 }
 
@@ -55,8 +64,8 @@
 }
 
 .user-page-left-event-card-event-info-container {
-  width: 96%;
-  margin: 0.5rem 0;
+  width: 94%;
+  padding: 1rem 0;
 }
 
 .user-page-group-container-cards {
@@ -69,10 +78,12 @@
 .user-page-group-card {
   box-sizing: border-box;
   width: 100%;
-  border: 1px rgb(197, 195, 195) solid;
+  height: 4.5rem;
+  border: .5px rgb(197, 195, 195) solid;
   background-color: white;
   border-radius: .25rem;
   display:flex;
+  align-items: center;
   margin:.5rem 0;
   padding: .5rem;
 }
@@ -81,13 +92,11 @@
     cursor: pointer;
 }
 
-.user-page-left-event-card-image-container {
-    display: flex;
-}
 
-.user-page-left-group-card-image {
+.user-page-left-group-card-image, .user-page-left-event-card-image {
   border-radius: 0.25rem;
   width: 4rem;
-  height:2.25rem;
-  /* object-fit: cover; */
+  height:3rem;
+  object-fit: cover;
+  display: flex;
 }
