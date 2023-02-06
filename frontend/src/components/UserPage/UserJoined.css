@@ -13,7 +13,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* border: 1px red solid; */
   margin: auto;
   width: 96%;
 }
@@ -21,7 +20,6 @@
 .user-page-link {
   text-decoration: none;
   color: #008294;
-  /* border: 1px red solid; */
 }
 
 .user-page-link:hover {
