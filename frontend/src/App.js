@@ -20,7 +20,7 @@ function App() {
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
-
+  
   return (
     <>
       <Navigation isLoaded={isLoaded} />

@@ -16,6 +16,8 @@ export default function Calendar() {
     "November",
     "December",
   ];
+
+  // Setting data format for calendar
   const date = new Date();
   const year = date.getFullYear();
   const [month, setMonth] = useState(date.getMonth());
