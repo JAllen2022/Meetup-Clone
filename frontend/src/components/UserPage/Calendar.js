@@ -48,7 +48,7 @@ export default function Calendar() {
     }
   }
   for (let i = 1; i <= lastDay?.getDate(); i++) {
-    tempArr.push(<div className="days">{i}</div>);
+    tempArr.push(<div className="days current">{i}</div>);
   }
   for (let i = 1; i < 7 - lastDay?.getDay(); i++) {
     tempArr.push(<div className="days non-current">{i}</div>);

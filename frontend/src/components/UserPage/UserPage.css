@@ -12,6 +12,14 @@
   margin-bottom: 2rem;
 }
 
+#user-page-title {
+  font-size: 42px;
+}
+
+#user-page-sub-title {
+  font-size: 24px;
+}
+
 .user-page-content-body-container {
   width: 100%;
   /* border:1px red solid; */

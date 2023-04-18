@@ -22,8 +22,8 @@ export default function UserPage() {
     <div className="user-page-container">
       <div className="user-page-body-container">
         <div className="user-page-header-container">
-          <h1>Welcome, {user.firstName} 👋</h1>
-          <h3> Events from your groups </h3>
+          <h1 id="user-page-title">Welcome, {user.firstName} 👋</h1>
+          <h3 id="user-page-sub-title"> Events from your groups </h3>
         </div>
         <div className="user-page-content-body-container">
           <div className="user-page-content-body-container-left">
