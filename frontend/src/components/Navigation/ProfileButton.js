@@ -35,16 +35,11 @@ function ProfileButton({ user, state }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
-    history.push('/')
+    history.push("/");
   };
 
-  const navigateEvent = () => {
-    history.push('/events')
-    setShowMenu(false);
-  }
-
-  const navigateGroup = () => {
-    history.push("/groups");
+  const navigate = (str) => {
+    history.push(str);
     setShowMenu(false);
   };
 
@@ -62,40 +57,33 @@ function ProfileButton({ user, state }) {
           <div className="profile-button-drop-down-top-half">
             <p
               className="profile-button-drop-down-elements"
-              onClick={navigateEvent}
+              onClick={() => navigate("/search/events")}
             >
               Events
             </p>
             <p
               className="profile-button-drop-down-elements"
-              onClick={navigateGroup}
+              onClick={() => navigate("/search/groups")}
             >
               Groups
             </p>
           </div>
           <div className="profile-button-drop-down-top-half">
-            <OpenModalMenuItem
-              itemText={
-                <p
-                  onButtonClick={closeMenu}
-                  className="profile-button-drop-down-elements"
-                >
-                  Your Events
-                </p>
-              }
-              modalComponent={<FeatureComingSoon />}
-            />
-            <OpenModalMenuItem
-              itemText={
-                <p
-                  onButtonClick={closeMenu}
-                  className="profile-button-drop-down-elements"
-                >
-                  Your Groups
-                </p>
-              }
-              modalComponent={<FeatureComingSoon />}
-            />
+            <p
+              onButtonClick={closeMenu}
+              className="profile-button-drop-down-elements"
+              onClick={() => navigate("/events")}
+            >
+              Your Events
+            </p>
+
+            <p
+              onButtonClick={closeMenu}
+              className="profile-button-drop-down-elements"
+              onClick={() => navigate("/groups")}
+            >
+              Your Groups
+            </p>
           </div>
           <div>
             <OpenModalMenuItem

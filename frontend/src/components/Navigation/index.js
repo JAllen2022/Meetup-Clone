@@ -20,15 +20,20 @@ function Navigation({ isLoaded }) {
 
   const refreshGroup = () => {
     dispatch(resetSingleGroup());
-
-  }
+  };
 
   return (
     <div className="nav-bar">
       <div className="nav-bar-logo-left">
-        <NavLink exact to="/">
-          <img id="nav-bar-logo-image" src={imageLogo} alt="link up logo" />
-        </NavLink>
+        {sessionUser ? (
+          <NavLink exact to="/home">
+            <img id="nav-bar-logo-image" src={imageLogo} alt="link up logo" />
+          </NavLink>
+        ) : (
+          <NavLink exact to="/">
+            <img id="nav-bar-logo-image" src={imageLogo} alt="link up logo" />
+          </NavLink>
+        )}
       </div>
       {isLoaded && (
         <div className="nav-bar-user-right">
