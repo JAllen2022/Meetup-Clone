@@ -37,7 +37,7 @@ function LoginFormModal() {
     return dispatch(sessionActions.login({ credential:'demo@user.io', password:'password' })).then(
       () => {
         closeModal();
-        history.push('/groups')
+        history.push('/home')
       }
     );
   }

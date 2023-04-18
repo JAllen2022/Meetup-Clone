@@ -15,9 +15,8 @@ function SignupFormModal() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
-  const [extendedDiv, setExtendedDiv]=useState('')
+  const [extendedDiv, setExtendedDiv] = useState("");
   const { closeModal } = useModal();
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,13 +33,13 @@ function SignupFormModal() {
       )
         .then(() => {
           closeModal();
-          history.push('/groups')
+          history.push("/home");
         })
         .catch(async (res) => {
           const data = await res.json();
           if (data && data.errors) setErrors(Object.values(data.errors));
           else setErrors([data.message]);
-          if(data.length>0)setExtendedDiv('extended')
+          if (data.length > 0) setExtendedDiv("extended");
         });
     }
     return setErrors([
@@ -61,7 +60,9 @@ function SignupFormModal() {
       <form className="modal-form" onSubmit={handleSubmit}>
         <ul>
           {errors.map((error, idx) => (
-            <li className='form-errors' key={idx}>{error}</li>
+            <li className="form-errors" key={idx}>
+              {error}
+            </li>
           ))}
         </ul>
         <div>

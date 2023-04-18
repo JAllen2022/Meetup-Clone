@@ -1,58 +1,58 @@
 .hidden {
-    display:none
+  display: none;
 }
 
 .nav-bar {
-    display:flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    min-height:64px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  border-bottom: 1px solid rgb(230, 230, 230);
 }
 
 #nav-bar-logo-image {
-    width:75px;
-    padding-left:20%
+  width: 75px;
+  padding-left: 20%;
 }
 
 .log-in {
-    display:inline-block;
-    color: #212121;
-    margin-right:20px;
-    font-size:.875rem;
-    cursor: pointer;
+  display: inline-block;
+  color: #212121;
+  margin-right: 20px;
+  font-size: 0.875rem;
+  cursor: pointer;
 }
 
 .log-in:hover {
-    font-weight: 600;
-    color:#008294
+  font-weight: 600;
+  color: #008294;
 }
 
 .nav-bar-user-right {
-    display:flex;
-    flex-direction: row;
-    margin-right:1rem;
+  display: flex;
+  flex-direction: row;
+  margin-right: 1rem;
 }
 
 .prof-icon-nav {
-    font-size: 2rem;
-    color: darkgray;
+  font-size: 2rem;
+  color: darkgray;
 }
 
 .nav-bar-create-group {
-    margin-right:1rem;
-    font-size:.875rem;
-    padding-right:1rem;
-    border-right:1px solid rgb(230 230 230);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
+  margin-right: 1rem;
+  font-size: 0.875rem;
+  padding-right: 1rem;
+  border-right: 1px solid rgb(230 230 230);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 #create-group {
-    text-decoration: none;
-    color:#008294;
-      padding:0;
-    margin:0;
+  text-decoration: none;
+  color: #008294;
+  padding: 0;
+  margin: 0;
 }

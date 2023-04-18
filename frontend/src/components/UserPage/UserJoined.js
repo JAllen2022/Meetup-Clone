@@ -6,14 +6,20 @@ import { thunkGetUserEvents } from "../../store/events";
 import formatDateString from "../../util/formatDateString";
 import UserPageGroupCard from "./UserPageGroupCard";
 import "./UserJoined.css";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function UserJoined() {
   const myGroups = useSelector((state) => state.groups.userGroups);
   const myEvents = useSelector((state) => state.events.userEvents);
+  const history = useHistory();
   const myGroupsArray = Object.values(myGroups).slice(0, 4) || [];
   const myEventsArray = Object.values(myEvents) || [];
 
   const dispatch = useDispatch();
+
+  const eventRedirect = () => {
+    history.push();
+  };
 
   useEffect(() => {
     if (!myGroupsArray.length) dispatch(thunkGetUserGroups());
@@ -47,7 +53,10 @@ export default function UserJoined() {
         : "Online";
 
     featuredEvent = (
-      <div className="user-page-left-event-card-preview">
+      <div
+        className="user-page-left-event-card-preview"
+        onClick={() => history.push(`/events/${event.id}`)}
+      >
         <div className="user-page-left-event-card-title-container2">
           <div className="user-page-left-event-card-image">
             <img
@@ -64,12 +73,18 @@ export default function UserJoined() {
           </div>
         </div>
         <div className="user-page-left-event-card-event-info-container">
-          <div className="div-card-event-title-time">{startDate}</div>
-          <div className="">{event.name}</div>
-          <div className="div-card-event-information">{event.Group.name}</div>
-          <div className="div-card-event-information">
-            <i className="fa-solid fa-location-dot fa-solid-event"></i>{" "}
+          <div className="user-page-div-card-event-title-time">{startDate}</div>
+          <div className="user-page-div-card-event-name">{event.name}</div>
+          <div className="user-page-div-card-event-information">
+            {event.Group.name}
+          </div>
+          <div className="user-page-div-card-event-location">
+            <i className="fa-solid fa-location-dot fa-solid-event user-page-div-card-icon"></i>{" "}
             {eventLocation}
+          </div>
+          <div className="user-page-div-card-attending-div">
+            <i class="fa-solid fa-circle-check user-page-div-card-attending-icon"></i>
+            Attending
           </div>
         </div>
       </div>
