@@ -25,19 +25,150 @@ const {
 } = require("../../utils/validation");
 const { Op } = require("sequelize");
 
+const { sequelize } = require("../../db/models");
+
 // GET /api/events
 // Return all events
 router.get("/", validateEventQueryParamInput, async (req, res, next) => {
   const { name, type, startDate } = req.query;
 
-  // Format query for search to include req.query parameters
   const where = {};
+  const include = [
+    {
+      model: Group,
+      attributes: ["id", "name", "city", "state"],
+    },
+    {
+      model: Venue,
+      attributes: ["id", "city", "state"],
+    },
+    {
+      model: EventImage,
+      where: { preview: true },
+      attributes: ["url"],
+      required: false,
+    },
+    {
+      model: Attendance,
+      attributes: [
+        [
+          sequelize.fn("COUNT", sequelize.col("attendances.eventId")),
+          "numAttending",
+        ],
+      ],
+      as: "attendances",
+    },
+  ];
   const query = {
     where,
     attributes: {
       exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
     },
+
+    include,
+    limit: res.locals.size,
+    offset: res.locals.size * (res.locals.page - 1),
+    group: ["Event.id"],
+  };
+
+  if (name) where.name = { [Op.like]: `%${name}%` };
+  if (type) where.type = res.locals.type;
+  if (startDate) where.startDate = startDate;
+
+  const allEvents = await Event.findAll(query);
+
+  const returnArray = allEvents.map((event) => {
+    const data = event.toJSON();
+    console.log("checking the event", data);
+    data.numAttending =
+      data.Attendances?.length > 0 ? data.Attendances[0].numAttending : 0;
+    data.previewImage =
+      data.EventImages.length > 0 ? data.EventImages[0].url : null;
+    delete data.Attendances;
+    delete data.EventImages;
+    return data;
+  });
+
+  console.log("checking the return", returnArray);
+
+  res.json({ Events: returnArray });
+
+  // const { name, type, startDate } = req.query;
+
+  // // Format query for search to include req.query parameters
+  // const where = {};
+  // const query = {
+  //   where,
+  //   attributes: {
+  //     exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
+  //   },
+  //   include: [
+  //     {
+  //       model: Group,
+  //       attributes: ["id", "name", "city", "state"],
+  //     },
+  //     {
+  //       model: Venue,
+  //       attributes: ["id", "city", "state"],
+  //     },
+  //   ],
+  //   limit: res.locals.size,
+  //   offset: res.locals.size * (res.locals.page - 1),
+  // };
+
+  // // Add query parameters if they exist
+  // if (name) where.name = { [Op.like]: `%${name}%` };
+  // if (type) where.type = res.locals.type;
+  // if (startDate) where.startDate = startDate;
+
+  // const allEvents = await Event.findAll(query);
+
+  // const returnArray = [];
+  // // Lazy load preview image for event
+  // for (let i = 0; i < allEvents.length; i++) {
+  //   const event = allEvents[i].toJSON();
+  //   //Lazy load each aggregate for numAttending
+  //   const attendees = await Attendance.count({
+  //     where: {
+  //       eventId: event.id,
+  //     },
+  //   });
+  //   event.numAttending = attendees;
+
+  //   // Lazy load each Image
+  //   const eventImage = await EventImage.findOne({
+  //     where: {
+  //       eventId: event.id,
+  //       preview: true,
+  //     },
+  //     raw: true,
+  //   });
+  //   if (eventImage) event.previewImage = eventImage.url;
+  //   else event.previewImage = null;
+
+  //   returnArray.push(event);
+  // }
+
+  // res.json({ Events: returnArray });
+});
+
+// GET /api/events/current
+// Return all events that the user has joined or organized
+router.get("/current", requireAuth, async (req, res, next) => {
+  // Format query for search to include req.query parameters
+
+  const allEvents = await Event.findAll({
+    attributes: {
+      exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
+    },
     include: [
+      {
+        model: Attendance,
+        attributes: [],
+        where: {
+          userId: req.user.id,
+        },
+      },
       {
         model: Group,
         attributes: ["id", "name", "city", "state"],
@@ -47,16 +178,8 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
         attributes: ["id", "city", "state"],
       },
     ],
-    limit: res.locals.size,
-    offset: res.locals.size * (res.locals.page - 1),
-  };
-
-  // Add query parameters if they exist
-  if (name) where.name = { [Op.like]: `%${name}%` };
-  if (type) where.type = res.locals.type;
-  if (startDate) where.startDate = startDate;
-
-  const allEvents = await Event.findAll(query);
+    order: [["startDate", "ASC"]],
+  });
 
   const returnArray = [];
   // Lazy load preview image for event
@@ -87,10 +210,21 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
   res.json({ Events: returnArray });
 });
 
-router.get("/current", requireAuth, async (req, res, next) => {
+// GET /api/events/upcoming
+// Return all events for groups that the user has joined, sorted by date
+// Includes pagination. Also takes into consideration that date ranges may change
+router.get("/upcoming", requireAuth, async (req, res, next) => {
   // Format query for search to include req.query parameters
+  const { startDate } = req.query;
 
-  const allEvents = await Event.findAll({
+  const where = {};
+
+  // Either get the events from the startDate given, OR, default to today's start date
+  if (startDate) where.startDate = startDate;
+  else where.startDate = new Date.now();
+
+  const query = {
+    where,
     attributes: {
       exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
     },
@@ -112,7 +246,9 @@ router.get("/current", requireAuth, async (req, res, next) => {
       },
     ],
     order: [["startDate", "ASC"]],
-  });
+  };
+
+  const allEvents = await Event.findAll(query);
 
   const returnArray = [];
   // Lazy load preview image for event

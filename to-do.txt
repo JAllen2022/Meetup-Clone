@@ -1,0 +1,17 @@
+
+To-do:
+get the calendar working on the user home page
+- Show events by date - only future events
+- events page - show past events as well
+- have specfic tab for user owned events
+- eager load all the user events
+
+Fix formatting for all pages - just like we did for the user home page
+- fix the gray bar below the nav page
+
+- Search feature
+
+Add google maps API
+
+create a user page
+media queries for all pages

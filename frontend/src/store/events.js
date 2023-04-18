@@ -11,6 +11,7 @@ const DELETE_EVENT = "events/DELETE_EVENT";
 const DELETE_ALL_GROUP_EVENTS = "events/DELETE_ALL_GROUP_EVENTS";
 const GET_ATTENDEES = "events/GET_ATTENDEES";
 const GET_USER_EVENTS = "events/GET_USER_EVENTS";
+const GET_HOMEPAGE_EVENTS = "events/GET_HOMEPAGE_EVENTS";
 
 const initialState = {
   allEvents: {},
