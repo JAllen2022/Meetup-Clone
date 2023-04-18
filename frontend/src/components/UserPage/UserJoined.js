@@ -80,7 +80,7 @@ export default function UserJoined() {
     <div className="user-page-left-details">
       <div className="user-page-event-title-container">
         <div>
-          <h3>Your next event</h3>
+          <h2 className="user-page-joined-title">Your next event</h2>
         </div>
         <Link className="user-page-link" to="/events">
           See all your events
@@ -89,7 +89,7 @@ export default function UserJoined() {
       {featuredEvent}
       <div className="user-page-event-title-container">
         <div>
-          <h3>Your groups</h3>
+          <h2 className="user-page-joined-title">Your groups</h2>
         </div>
         <Link className="user-page-link" to="/groups">
           See all your groups

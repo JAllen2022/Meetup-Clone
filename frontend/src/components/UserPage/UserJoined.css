@@ -6,7 +6,7 @@
   /* border: 1px red solid; */
   border-radius: 0.25rem;
   padding-bottom: 1rem;
-  padding:.5rem;
+  padding: 0.5rem;
 }
 
 .user-page-event-title-container {
@@ -20,6 +20,7 @@
 .user-page-link {
   text-decoration: none;
   color: #008294;
+  font-size: 16px;
 }
 
 .user-page-link:hover {
@@ -45,14 +46,13 @@
   box-sizing: border-box;
   border-bottom: 1.75px rgb(197, 195, 195) solid;
   width: 94%;
-  padding:1rem 0;
+  padding: 1rem 0;
   display: flex;
 }
 
 .user-page-left-event-card-image {
   border-radius: 0.25rem;
   width: 4rem;
-
 }
 
 .user-page-left-event-card-title-text {
@@ -69,32 +69,31 @@
 .user-page-group-container-cards {
   width: 96%;
   margin: auto;
-  margin-bottom:1rem;
-
+  margin-bottom: 1rem;
 }
 
 .user-page-group-card {
   box-sizing: border-box;
   width: 100%;
   height: 4.5rem;
-  border: .5px rgb(197, 195, 195) solid;
+  border: 0.5px rgb(197, 195, 195) solid;
   background-color: white;
-  border-radius: .25rem;
-  display:flex;
+  border-radius: 0.25rem;
+  display: flex;
   align-items: center;
-  margin:.5rem 0;
-  padding: .5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
 }
 
 .user-page-group-card:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-
-.user-page-left-group-card-image, .user-page-left-event-card-image {
+.user-page-left-group-card-image,
+.user-page-left-event-card-image {
   border-radius: 0.25rem;
   width: 4rem;
-  height:3rem;
+  height: 3rem;
   object-fit: cover;
   display: flex;
 }

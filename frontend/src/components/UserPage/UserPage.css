@@ -4,11 +4,11 @@
 }
 
 .user-page-body-container {
-  width: 70%;
+  width: fit-content;
   margin: auto;
-  /* border:1px red solid; */
+  border: 1px solid purple;
   height: 100%;
-  max-width: 70rem;
+  max-width: 100%;
   margin-bottom: 2rem;
 }
 
@@ -22,19 +22,24 @@
 
 .user-page-content-body-container {
   width: 100%;
-  /* border:1px red solid; */
+  border: 1px solid green;
   display: flex;
+  margin-top: 4.25rem;
 }
 
 .user-page-content-body-container-left {
-  width: 300px;
-  /* border:1px red solid; */
+  width: 400px;
+  border: 1px red solid;
   margin-right: 1.5rem;
-  margin-top: 2rem;
 }
 
 .user-page-content-body-container-right {
-  /* border:1px red solid; */
-  max-width: 30rem;
+  border: 1px red solid;
+  min-width: 30rem;
+  width: 40rem;
   padding-left: 1rem;
+}
+
+.user-page-joined-title {
+  font-size: 20px;
 }
