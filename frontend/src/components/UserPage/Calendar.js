@@ -33,7 +33,7 @@ export default function Calendar() {
     setFirstDay(new Date(year, month, 1));
     setLastDay(new Date(year, month + 1, 0));
     setPreviousLast(new Date(year, month, 0));
-    setMonthString(monthNames[(new Date(year, month + 1, 0).getMonth())]);
+    setMonthString(monthNames[new Date(year, month + 1, 0).getMonth()]);
     setDisplayYear(new Date(year, month + 1, 0).getFullYear());
   }, [month]);
 
@@ -48,29 +48,29 @@ export default function Calendar() {
     }
   }
   for (let i = 1; i <= lastDay?.getDate(); i++) {
-      tempArr.push(<div className="days">{i}</div>);
+    tempArr.push(<div className="days">{i}</div>);
   }
-  for (let i = 1; i < 7-lastDay?.getDay(); i++) {
+  for (let i = 1; i < 7 - lastDay?.getDay(); i++) {
     tempArr.push(<div className="days non-current">{i}</div>);
   }
-
 
   return (
     <div className="calendar-container">
       <div className="calendar-inner-container">
         <div className="calendar-title-container">
-          <span className="calendar-month-text">
+          <div className="calendar-month-text">
             {monthString} {displayYear}
-          </span>
-          <span
-            className="calendar-arrows cal-arr-left"
-            onClick={decreaseMonth}
-          >
-            <i class="fa-solid fa-circle-chevron-left"></i>
-          </span>
-          <span className="calendar-arrows" onClick={increaseMonth}>
-            <i class="fa-solid fa-circle-chevron-right"></i>
-          </span>
+          </div>
+          <div className="calendar-arrows-container">
+            <i
+              onClick={decreaseMonth}
+              class="fa-solid fa-circle-chevron-left calendar-arrows"
+            ></i>
+            <i
+              onClick={increaseMonth}
+              class="fa-solid fa-circle-chevron-right calendar-arrows"
+            ></i>
+          </div>
         </div>
         <div className="calendar-day-container">
           <div className="weekdays">Su</div>
