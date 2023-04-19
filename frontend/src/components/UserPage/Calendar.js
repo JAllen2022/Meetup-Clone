@@ -48,7 +48,14 @@ export default function Calendar() {
     }
   }
   for (let i = 1; i <= lastDay?.getDate(); i++) {
-    tempArr.push(<div className="days current">{i}</div>);
+    // Check to see if it's today's date
+    if (
+      month === date.getMonth() &&
+      displayYear === date.getFullYear() &&
+      i === date.getDate()
+    ) {
+      tempArr.push(<div className="days current today">{i}</div>);
+    } else tempArr.push(<div className="days current">{i}</div>);
   }
   for (let i = 1; i < 7 - lastDay?.getDay(); i++) {
     tempArr.push(<div className="days non-current">{i}</div>);

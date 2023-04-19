@@ -74,6 +74,9 @@
   border-radius: 50%;
   cursor: pointer;
 }
+.days.current.today {
+  background-color: #e6e6e6;
+}
 
 .days.current:hover {
   background-color: rgb(227, 246, 253);

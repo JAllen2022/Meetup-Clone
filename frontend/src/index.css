@@ -1,22 +1,21 @@
 /* TODO Add site wide styles */
-html, body {
-    margin:0;
-    padding:0;
-    font-family:'Poppins' ;
-    font-size: .90rem;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins";
 }
 
 /* h1.a {font-family: "Poppins", sans-serif;} */
 
-
 .full-rounded-profile {
-    font-size:2rem;
+  font-size: 2rem;
 }
 
 .event-page-title-host-container {
-    display: flex;
+  display: flex;
 }
 
 p {
-    font-weight: 300;
+  font-weight: 300;
 }

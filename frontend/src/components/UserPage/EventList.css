@@ -1,0 +1,24 @@
+.user-page-event-day-header {
+  font-size: 20px;
+  border-bottom: 2px solid rgb(162 162 162);
+  margin: 0;
+  padding-bottom: 0.75rem;
+  padding-top: 2rem;
+}
+
+.user-page-empty-day-container {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.user-page-empty-day-text {
+  border: 1px solid green;
+}
+
+.calendar2-svg {
+  width: 6rem;
+  margin-right: 10px;
+  height: 6rem;
+}

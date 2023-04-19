@@ -14,7 +14,7 @@ const GET_USER_EVENTS = "events/GET_USER_EVENTS";
 const GET_HOMEPAGE_EVENTS = "events/GET_HOMEPAGE_EVENTS";
 
 const initialState = {
-  allEvents: {},
+  allEvents: [],
   singleEvent: {},
   singleEventAttendees: {},
   userEvents: {},
@@ -161,7 +161,7 @@ export default function eventsReducer(state = initialState, action) {
   const newState = { ...state };
   switch (action.type) {
     case GET_ALL_EVENTS:
-      newState.allEvents = normalize(action.payload.Events);
+      newState.allEvents = action.payload.Events;
       return newState;
     case GET_SINGLE_EVENT:
       newState.singleEvent = action.payload;
