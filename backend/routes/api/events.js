@@ -26,6 +26,7 @@ const {
 const { Op } = require("sequelize");
 
 const { sequelize } = require("../../db/models");
+const attendance = require("../../db/models/attendance");
 
 // GET /api/events
 // Return all events
@@ -50,15 +51,12 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     },
     {
       model: Attendance,
-      attributes: [
-        [
-          sequelize.fn("COUNT", sequelize.col("attendances.eventId")),
-          "numAttending",
-        ],
-      ],
-      as: "attendances",
+      attributes: ["id"],
+      required: false,
     },
   ];
+
+  // Generate the query object
   const query = {
     where,
     attributes: {
@@ -69,28 +67,41 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     limit: res.locals.size,
     offset: res.locals.size * (res.locals.page - 1),
     group: ["Event.id"],
+    order: [
+      ["startDate", "ASC"], // Order by startDate in ascending order
+    ],
   };
 
+  // If URL params provided,
   if (name) where.name = { [Op.like]: `%${name}%` };
   if (type) where.type = res.locals.type;
-  if (startDate) where.startDate = startDate;
-
+  if (startDate)
+    where.startDate = {
+      [Op.gt]: startDate, // Query for dates after the current date
+    };
+  else
+    where.startDate = {
+      [Op.gt]: new Date(), // Query for dates after the current date
+    };
+  console.log("we here 1");
   const allEvents = await Event.findAll(query);
+  console.log("we here 2", allEvents);
 
-  const returnArray = allEvents.map((event) => {
-    const data = event.toJSON();
-    console.log("checking the event", data);
-    data.numAttending =
-      data.Attendances?.length > 0 ? data.Attendances[0].numAttending : 0;
-    data.previewImage =
-      data.EventImages.length > 0 ? data.EventImages[0].url : null;
-    delete data.Attendances;
-    delete data.EventImages;
-    return data;
-  });
+  let returnArray = [];
+  if (allEvents.length)
+    returnArray = allEvents.map((event) => {
+      const data = event.toJSON();
+      console.log("checking the event", data);
+      data.numAttending =
+        data.Attendances.length > 0 ? data.Attendances.length : 0;
+      data.previewImage =
+        data.EventImages.length > 0 ? data.EventImages[0].url : null;
+      delete data.Attendances;
+      delete data.EventImages;
+      return data;
+    });
 
-  console.log("checking the return", returnArray);
-
+  console.log("we're done");
   res.json({ Events: returnArray });
 
   // const { name, type, startDate } = req.query;
