@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Calendar from "./Calendar";
 import UserJoined from "./UserJoined";
-import EventList from "./EventList";
+import EventList from "./EventList.js";
 import "./UserPage.css";
 
 export default function UserPage() {
