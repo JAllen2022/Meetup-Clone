@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Calendar.css";
 
-export default function Calendar() {
+export default function Calendar({ day, setDay }) {
   const monthNames = [
     "January",
     "February",
@@ -50,12 +50,35 @@ export default function Calendar() {
   for (let i = 1; i <= lastDay?.getDate(); i++) {
     // Check to see if it's today's date
     if (
+      day &&
+      month === day.getMonth() &&
+      displayYear === day.getFullYear() &&
+      i === day.getDate()
+    ) {
+      tempArr.push(
+        <div onClick={() => setDay(date)} className="days current active">
+          {i}
+        </div>
+      );
+    } else if (
       month === date.getMonth() &&
       displayYear === date.getFullYear() &&
       i === date.getDate()
     ) {
-      tempArr.push(<div className="days current today">{i}</div>);
-    } else tempArr.push(<div className="days current">{i}</div>);
+      tempArr.push(
+        <div onClick={() => setDay(date)} className="days current today">
+          {i}
+        </div>
+      );
+    } else
+      tempArr.push(
+        <div
+          onClick={() => setDay(new Date(displayYear, month, i))}
+          className="days current"
+        >
+          {i}
+        </div>
+      );
   }
   for (let i = 1; i < 7 - lastDay?.getDay(); i++) {
     tempArr.push(<div className="days non-current">{i}</div>);

@@ -81,3 +81,8 @@
 .days.current:hover {
   background-color: rgb(227, 246, 253);
 }
+
+.days.current.active {
+  background-color: #00798a;
+  color: #f0f8ff;
+}
