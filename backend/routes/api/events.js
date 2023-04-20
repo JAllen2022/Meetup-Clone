@@ -190,6 +190,11 @@ router.get("/current", requireAuth, async (req, res, next) => {
       },
     ],
     order: [["startDate", "ASC"]],
+    where: {
+      startDate: {
+        [Op.gt]: new Date(), // Query for dates after the current date
+      },
+    },
   });
 
   const returnArray = [];
