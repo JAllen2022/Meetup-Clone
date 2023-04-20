@@ -44,7 +44,11 @@ export default function Calendar({ day, setDay }) {
   const diffDays = previousLast ? previousLast.getDate() - weekDay : 0;
   if (diffDays) {
     for (let i = 1; i <= weekDay; i++) {
-      tempArr.push(<div className="days non-current">{diffDays + i}</div>);
+      tempArr.push(
+        <div key={`first-${i}`} className="days non-current">
+          {diffDays + i}
+        </div>
+      );
     }
   }
   for (let i = 1; i <= lastDay?.getDate(); i++) {
@@ -56,7 +60,11 @@ export default function Calendar({ day, setDay }) {
       i === day.getDate()
     ) {
       tempArr.push(
-        <div onClick={() => setDay(date)} className="days current active">
+        <div
+          key={`${i}`}
+          onClick={() => setDay(date)}
+          className="days current active"
+        >
           {i}
         </div>
       );
@@ -66,13 +74,18 @@ export default function Calendar({ day, setDay }) {
       i === date.getDate()
     ) {
       tempArr.push(
-        <div onClick={() => setDay(date)} className="days current today">
+        <div
+          key={`${i}`}
+          onClick={() => setDay(date)}
+          className="days current today"
+        >
           {i}
         </div>
       );
     } else
       tempArr.push(
         <div
+          key={`${i}`}
           onClick={() => setDay(new Date(displayYear, month, i))}
           className="days current"
         >
@@ -81,7 +94,11 @@ export default function Calendar({ day, setDay }) {
       );
   }
   for (let i = 1; i < 7 - lastDay?.getDay(); i++) {
-    tempArr.push(<div className="days non-current">{i}</div>);
+    tempArr.push(
+      <div key={`last-${i}`} className="days non-current">
+        {i}
+      </div>
+    );
   }
 
   return (

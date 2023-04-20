@@ -32,7 +32,7 @@ const attendance = require("../../db/models/attendance");
 // Return all events
 router.get("/", validateEventQueryParamInput, async (req, res, next) => {
   const { name, type, startDate } = req.query;
-
+  console.log("checking startDate", startDate);
   const where = {};
   const include = [
     {

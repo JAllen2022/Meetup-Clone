@@ -74,8 +74,9 @@ export const getUserEvents = (events) => ({
 });
 
 /* ------ SELECTORS ------ */
-export const thunkGetAllEvents = () => async (dispatch) => {
-  const response = await fetch("/api/events");
+export const thunkGetAllEvents = (data) => async (dispatch) => {
+  const searchParameters = new URLSearchParams(data).toString();
+  const response = await fetch(`/api/events?${searchParameters}`);
 
   if (response.ok) {
     const events = await response.json();
