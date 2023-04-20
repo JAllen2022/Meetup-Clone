@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { thunkGetAllEvents } from "../../store/events";
 import DivCards from "../SearchGroupsAndEvents/DivCards";
@@ -19,16 +19,44 @@ export default function EventList({ day, setDay }) {
   const [displayArray, setDisplayArray] = useState([]);
   const currentDate = new Date();
   const options = { weekday: "long", month: "long", day: "numeric" };
+  const [page, setPage] = useState([0]);
+  const [loading, setLoading] = useState(false);
+  const loaderRef = useRef(null);
 
   useEffect(() => {
     dispatch(thunkGetAllEvents({ startDate: day }));
   }, [day]);
 
-  let previousDay = "";
+  // useEffect(() => {
+  //   const loadMore = async () => {
+  //     setLoading(true);
+  //     const res = await dispatch(
+  //       thunkGetAllEvents({ startDate: day, page: page[0] })
+  //     );
+  //     setLoading(false);
+  //   };
+
+  //   const observer = new IntersectionObserver(([entry]) => {
+  //     if (entry.isIntersecting && !loading) {
+  //       setPage((prevPage) => prevPage + 1);
+  //     }
+  //   });
+
+  //   if (loaderRef.current) {
+  //     observer.observe(loaderRef.current);
+  //   }
+
+  //   return () => {
+  //     if (loaderRef.current) {
+  //       observer.unobserve(loaderRef.current);
+  //     }
+  //   };
+  // }, []);
 
   // useEffect to account for day changes. This determines what is displayed first
   useEffect(() => {
     const returnArray = [];
+    let previousDay = "";
     let dayDateString, firstEvent, eventDate;
     if (day) {
       dayDateString = day.toLocaleDateString("en-US", options);
@@ -53,7 +81,7 @@ export default function EventList({ day, setDay }) {
           </h2>
           <div className="user-page-empty-day-container">
             <Calendar2 />
-            <div classname="user-page-empty-day-text">
+            <div className="user-page-empty-day-text">
               No matches found for{" "}
               {day
                 ? dayDateString
@@ -94,5 +122,10 @@ export default function EventList({ day, setDay }) {
     setDisplayArray(returnArray);
   }, [events]);
 
-  return <>{displayArray}</>;
+  return (
+    <>
+      {displayArray}
+      <div ref={loaderRef}>{loading && <p>Loading...</p>}</div>
+    </>
+  );
 }

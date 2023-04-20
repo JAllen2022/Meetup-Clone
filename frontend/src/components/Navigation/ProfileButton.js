@@ -70,7 +70,7 @@ function ProfileButton({ user, state }) {
           </div>
           <div className="profile-button-drop-down-top-half">
             <p
-              onButtonClick={closeMenu}
+              // onClick={closeMenu}
               className="profile-button-drop-down-elements"
               onClick={() => navigate("/events")}
             >
@@ -78,7 +78,7 @@ function ProfileButton({ user, state }) {
             </p>
 
             <p
-              onButtonClick={closeMenu}
+              // onClick={closeMenu}
               className="profile-button-drop-down-elements"
               onClick={() => navigate("/groups")}
             >
