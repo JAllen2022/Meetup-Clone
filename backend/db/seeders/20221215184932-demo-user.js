@@ -109,7 +109,14 @@ module.exports = {
         hashedPassword: bcrypt.hashSync("password"),
         firstName: "James",
         lastName: "May",
-      }
+      },
+      {
+        email: "demo11@user.io",
+        username: "demo15",
+        hashedPassword: bcrypt.hashSync("password"),
+        firstName: "Éomer",
+        lastName: "son of Théodwyn",
+      },
     ]);
   },
 

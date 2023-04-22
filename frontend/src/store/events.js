@@ -148,8 +148,9 @@ export const thunkGetAttendees = (eventId) => async (dispatch) => {
   }
 };
 
-export const thunkGetUserEvents = () => async (dispatch) => {
-  const response = await csrfFetch(`/api/events/current`);
+export const thunkGetUserEvents = (data) => async (dispatch) => {
+  const searchParameters = new URLSearchParams(data).toString();
+  const response = await csrfFetch(`/api/events/current?${searchParameters}`);
 
   if (response.ok) {
     const events = await response.json();

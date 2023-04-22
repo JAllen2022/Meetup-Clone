@@ -38,9 +38,20 @@
   cursor: pointer;
 }
 
+.user-page-left-event-card-preview1 {
+  border: 1.75px rgb(197, 195, 195) solid;
+  border-radius: 0.25rem;
+  margin: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+}
+
 .user-page-left-event-card-title-container1 {
   width: 94%;
   display: flex;
+  padding: 1rem 0;
 }
 
 .user-page-left-event-card-title-container2 {

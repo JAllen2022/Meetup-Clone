@@ -11,27 +11,47 @@ if (process.env.NODE_ENV === "production") {
 const demo_groupImages = [
   {
     groupId: 1,
-    url: "https://static.carthrottle.com/workspace/uploads/posts/2015/07/s2ki-55bb0341b42e4.jpg",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group1.jpeg",
     preview: true,
   },
   {
     groupId: 2,
-    url: "https://tampamagazines.com/wp-content/uploads/2018/01/the-c-house-banner.jpg",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group2.png",
     preview: true,
   },
   {
     groupId: 3,
-    url: "https://static.rootsrated.com/image/upload/s--CymMjhQG--/t_rr_large_natural/evkxtwfezjfj2eo62bpo.jpg",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group3.png",
     preview: true,
   },
   {
     groupId: 4,
-    url: "https://sfrecpark.org/ImageRepository/Document?documentID=3983",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group4.jpeg",
     preview: true,
   },
   {
-    groupId: 2,
-    url: "https://static.carthrottle.com/workspace/uploads/posts/2015/07/s2ki-55bb0341b42e4.jpg",
+    groupId: 5,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group5.png",
+    preview: true,
+  },
+  {
+    groupId: 6,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group6.jpeg",
+    preview: true,
+  },
+  {
+    groupId: 7,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group7.jpg",
+    preview: true,
+  },
+  {
+    groupId: 8,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Group8.jpg",
+    preview: true,
+  },
+  {
+    groupId: 9,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/group9.jpg",
     preview: true,
   },
 ];

@@ -167,6 +167,18 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
 // Return all events that the user has joined or organized
 router.get("/current", requireAuth, async (req, res, next) => {
   // Format query for search to include req.query parameters
+  const { tab } = req.query;
+
+  const where = {};
+  const order = [];
+  if (tab === "attending") {
+    where.startDate = {
+      [Op.gt]: startDate, // Query for dates after the current date
+    };
+    order = [
+      ["startDate", "ASC"], // Order by startDate in ascending order
+    ];
+  }
 
   const allEvents = await Event.findAll({
     attributes: {
@@ -189,12 +201,8 @@ router.get("/current", requireAuth, async (req, res, next) => {
         attributes: ["id", "city", "state"],
       },
     ],
-    order: [["startDate", "ASC"]],
-    where: {
-      startDate: {
-        [Op.gt]: new Date(), // Query for dates after the current date
-      },
-    },
+    order,
+    where,
   });
 
   const returnArray = [];

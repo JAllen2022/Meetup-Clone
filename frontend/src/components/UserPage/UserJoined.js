@@ -23,11 +23,11 @@ export default function UserJoined() {
 
   useEffect(() => {
     if (!myGroupsArray.length) dispatch(thunkGetUserGroups());
-    if (!myEventsArray.length) dispatch(thunkGetUserEvents());
+    dispatch(thunkGetUserEvents({ tab: "attending" }));
   }, []);
 
   let featuredEvent = (
-    <div className="user-page-left-event-card-preview">
+    <div className="user-page-left-event-card-preview1">
       <div className="user-page-left-event-card-title-container1">
         <div className="user-page-left-event-card-image">
           <img

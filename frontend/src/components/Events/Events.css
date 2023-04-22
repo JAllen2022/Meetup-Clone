@@ -1,0 +1,20 @@
+.user-events-tab-container {
+  border-radius: 5px;
+  background-color: #f6f7f8;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 7rem;
+  margin-top: 2rem;
+}
+
+.user-events-tabs {
+  color: #707070;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.user-events-tabs.active {
+  color: #00798a;
+}

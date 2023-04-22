@@ -10,27 +10,77 @@ if (process.env.NODE_ENV === "production") {
 const demo_eventImages = [
   {
     eventId: 1,
-    url: "https://static.carthrottle.com/workspace/uploads/posts/2015/07/s2ki-55bb0341b42e4.jpg",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event1.jpeg",
     preview: true,
   },
   {
     eventId: 2,
-    url: "https://tampamagazines.com/wp-content/uploads/2018/01/the-c-house-banner.jpg",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event2.jpeg",
     preview: true,
   },
   {
     eventId: 3,
-    url: "https://static.rootsrated.com/image/upload/s--CymMjhQG--/t_rr_large_natural/evkxtwfezjfj2eo62bpo.jpg",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event3.jpeg",
     preview: true,
   },
   {
     eventId: 4,
-    url: "https://sfrecpark.org/ImageRepository/Document?documentID=3983",
-    preview: false,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event4-5.png",
+    preview: true,
   },
   {
     eventId: 5,
-    url: "https://sfrecpark.org/ImageRepository/Document?documentID=3983",
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event4-5.png",
+    preview: true,
+  },
+  {
+    eventId: 6,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event6.png",
+    preview: true,
+  },
+  {
+    eventId: 7,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event7.png",
+    preview: true,
+  },
+  {
+    eventId: 8,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event8.jpeg",
+    preview: true,
+  },
+  {
+    eventId: 9,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event9.png",
+    preview: true,
+  },
+  {
+    eventId: 10,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event10.jpeg",
+    preview: true,
+  },
+  {
+    eventId: 11,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event11.png",
+    preview: true,
+  },
+  {
+    eventId: 12,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event12.png",
+    preview: true,
+  },
+  {
+    eventId: 13,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event13.jpeg",
+    preview: true,
+  },
+  {
+    eventId: 14,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event14.png",
+    preview: true,
+  },
+  {
+    eventId: 15,
+    url: "https://appacademypictures.s3.us-west-2.amazonaws.com/Event15.png",
     preview: true,
   },
 ];
