@@ -10,6 +10,7 @@ if (process.env.NODE_ENV === "production") {
 
 const demo_attendance = [
   {
+    
     eventId: 1,
     userId: 12,
     status: "host",
