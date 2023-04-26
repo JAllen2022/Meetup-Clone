@@ -35,6 +35,7 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
   const userId = req.user.id;
   const where = {};
 
+  console.log("do we have a name", name);
   // Setting up pagination. Default page is zero if no page number is provided
   const pageNumber = page ? parseInt(page) : 1;
 
@@ -81,6 +82,7 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
 
   // If URL params provided,
   if (name) where.name = { [Op.like]: `%${name}%` };
+  console.log("did we add name?", where.name, name);
   if (type) where.type = res.locals.type;
   if (startDate)
     where.startDate = {
