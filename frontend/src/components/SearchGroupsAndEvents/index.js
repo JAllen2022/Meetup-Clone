@@ -5,6 +5,7 @@ import { resetSingleEvent, thunkGetAllEvents } from "../../store/events";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import DivCards from "./DivCards";
+import Pagination from "./Pagination";
 import "./SearchGroupsAndEvents.css";
 // Call this Search
 function SearchGroupsAndEvents({ defaultTab, home }) {
@@ -14,6 +15,8 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
   const [selectedTabEvent, setSelectedTabEvent] = useState(
     defaultTab === "events" ? true : false
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const dispatch = useDispatch();
   const history = useHistory();
   const groupObj = useSelector((state) => state.groups.allGroups);
@@ -58,14 +61,16 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
     ) {
       dispatch(thunkGetAllGroups());
     } else if (
-      (defaultTab === "events" && !eventsArray.length) ||
-      (selectedTabGroup && !eventsArray.length)
+      defaultTab === "events" // && !eventsArray.length
+      // ||
+      // (selectedTabGroup && !eventsArray.length)
     ) {
-      dispatch(thunkGetAllEvents());
+      console.log("we are in here changing pages");
+      dispatch(thunkGetAllEvents({ page: currentPage }));
     }
     // dispatch(resetSingleGroup());
     // dispatch(resetSingleEvent());
-  }, [selectedTabEvent, selectedTabGroup]);
+  }, [selectedTabEvent, selectedTabGroup, currentPage]);
 
   if (!groupArray.length && !eventsArray.length) return null;
 
@@ -94,6 +99,7 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
           ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
           : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />)}
       </div>
+      <Pagination currentPage={currentPage} onPageChange={setCurrentPage} />
     </div>
   );
 }

@@ -18,6 +18,7 @@ const initialState = {
   singleEvent: {},
   singleEventAttendees: {},
   userEvents: {},
+  totalPages: {},
 };
 
 /* ----- ACTIONS ------ */
@@ -80,6 +81,7 @@ export const thunkGetAllEvents = (data) => async (dispatch) => {
 
   if (response.ok) {
     const events = await response.json();
+    console.log("checking events", events);
     dispatch(allEvents(events));
   }
 };
@@ -164,6 +166,7 @@ export default function eventsReducer(state = initialState, action) {
   switch (action.type) {
     case GET_ALL_EVENTS:
       newState.allEvents = action.payload.Events;
+      newState.totalPages = action.payload.totalPages;
       return newState;
     case GET_SINGLE_EVENT:
       newState.singleEvent = action.payload;

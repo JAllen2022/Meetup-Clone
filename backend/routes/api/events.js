@@ -31,10 +31,16 @@ const attendance = require("../../db/models/attendance");
 // GET /api/events
 // Return all events
 router.get("/", validateEventQueryParamInput, async (req, res, next) => {
-  const { name, type, startDate, user } = req.query;
+  const { name, type, startDate, user, offset, page } = req.query;
   const userId = req.user.id;
-  console.log("checking startDate", startDate);
   const where = {};
+
+  // Setting up pagination. Default page is zero if no page number is provided
+  let pg = page - 1;
+  if (!page) pg = 0;
+  pg *= 5; // We have the offset set to 5
+
+  // Setting up query with include statement here
   const include = [
     {
       model: Group,
@@ -65,12 +71,12 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     },
 
     include,
-    limit: res.locals.size,
-    offset: res.locals.size * (res.locals.page - 1),
     group: ["Event.id"],
     order: [
       ["startDate", "ASC"], // Order by startDate in ascending order
     ],
+    limit: 5,
+    offset: pg,
   };
 
   // If URL params provided,
@@ -84,6 +90,7 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     where.startDate = {
       [Op.gt]: new Date(), // Query for dates after the current date
     };
+  // If we are searching from the user page
   if (user) {
     include[0].include = {
       model: Membership,
@@ -92,15 +99,18 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     };
   }
 
-  console.log("we here 1");
-  const allEvents = await Event.findAll(query);
-  console.log("we here 2", allEvents);
+  const allEvents = await Event.findAndCountAll(query);
+  console.log("checking all events", allEvents);
+  const count = allEvents.count.length;
+  const events = allEvents.rows;
+  const pageCount = Math.ceil(count / 5);
 
   let returnArray = [];
-  if (allEvents.length)
-    returnArray = allEvents.map((event) => {
+
+  // Iterate through and replace Attendance and EventImage arrays with variable names we expect on the front end
+  if (events.length)
+    returnArray = events.map((event) => {
       const data = event.toJSON();
-      console.log("checking the event", data);
       data.numAttending =
         data.Attendances.length > 0 ? data.Attendances.length : 0;
       data.previewImage =
@@ -110,66 +120,10 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
       return data;
     });
 
-  console.log("we're done");
-  res.json({ Events: returnArray });
-
-  // const { name, type, startDate } = req.query;
-
-  // // Format query for search to include req.query parameters
-  // const where = {};
-  // const query = {
-  //   where,
-  //   attributes: {
-  //     exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
-  //   },
-  //   include: [
-  //     {
-  //       model: Group,
-  //       attributes: ["id", "name", "city", "state"],
-  //     },
-  //     {
-  //       model: Venue,
-  //       attributes: ["id", "city", "state"],
-  //     },
-  //   ],
-  //   limit: res.locals.size,
-  //   offset: res.locals.size * (res.locals.page - 1),
-  // };
-
-  // // Add query parameters if they exist
-  // if (name) where.name = { [Op.like]: `%${name}%` };
-  // if (type) where.type = res.locals.type;
-  // if (startDate) where.startDate = startDate;
-
-  // const allEvents = await Event.findAll(query);
-
-  // const returnArray = [];
-  // // Lazy load preview image for event
-  // for (let i = 0; i < allEvents.length; i++) {
-  //   const event = allEvents[i].toJSON();
-  //   //Lazy load each aggregate for numAttending
-  //   const attendees = await Attendance.count({
-  //     where: {
-  //       eventId: event.id,
-  //     },
-  //   });
-  //   event.numAttending = attendees;
-
-  //   // Lazy load each Image
-  //   const eventImage = await EventImage.findOne({
-  //     where: {
-  //       eventId: event.id,
-  //       preview: true,
-  //     },
-  //     raw: true,
-  //   });
-  //   if (eventImage) event.previewImage = eventImage.url;
-  //   else event.previewImage = null;
-
-  //   returnArray.push(event);
-  // }
-
-  // res.json({ Events: returnArray });
+  res.json({
+    Events: returnArray,
+    totalPages: pageCount,
+  });
 });
 
 // GET /api/events/current
@@ -204,7 +158,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
     };
     order.push(["startDate", "ASC"]); // Order by startDate in ascending order
     if (tab === "hosting") {
-      include[0].where.status = "host"
+      include[0].where.status = "host";
     }
   } else {
     where.startDate = {
