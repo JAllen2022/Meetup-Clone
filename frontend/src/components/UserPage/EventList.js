@@ -24,7 +24,7 @@ export default function EventList({ day, setDay }) {
   const loaderRef = useRef(null);
 
   useEffect(() => {
-    dispatch(thunkGetAllEvents({ startDate: day }));
+    dispatch(thunkGetAllEvents({ startDate: day, user: true }));
   }, [day]);
 
   // useEffect(() => {

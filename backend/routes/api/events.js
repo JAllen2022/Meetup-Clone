@@ -31,7 +31,8 @@ const attendance = require("../../db/models/attendance");
 // GET /api/events
 // Return all events
 router.get("/", validateEventQueryParamInput, async (req, res, next) => {
-  const { name, type, startDate } = req.query;
+  const { name, type, startDate, user } = req.query;
+  const userId = req.user.id;
   console.log("checking startDate", startDate);
   const where = {};
   const include = [
@@ -83,6 +84,14 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     where.startDate = {
       [Op.gt]: new Date(), // Query for dates after the current date
     };
+  if (user) {
+    include[0].include = {
+      model: Membership,
+      where: { userId },
+      attributes: [],
+    };
+  }
+
   console.log("we here 1");
   const allEvents = await Event.findAll(query);
   console.log("we here 2", allEvents);
