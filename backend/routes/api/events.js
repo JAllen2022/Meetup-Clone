@@ -178,38 +178,46 @@ router.get("/current", requireAuth, async (req, res, next) => {
   // Format query for search to include req.query parameters
   const { tab } = req.query;
 
+  const include = [
+    {
+      model: Attendance,
+      attributes: ["status"],
+      where: {
+        userId: req.user.id,
+      },
+    },
+    {
+      model: Group,
+      attributes: ["id", "name", "city", "state"],
+    },
+    {
+      model: Venue,
+      attributes: ["id", "city", "state"],
+    },
+  ];
+
   const where = {};
   const order = [];
-  if (tab === "attending") {
+  if (tab === "attending" || tab === "hosting") {
     where.startDate = {
-      [Op.gt]: startDate, // Query for dates after the current date
+      [Op.gt]: new Date(), // Query for dates after the current date
     };
-    order = [
-      ["startDate", "ASC"], // Order by startDate in ascending order
-    ];
+    order.push(["startDate", "ASC"]); // Order by startDate in ascending order
+    if (tab === "hosting") {
+      include[0].where.status = "host"
+    }
+  } else {
+    where.startDate = {
+      [Op.lt]: new Date(), // Query for dates before the current date
+    };
+    order.push(["startDate", "DESC"]); // Order by startDate in ascending order
   }
 
   const allEvents = await Event.findAll({
     attributes: {
       exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
     },
-    include: [
-      {
-        model: Attendance,
-        attributes: [],
-        where: {
-          userId: req.user.id,
-        },
-      },
-      {
-        model: Group,
-        attributes: ["id", "name", "city", "state"],
-      },
-      {
-        model: Venue,
-        attributes: ["id", "city", "state"],
-      },
-    ],
+    include,
     order,
     where,
   });

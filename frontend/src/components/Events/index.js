@@ -14,8 +14,8 @@ export default function Events() {
   console.log("checking user events:", userEventsArray);
 
   useEffect(() => {
-    if (userEventsArray.length < 1) dispatch(thunkGetUserEvents({ tab }));
-  }, [dispatch]);
+    dispatch(thunkGetUserEvents({ tab }));
+  }, [tab]);
 
   return (
     <div className="user-page-container">
