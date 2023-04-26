@@ -48,7 +48,7 @@ router.get("/", async (req, res, next) => {
       attributes: [],
     },
   ];
-  const groups = await Group.findAll({
+  const groups = await Group.findAndCountAll({
     attributes: {
       include: [
         [sequelize.fn("COUNT", sequelize.col("Memberships.id")), "numMembers"],
@@ -69,8 +69,16 @@ router.get("/", async (req, res, next) => {
     include,
     where,
     group: ["Group.id"],
+    // limit,
+    // offset,
   });
-  res.json({ Groups: groups });
+
+  // const count = groups.count.length;
+  // const pageCount = Math.ceil(count / limit);
+
+  // res.json({ Groups: groups.rows, totalPages: pageCount });
+  res.json({ Groups: groups.rows });
+
   // const groups = await Group.findAll({
   //   include: [
   //     {

@@ -75,8 +75,8 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     order: [
       ["startDate", "ASC"], // Order by startDate in ascending order
     ],
-    limit,
-    offset,
+    // limit,
+    // offset,
   };
 
   // If URL params provided,
@@ -123,7 +123,7 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
 
   res.json({
     Events: returnArray,
-    totalPages: pageCount,
+    // totalPages: pageCount,
   });
 });
 
