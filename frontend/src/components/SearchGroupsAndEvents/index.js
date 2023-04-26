@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import DivCards from "./DivCards";
 import Pagination from "./Pagination";
 import "./SearchGroupsAndEvents.css";
+import NoResults from "./NoResults";
 // Call this Search
 function SearchGroupsAndEvents({ defaultTab, home }) {
   const [selectedTabGroup, setSelectedTabGroup] = useState(
@@ -72,7 +73,17 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
     // dispatch(resetSingleEvent());
   }, [selectedTabEvent, selectedTabGroup, currentPage]);
 
-  if (!groupArray.length && !eventsArray.length) return null;
+  const displayArray = selectedTabGroup
+    ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
+    : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />);
+
+  if (!displayArray.length) {
+    if (defaultTab === "groups") {
+      displayArray.push(<NoResults tab={"group"} />);
+    } else {
+      displayArray.push(<NoResults tab={"event"} />);
+    }
+  }
 
   return (
     <div className="search-main-outer-body">
@@ -95,9 +106,7 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
             Events
           </div>
         </div>
-        {selectedTabGroup
-          ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
-          : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />)}
+        {displayArray}
       </div>
       {/* <Pagination currentPage={currentPage} onPageChange={setCurrentPage} /> */}
     </div>
