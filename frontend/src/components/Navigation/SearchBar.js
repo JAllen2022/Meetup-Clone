@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import "./SearchBar.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { thunkGetAllEvents } from "../../store/events";
+import { setSearch } from "../../store/search";
 
 function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
+  const search = useSelector((state) => state.search.searchText);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -17,9 +19,14 @@ function SearchBar() {
     e.preventDefault();
     // Do something with the search term, like make an API call or navigate to a search results page
     dispatch(thunkGetAllEvents({ name: searchTerm }));
+    dispatch(setSearch(searchTerm));
     history.push("/search/events");
     console.log(searchTerm);
   };
+
+  useEffect(() => {
+    setSearchTerm(search);
+  }, [search]);
 
   return (
     <form onSubmit={handleSubmit}>

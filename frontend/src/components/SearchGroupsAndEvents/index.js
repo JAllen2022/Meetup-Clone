@@ -8,6 +8,7 @@ import DivCards from "./DivCards";
 import Pagination from "./Pagination";
 import "./SearchGroupsAndEvents.css";
 import NoResults from "./NoResults";
+import { resetSearch } from "../../store/search";
 // Call this Search
 function SearchGroupsAndEvents({ defaultTab, home }) {
   const [selectedTabGroup, setSelectedTabGroup] = useState(
@@ -18,6 +19,7 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const searchText = useSelector((state) => state.search.searchText);
   const dispatch = useDispatch();
   const history = useHistory();
   const groupObj = useSelector((state) => state.groups.allGroups);
@@ -60,18 +62,22 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
       (defaultTab === "groups" && !groupArray) ||
       (selectedTabGroup && !groupArray.length)
     ) {
-      dispatch(thunkGetAllGroups());
+      dispatch(thunkGetAllGroups({ name: searchText }));
     } else if (
       defaultTab === "events" // && !eventsArray.length
       // ||
       // (selectedTabGroup && !eventsArray.length)
     ) {
       console.log("we are in here changing pages");
-      dispatch(thunkGetAllEvents({ page: currentPage }));
+      dispatch(thunkGetAllEvents({ page: currentPage, name: searchText }));
     }
     // dispatch(resetSingleGroup());
     // dispatch(resetSingleEvent());
   }, [selectedTabEvent, selectedTabGroup, currentPage]);
+
+  useEffect(() => {
+    return () => dispatch(resetSearch());
+  }, []);
 
   const displayArray = selectedTabGroup
     ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
