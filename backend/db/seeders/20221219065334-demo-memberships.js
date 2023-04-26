@@ -171,18 +171,68 @@ const demo_memberships = [
     groupId: 6,
     status: "member",
   },
+  {
+    // Demo User
+    userId: 1,
+    groupId: 6,
+    status: "member",
+  },
   // Group 7 - Rohan Riders Club
   {
-    // Gimli
-    userId: 2,
+    // Eomer
+    userId: 15,
     groupId: 7,
     status: "host",
   },
   {
-    // Gimli
-    userId: 15,
+    // Aragorn
+    userId: 2,
     groupId: 7,
+    status: "member",
+  },
+  {
+    // Demo User
+    userId: 1,
+    groupId: 7,
+    status: "member",
+  },
+  // Group 8 - Gondor Gardeners Society
+  {
+    // Eomer
+    userId: 2,
+    groupId: 8,
     status: "host",
+  },
+  {
+    // Gandalf
+    userId: 3,
+    groupId: 8,
+    status: "co-host",
+  },
+  {
+    // Demo User
+    userId: 1,
+    groupId: 8,
+    status: "member",
+  },
+  // Group 9 - Isengard Industrialists Association
+  {
+    // Saruman
+    userId: 18,
+    groupId: 9,
+    status: "host",
+  },
+  {
+    // Sauron
+    userId: 11,
+    groupId: 9,
+    status: "co-host",
+  },
+  {
+    // Orc army
+    userId: 19,
+    groupId: 9,
+    status: "member",
   },
 ];
 
