@@ -14,6 +14,8 @@ function isSameDay(date1, date2) {
 }
 
 export default function EventList({ day, setDay }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const dispatch = useDispatch();
   const events = useSelector((state) => state.events.allEvents);
   const [displayArray, setDisplayArray] = useState([]);
@@ -24,7 +26,9 @@ export default function EventList({ day, setDay }) {
   const loaderRef = useRef(null);
 
   useEffect(() => {
-    dispatch(thunkGetAllEvents({ startDate: day, user: true }));
+    dispatch(
+      thunkGetAllEvents({ startDate: day, user: true, page: currentPage })
+    );
   }, [day]);
 
   // useEffect(() => {

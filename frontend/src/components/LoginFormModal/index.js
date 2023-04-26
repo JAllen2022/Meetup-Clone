@@ -58,7 +58,9 @@ function LoginFormModal() {
         <div>
           <ul>
             {errors.map((error, idx) => (
-              <li className='form-errors' key={idx}>{error}</li>
+              <li className="form-errors" key={idx}>
+                {error}
+              </li>
             ))}
           </ul>
         </div>
@@ -82,13 +84,13 @@ function LoginFormModal() {
             required
           />
           <div>
-            <button class="form-submit-button" type="submit">
+            <button className="form-submit-button" type="submit">
               Log In
             </button>
           </div>
           <div>
             <button
-              class="form-submit-button"
+              className="form-submit-button"
               onClick={demoUserClicked}
               type="submit"
             >

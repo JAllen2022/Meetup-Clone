@@ -111,11 +111,11 @@ export default function Calendar({ day, setDay }) {
           <div className="calendar-arrows-container">
             <i
               onClick={decreaseMonth}
-              class="fa-solid fa-circle-chevron-left calendar-arrows"
+              className="fa-solid fa-circle-chevron-left calendar-arrows"
             ></i>
             <i
               onClick={increaseMonth}
-              class="fa-solid fa-circle-chevron-right calendar-arrows"
+              className="fa-solid fa-circle-chevron-right calendar-arrows"
             ></i>
           </div>
         </div>

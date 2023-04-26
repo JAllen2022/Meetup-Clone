@@ -26,7 +26,7 @@ export default function Events() {
             to="/home"
           >
             <div className="left-arrow-container">
-              <i class="fa-solid fa-arrow-left"></i>
+              <i className="fa-solid fa-arrow-left"></i>
             </div>{" "}
             <div className="back-to-home-page-text">Back to home page</div>
           </Link>

@@ -1,4 +1,4 @@
-export default function DivCardBodyGroup({group}) {
+export default function DivCardBodyGroup({ group }) {
   return (
     <>
       <div className="div-card-body">
@@ -8,7 +8,7 @@ export default function DivCardBodyGroup({group}) {
             {group.city}, {group.state}
           </h3>
         </div>
-        <div classname="div-card-info">
+        <div className="div-card-info">
           <p>{group.about}</p>
         </div>
         <div className="div-card-footer">

@@ -113,7 +113,7 @@ function EventPage() {
         <div className="event-page-header-item-wrapper">
           <h1 className="event-page-title">{event.name}</h1>
           <div className="event-page-title-host-container">
-            <i class="fa-regular fa-circle-user full-rounded-profile"></i>
+            <i className="fa-regular fa-circle-user full-rounded-profile"></i>
             <div className="hosts-container">
               <div>Hosted by</div>
               <div>
@@ -177,19 +177,19 @@ function EventPage() {
               </div>
               <div className="event-body-right-event-info-container">
                 <div className="event-body-right-event-time-location-info">
-                  <div class="icon">
-                    <i class="fa-regular fa-clock fa-solid-event"></i>{" "}
+                  <div className="icon">
+                    <i className="fa-regular fa-clock fa-solid-event"></i>{" "}
                   </div>
-                  <div class="event-body-right-event-info-right">
+                  <div className="event-body-right-event-info-right">
                     <div> Begins: {startTimeString} </div>
                     <div> Ends: {endTimeString} </div>
                   </div>
                 </div>
                 <div className="event-body-right-event-time-location-info bottom-container-info">
-                  <div class="icon">
+                  <div className="icon">
                     <i className="fa-solid fa-location-dot fa-solid-event"></i>{" "}
                   </div>
-                  <div class="event-body-right-event-info-right">
+                  <div className="event-body-right-event-info-right">
                     {eventLocation}
                   </div>
                 </div>
@@ -214,7 +214,7 @@ function EventPage() {
                   className="event-sticky-footer-event-options"
                   onClick={() => setShowMenu((prev) => !prev)}
                 >
-                  Event Actions <i class="fa-solid fa-angle-up"></i>
+                  Event Actions <i className="fa-solid fa-angle-up"></i>
                 </div>
                 {showMenu && (
                   <div className="event-sticky-footer-event-option-menu-container">

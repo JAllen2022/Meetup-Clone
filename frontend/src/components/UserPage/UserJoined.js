@@ -83,7 +83,7 @@ export default function UserJoined() {
             {eventLocation}
           </div>
           <div className="user-page-div-card-attending-div">
-            <i class="fa-solid fa-circle-check user-page-div-card-attending-icon"></i>
+            <i className="fa-solid fa-circle-check user-page-div-card-attending-icon"></i>
             Attending
           </div>
         </div>

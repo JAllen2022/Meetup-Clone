@@ -89,7 +89,7 @@ function ProfileButton({ user, state }) {
             <OpenModalMenuItem
               itemText={
                 <p
-                  onButtonClick={closeMenu}
+                  onClick={closeMenu}
                   className="profile-button-drop-down-elements"
                 >
                   View Profile

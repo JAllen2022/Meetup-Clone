@@ -14,14 +14,12 @@ function Footer() {
         </div>
         <div className="footer-left-right-container">
           <div> Developer Information: </div>
-          <div className='footer-dev-links'>
+          <div className="footer-dev-links">
             <a href="https://github.com/JAllen2022">
-              <i class="fa-brands fa-github"></i>
-            </a>
-              {" "}
-
+              <i className="fa-brands fa-github"></i>
+            </a>{" "}
             <a href="https://www.linkedin.com/in/jasonallen715/">
-              <i class="fa-brands fa-linkedin"></i>
+              <i className="fa-brands fa-linkedin"></i>
             </a>
           </div>
         </div>

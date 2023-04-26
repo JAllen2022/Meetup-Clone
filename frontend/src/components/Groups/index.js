@@ -25,7 +25,7 @@ export default function Groups() {
       <div className="user-group-page-left-container">
         <div className="user-group-page-left-return-home-container">
           <div className="left-arrow-container">
-            <i class="fa-solid fa-arrow-left"></i>
+            <i className="fa-solid fa-arrow-left"></i>
           </div>
           <Link className="back-to-home-page-text" to="/home">
             {" "}

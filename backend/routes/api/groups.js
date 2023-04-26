@@ -31,38 +31,75 @@ const { Op } = require("sequelize");
 // GET /api/groups
 // Get all groups
 router.get("/", async (req, res, next) => {
+  const { name, type, startDate, user, page } = req.query;
+  const userId = req.user.id;
+  const where = {};
+  // Setting up pagination. Default page is zero if no page number is provided
+  const pageNumber = page ? parseInt(page) : 1;
+  const limit = 5;
+  const offset = (pageNumber - 1) * limit;
+  const include = [
+    {
+      model: Membership,
+      attributes: [],
+    },
+    {
+      model: GroupImage,
+      attributes: [],
+    },
+  ];
   const groups = await Group.findAll({
-    include: [
-      {
-        model: Membership,
-        attributes: [],
-      }
-    ]
+    attributes: {
+      include: [
+        [sequelize.fn("COUNT", sequelize.col("Memberships.id")), "numMembers"],
+        [
+          sequelize.fn(
+            "COALESCE",
+            sequelize.fn(
+              "MAX",
+              sequelize.fn("DISTINCT", sequelize.col("GroupImages.url"))
+            ),
+            null
+          ),
+          "previewImage",
+        ],
+      ],
+      exclude: ["createdAt", "updatedAt"],
+    },
+    include,
+    where,
+    group: ["Group.id"],
   });
-  const returnArray = [];
-
-  // Improvements?
-  // Not creating another returnArray and return the OG group
-  for (let i = 0; i < groups.length; i++) {
-    const group = groups[i].toJSON();
-    const memberCount = await Membership.count({
-      where: {
-        groupId: group.id,
-      },
-    });
-
-    const previewImage = await GroupImage.findOne({
-      where: {
-        preview: true,
-        groupId:group.id,
-      },
-    });
-    group.numMembers = memberCount;
-    group.previewImage = previewImage ? previewImage.url :null;
-    returnArray.push(group);
-  }
-
-  res.json({ Groups: returnArray });
+  res.json({ Groups: groups });
+  // const groups = await Group.findAll({
+  //   include: [
+  //     {
+  //       model: Membership,
+  //       attributes: [],
+  //     },
+  //   ],
+  // });
+  // const returnArray = [];
+  // // Improvements?
+  // // Not creating another returnArray and return the OG group
+  // for (let i = 0; i < groups.length; i++) {
+  //   const group = groups[i].toJSON();
+  //   const memberCount = await Membership.count({
+  //     where: {
+  //       groupId: group.id,
+  //     },
+  //   });
+  //   const previewImage = await GroupImage.findOne({
+  //     where: {
+  //       preview: true,
+  //       groupId: group.id,
+  //     },
+  //   });
+  //   group.numMembers = memberCount;
+  //   group.previewImage = previewImage ? previewImage.url : null;
+  //   returnArray.push(group);
+  // }
+  // res.json({ Groups: returnArray });
 });
 
 // GET /api/groups/current

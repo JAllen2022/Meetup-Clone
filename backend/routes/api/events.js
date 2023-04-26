@@ -31,14 +31,15 @@ const attendance = require("../../db/models/attendance");
 // GET /api/events
 // Return all events
 router.get("/", validateEventQueryParamInput, async (req, res, next) => {
-  const { name, type, startDate, user, offset, page } = req.query;
+  const { name, type, startDate, user, page } = req.query;
   const userId = req.user.id;
   const where = {};
 
   // Setting up pagination. Default page is zero if no page number is provided
-  let pg = page - 1;
-  if (!page) pg = 0;
-  pg *= 5; // We have the offset set to 5
+  const pageNumber = page ? parseInt(page) : 1;
+
+  const limit = 5;
+  const offset = (pageNumber - 1) * limit;
 
   // Setting up query with include statement here
   const include = [
@@ -69,14 +70,13 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     attributes: {
       exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
     },
-
     include,
     group: ["Event.id"],
     order: [
       ["startDate", "ASC"], // Order by startDate in ascending order
     ],
-    limit: 5,
-    offset: pg,
+    limit,
+    offset,
   };
 
   // If URL params provided,
@@ -97,13 +97,14 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
       where: { userId },
       attributes: [],
     };
+    delete query.limit;
+    delete query.offset;
   }
 
   const allEvents = await Event.findAndCountAll(query);
-  console.log("checking all events", allEvents);
   const count = allEvents.count.length;
   const events = allEvents.rows;
-  const pageCount = Math.ceil(count / 5);
+  const pageCount = Math.ceil(count / limit);
 
   let returnArray = [];
 

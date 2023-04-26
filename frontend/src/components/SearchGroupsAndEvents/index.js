@@ -99,7 +99,7 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
           ? groupArray.map((ele, id) => <DivCards key={id} group={ele} />)
           : eventsArray.map((ele, id) => <DivCards key={id} event={ele} />)}
       </div>
-      <Pagination currentPage={currentPage} onPageChange={setCurrentPage} />
+      {/* <Pagination currentPage={currentPage} onPageChange={setCurrentPage} /> */}
     </div>
   );
 }

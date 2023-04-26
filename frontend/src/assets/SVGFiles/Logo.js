@@ -4,7 +4,7 @@ export default function Logo() {
         xmlns="http://www.w3.org/2000/svg"
         width="48"
         height="48"
-        class="mb-2"
+        className="mb-2"
     >
     <g fill-rule="nonzero" fill="none">
         <path
