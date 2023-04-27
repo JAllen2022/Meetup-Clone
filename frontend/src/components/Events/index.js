@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { thunkGetUserEvents } from "../../store/events";
 import DivCards from "../SearchGroupsAndEvents/DivCards";
+import EmptySearchIcon from "../../assets/SVGFiles/EmptySearchIcon";
 import "./Events.css";
 
 export default function Events({ importTab }) {
@@ -16,6 +17,12 @@ export default function Events({ importTab }) {
   useEffect(() => {
     dispatch(thunkGetUserEvents({ tab }));
   }, [tab]);
+
+  let noResultString = "";
+  if (tab === "attending") noResultString = "You are not attending any events.";
+  else if (tab === "hosting")
+    noResultString = "You are not hosting any events.";
+  else noResultString = "There are no past events.";
 
   return (
     <div className="user-page-container">
@@ -64,9 +71,22 @@ export default function Events({ importTab }) {
         <div className="user-group-page-right-container">
           <h1>Your Events</h1>
           <div className="user-event-page-group-card-container">
-            {userEventsArray.map((event, index) => (
-              <DivCards key={index} event={event} userAttendingInfo={true} />
-            ))}
+            {userEventsArray.length ? (
+              <>
+                {userEventsArray.map((event, index) => (
+                  <DivCards
+                    key={index}
+                    event={event}
+                    userAttendingInfo={true}
+                  />
+                ))}{" "}
+              </>
+            ) : (
+              <div className="no-result-container">
+                <EmptySearchIcon />
+                <div className="no-results-text">{noResultString}</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
