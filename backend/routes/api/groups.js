@@ -31,7 +31,7 @@ const { Op } = require("sequelize");
 // GET /api/groups
 // Get all groups
 router.get("/", async (req, res, next) => {
-  const { name, type, startDate, user, page } = req.query;
+  const { name, page } = req.query;
   const userId = req.user.id;
   const where = {};
   // Setting up pagination. Default page is zero if no page number is provided
@@ -48,6 +48,12 @@ router.get("/", async (req, res, next) => {
       attributes: [],
     },
   ];
+
+  if (name)
+    where.name = {
+      [Op.like]: `%${name}%`,
+    };
+  console.log("checking name", name, where);
   const groups = await Group.findAndCountAll({
     attributes: {
       include: [

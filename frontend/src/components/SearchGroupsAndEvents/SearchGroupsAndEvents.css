@@ -1,5 +1,6 @@
 .search-main-outer-body {
   width: 100%;
+  flex-grow: 1;
 }
 .search-main-inner-body {
   width: 80%;

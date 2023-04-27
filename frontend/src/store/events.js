@@ -81,7 +81,6 @@ export const thunkGetAllEvents = (data) => async (dispatch) => {
 
   if (response.ok) {
     const events = await response.json();
-    console.log("checking events", events);
     dispatch(allEvents(events));
   }
 };

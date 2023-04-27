@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import "./SearchBar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkGetAllEvents } from "../../store/events";
 import { setSearch } from "../../store/search";
+import { thunkGetAllGroups } from "../../store/groups";
 
 function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const search = useSelector((state) => state.search.searchText);
   const history = useHistory();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
@@ -18,10 +20,19 @@ function SearchBar() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Do something with the search term, like make an API call or navigate to a search results page
-    dispatch(thunkGetAllEvents({ name: searchTerm }));
+
+    if (location.pathname == "/search/groups") {
+      dispatch(thunkGetAllGroups({ name: searchTerm }));
+    } else {
+      dispatch(thunkGetAllEvents({ name: searchTerm }));
+    }
     dispatch(setSearch(searchTerm));
-    history.push("/search/events");
-    console.log(searchTerm);
+    if (
+      location.pathname !== "/search/groups" &&
+      location.pathname !== "/search/events"
+    ) {
+      history.push("/search/events");
+    }
   };
 
   useEffect(() => {

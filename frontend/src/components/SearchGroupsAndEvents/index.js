@@ -58,17 +58,9 @@ function SearchGroupsAndEvents({ defaultTab, home }) {
   }
 
   useEffect(() => {
-    if (
-      (defaultTab === "groups" && !groupArray) ||
-      (selectedTabGroup && !groupArray.length)
-    ) {
+    if (defaultTab === "groups") {
       dispatch(thunkGetAllGroups({ name: searchText }));
-    } else if (
-      defaultTab === "events" // && !eventsArray.length
-      // ||
-      // (selectedTabGroup && !eventsArray.length)
-    ) {
-      console.log("we are in here changing pages");
+    } else if (defaultTab === "events") {
       dispatch(thunkGetAllEvents({ page: currentPage, name: searchText }));
     }
     // dispatch(resetSingleGroup());

@@ -8,7 +8,7 @@ export default function NoResults({ tab }) {
     <div className="no-result-container">
       <EmptySearchIcon />
       <div className="no-results-text">
-        Sorry, there are no {tab} results for "{searchText}" near you.
+        Sorry, there are no {tab} results for "{searchText}".
       </div>
     </div>
   );

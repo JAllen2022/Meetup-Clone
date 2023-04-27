@@ -75,8 +75,9 @@ export const getUserGroups = (groups) => ({
 });
 
 /* ------ SELECTORS ------ */
-export const thunkGetAllGroups = () => async (dispatch) => {
-  const response = await fetch("/api/groups");
+export const thunkGetAllGroups = (data) => async (dispatch) => {
+  const searchParameters = new URLSearchParams(data).toString();
+  const response = await fetch(`/api/groups?${searchParameters}`);
 
   if (response.ok) {
     const data = await response.json();
