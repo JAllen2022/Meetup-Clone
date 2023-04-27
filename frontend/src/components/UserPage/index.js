@@ -8,7 +8,7 @@ import "./UserPage.css";
 export default function UserPage() {
   const [day, setDate] = useState("");
   const user = useSelector((state) => state.session.user);
-  console.log("we are checking the day", day);
+  
   return (
     <div className="user-page-container">
       <div className="user-page-body-container">

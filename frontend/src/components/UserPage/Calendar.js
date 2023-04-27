@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import "./Calendar.css";
 
 export default function Calendar({ day, setDay }) {
@@ -28,6 +29,7 @@ export default function Calendar({ day, setDay }) {
   const [previousLast, setPreviousLast] = useState();
   // const [startWeekDay, setStartWeekDay] = useState();
   const weekDay = firstDay?.getDay();
+  const history = useHistory();
 
   useEffect(() => {
     setFirstDay(new Date(year, month, 1));
@@ -52,7 +54,7 @@ export default function Calendar({ day, setDay }) {
     }
   }
   for (let i = 1; i <= lastDay?.getDate(); i++) {
-    // Check to see if it's today's date
+    // Check to see if the day is the current day, if so, we style it to highlight the day the user selected
     if (
       day &&
       month === day.getMonth() &&
@@ -68,6 +70,7 @@ export default function Calendar({ day, setDay }) {
           {i}
         </div>
       );
+      // Check to see if it is today, special styling for today's date
     } else if (
       month === date.getMonth() &&
       displayYear === date.getFullYear() &&
@@ -82,11 +85,16 @@ export default function Calendar({ day, setDay }) {
           {i}
         </div>
       );
+      // Else, standard styling
     } else
       tempArr.push(
         <div
           key={`${i}`}
-          onClick={() => setDay(new Date(displayYear, month, i))}
+          onClick={() =>
+            day < date
+              ? history.push("/events/past")
+              : setDay(new Date(displayYear, month, i))
+          }
           className="days current"
         >
           {i}
