@@ -72,7 +72,7 @@ function ProfileButton({ user, state }) {
             <p
               // onClick={closeMenu}
               className="profile-button-drop-down-elements"
-              onClick={() => navigate("/events")}
+              onClick={() => navigate("/events/attending")}
             >
               Your Events
             </p>

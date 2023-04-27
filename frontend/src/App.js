@@ -5,11 +5,11 @@ import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import HomePage from "./components/HomePage";
 import SearchGroupsAndEvents from "./components/SearchGroupsAndEvents";
-import GroupPage from './components/GroupPage'
+import GroupPage from "./components/GroupPage";
 import CreateAndUpdateGroup from "./components/CreateAndUpdateGroup";
-import CreateAndUpdateEvent from './components/CreateAndUpdateEvent'
-import EventPage from './components/EventPage';
-import Events from './components/Events'
+import CreateAndUpdateEvent from "./components/CreateAndUpdateEvent";
+import EventPage from "./components/EventPage";
+import Events from "./components/Events";
 import UserPage from "./components/UserPage";
 import Footer from "./components/Footer";
 import Groups from "./components/Groups";
@@ -20,7 +20,7 @@ function App() {
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
-  
+
   return (
     <>
       <Navigation isLoaded={isLoaded} />
@@ -32,8 +32,14 @@ function App() {
           <Route exact path="/groups">
             <Groups />
           </Route>
-          <Route exact path="/events">
-            <Events />
+          <Route exact path="/events/attending">
+            <Events importTab={"attending"} />
+          </Route>
+          <Route exact path="/events/hosting">
+            <Events importTab={"hosting"} />
+          </Route>
+          <Route exact path="/events/past">
+            <Events importTab={"past"} />
           </Route>
           <Route path="/groups/:groupId/create-event">
             <CreateAndUpdateEvent />
@@ -68,7 +74,7 @@ function App() {
           <Route path="/search/events">
             <SearchGroupsAndEvents defaultTab={"events"} />
           </Route>
-          <Route path='/home'>
+          <Route path="/home">
             <UserPage />
           </Route>
         </Switch>

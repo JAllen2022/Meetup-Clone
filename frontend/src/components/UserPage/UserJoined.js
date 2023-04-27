@@ -97,7 +97,7 @@ export default function UserJoined() {
         <div>
           <h2 className="user-page-joined-title">Your next event</h2>
         </div>
-        <Link className="user-page-link" to="/events">
+        <Link className="user-page-link" to="/events/attending">
           See all your events
         </Link>
       </div>

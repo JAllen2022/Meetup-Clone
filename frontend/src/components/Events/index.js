@@ -5,10 +5,10 @@ import { thunkGetUserEvents } from "../../store/events";
 import DivCards from "../SearchGroupsAndEvents/DivCards";
 import "./Events.css";
 
-export default function Events() {
+export default function Events({ importTab }) {
   const userEvents = useSelector((state) => state.events.userEvents);
   const userEventsArray = Object.values(userEvents) || [];
-  const [tab, setTab] = useState("attending");
+  const [tab, setTab] = useState(importTab || "attending");
   const dispatch = useDispatch();
 
   console.log("checking user events:", userEventsArray);
@@ -31,31 +31,34 @@ export default function Events() {
             <div className="back-to-home-page-text">Back to home page</div>
           </Link>
           <div className="user-events-tab-container">
-            <div
+            <Link
               className={`user-events-tabs ${
                 tab === "attending" ? "active" : ""
               }`}
               onClick={() => setTab("attending")}
+              to="/events/attending"
             >
               {" "}
               Attending{" "}
-            </div>
-            <div
+            </Link>
+            <Link
               className={`user-events-tabs ${
                 tab === "hosting" ? "active" : ""
               }`}
               onClick={() => setTab("hosting")}
+              to="/events/hosting"
             >
               {" "}
               Hosting{" "}
-            </div>
-            <div
+            </Link>
+            <Link
               className={`user-events-tabs ${tab === "past" ? "active" : ""}`}
               onClick={() => setTab("past")}
+              to="/events/past"
             >
               {" "}
               Past{" "}
-            </div>
+            </Link>
           </div>
         </div>
         <div className="user-group-page-right-container">
