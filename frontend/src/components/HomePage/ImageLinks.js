@@ -6,7 +6,7 @@ function ImageLinks({ props }) {
       <div className="home-page-image-divs">
         <img className="home-page-images-in-divs" src={props.image} />
       </div>
-      <p>
+      <p className="home-page-image-sub-headings">
         {props.text}
         <i className="fa-solid fa-arrow-right fa-solid-profile"></i>
       </p>

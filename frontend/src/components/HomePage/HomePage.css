@@ -87,6 +87,12 @@
   object-fit: cover;
 }
 
+.home-page-image-sub-headings {
+  border: 1px solid red;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
 .home-page-image-links {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -115,6 +121,7 @@
   width: 20px;
   height: 20px;
   color: #008294;
+  margin-left: 8px;
 }
 
 .home-links {
