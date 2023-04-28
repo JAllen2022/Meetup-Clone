@@ -15,12 +15,23 @@ export default function App() {
         />
       </div>
       <div className="app-store-middle-container">
-        <div>Icon Here</div>
+        <div className="app-store-middle-logo">
+          <img
+            className="linkup-logo app-store"
+            src="https://see.fontimg.com/api/renderfont4/rg9Rx/eyJyIjoiZnMiLCJoIjo2OCwidyI6MjAwMCwiZnMiOjM0LCJmZ2MiOiIjRjY1OTU5IiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/TFU/ananda-black-personal-use-regular.png"
+            alt="logo"
+          />
+        </div>
         <div className="app-store-middle-text">Stay connected.</div>
         <div className="app-store-middle-text">Download the app.</div>
-        <div>
-          <AppleStore />
-          <GooglePlay />
+        <div className="app-store-buttons">
+          <a href="https://apps.apple.com/us/app/meetup/id375990038">
+            <AppleStore />
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.meetup&hl=en-US">
+            {" "}
+            <GooglePlay />
+          </a>
         </div>
       </div>
       <div className="app-store-right-image-container">

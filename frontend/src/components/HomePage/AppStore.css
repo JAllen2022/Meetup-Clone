@@ -1,15 +1,28 @@
 .app-store-container {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 6rem 0;
+  padding: 8rem 0;
 }
 
 .app-store-left-image-container,
 .app-store-right-image-container {
   width: 33%;
-  border: 1px solid red;
+  /* border: 1px solid red; */
+}
+
+.app-store-middle-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
+  margin-top: 1rem;
+}
+
+.linkup-logo.app-store {
+  border: none;
+  box-shadow: 0px 5px 10px rgb(187, 187, 187);
 }
 
 .app-store-right-image-container {
@@ -22,13 +35,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* border: 1px solid red; */
+}
+
+.app-store-buttons {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
 }
 
 .app-store-phone-images {
-  width: 50%;
+  width: 65%;
 }
 
 .app-store-middle-text {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
+}
+
+.store-svg {
+  cursor: pointer;
 }

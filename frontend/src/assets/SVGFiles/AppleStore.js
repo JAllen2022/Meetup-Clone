@@ -6,6 +6,7 @@ export default function AppleStore() {
       width="119.66407"
       height="40"
       viewBox="0 0 119.66407 40"
+      className="store-svg"
     >
       <title>Download_on_the_App_Store_Badge_US-UK_RGB_blk_4SVG_092917</title>
       <g>
