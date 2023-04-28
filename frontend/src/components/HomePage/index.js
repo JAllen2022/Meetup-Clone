@@ -18,10 +18,10 @@ function HomePage() {
       <div className="home-page-body">
         <div className="home-two-top-divs">
           <div className="">
-            <h1 className="a home-title">
+            <h1 className=" home-title">
               The people platform—Where interests become friendships
             </h1>
-            <p>
+            <p className="home-sub-title">
               Whatever your interest, from hiking and reading to networking and
               skill sharing, there are thousands of people who share it on
               Meetup. Events are happening every day—log in to join the fun.

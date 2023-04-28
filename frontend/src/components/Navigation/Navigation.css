@@ -41,8 +41,8 @@
   display: inline-block;
   color: #212121;
   margin-right: 20px;
-  font-size: 0.875rem;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .log-in:hover {
@@ -50,9 +50,25 @@
   color: #008294;
 }
 
+.sign-up {
+  background-color: #00798a;
+  border: 1px solid;
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sign-up:hover {
+  background-color: #2793a1;
+}
+
 .nav-bar-user-right {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   margin-right: 1rem;
 }
 

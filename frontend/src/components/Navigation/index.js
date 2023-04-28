@@ -65,12 +65,12 @@ function Navigation({ isLoaded }) {
             ) : (
               <>
                 <OpenModalMenuItem
-                  itemText={<p className="log-in"> Log in</p>}
+                  itemText={<div className="log-in"> Log in</div>}
                   onItemClick={closeMenu}
                   modalComponent={<LoginFormModal />}
                 />
                 <OpenModalMenuItem
-                  itemText={<p className="log-in"> Sign up</p>}
+                  itemText={<div className="sign-up"> Sign up</div>}
                   onItemClick={closeMenu}
                   modalComponent={<SignupFormModal />}
                 />
