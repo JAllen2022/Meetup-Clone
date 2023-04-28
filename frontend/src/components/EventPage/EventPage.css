@@ -1,8 +1,8 @@
 .event-page-container {
   width: 100%;
   border: 1px solid red;
+  min-height: 100vh;
 }
-
 
 .event-page-header-container {
   /* border: 1px red solid; */
@@ -11,7 +11,9 @@
 }
 .event-page-header-item-wrapper {
   /* border:1px red solid; */
-  width: 85%;
+  min-width: 85%;
+  max-width: 100%;
+  width: 75rem;
   margin: 1rem auto;
 }
 .event-page-title-host-container {
@@ -38,16 +40,16 @@
 .event-body {
   /* border:1px red solid; */
   display: flex;
-  width: 85%;
+  min-width: 85%;
+  max-width: 100%;
+  width: 75rem;
   margin: 0 auto;
-  min-height: 100vh;
 }
 
 .event-body-left {
   display: flex;
   flex-direction: column;
   width: 60%;
-  min-height: 100vh;
   /* border:1px red solid; */
 }
 
