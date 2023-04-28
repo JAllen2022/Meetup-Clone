@@ -1,8 +1,13 @@
+.event-page-container {
+  width: 100%;
+  border: 1px solid red;
+}
+
+
 .event-page-header-container {
-  /* border:1px red solid; */
+  /* border: 1px red solid; */
   width: 100%;
   border-bottom: solid 1px lightgray;
-  border-top: solid 1px lightgray;
 }
 .event-page-header-item-wrapper {
   /* border:1px red solid; */
@@ -98,7 +103,7 @@
   display: flex;
   font-size: 0.85rem;
 }
-.event-body-right-group-info-container:hover{
+.event-body-right-group-info-container:hover {
   cursor: pointer;
   background-color: rgb(230, 229, 229);
 }
@@ -209,11 +214,11 @@
 }
 
 .event-sticky-footer-attend-button:hover {
-    opacity: .85;
+  opacity: 0.85;
 }
 .event-sticky-footer-event-options:hover {
-    background-color: rgb(0 152 171/1);
-    color:white;
+  background-color: rgb(0 152 171/1);
+  color: white;
 }
 
 .event-sticky-footer-event-option-menu-container {
@@ -230,19 +235,19 @@
 }
 
 .event-sticky-footer-event-option-menu-inner-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .event-sticky-menu-link {
-    padding:.25rem;
-    text-decoration: none;
-    color: #212121;
+  padding: 0.25rem;
+  text-decoration: none;
+  color: #212121;
 }
 
 .event-sticky-menu-link:hover {
-    font-weight: 600;
-    color:rgb(0 152 171/1);
+  font-weight: 600;
+  color: rgb(0 152 171/1);
 }
