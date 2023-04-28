@@ -12,6 +12,7 @@ import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
 import "./Navigation.css";
 import SearchBar from "./SearchBar";
+import WorldIcon from "../../assets/SVGFiles/WorldIcon";
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
@@ -24,7 +25,7 @@ function Navigation({ isLoaded }) {
   };
 
   return (
-    <div className="nav-bar">
+    <div className={`nav-bar ${sessionUser ? "nav-active" : ""}`}>
       <div className="nav-bar-inner">
         <div className="nav-bar-logo-left">
           {sessionUser ? (
@@ -39,7 +40,7 @@ function Navigation({ isLoaded }) {
               <SearchBar />
             </>
           ) : (
-            <NavLink exact to="/">
+            <NavLink exact to="/" className="nav-bar-logo-container">
               <img id="nav-bar-logo-image" src={imageLogo} alt="link up logo" />
             </NavLink>
           )}
@@ -64,6 +65,9 @@ function Navigation({ isLoaded }) {
               </>
             ) : (
               <>
+                <div className="english-icon">
+                  <WorldIcon /> English
+                </div>
                 <OpenModalMenuItem
                   itemText={<div className="log-in"> Log in</div>}
                   onItemClick={closeMenu}
