@@ -1,5 +1,21 @@
 
 To-do:
+- log in modal adjust
+- sign up modal - adjust
+- add app component to home page
+
+Add google maps API
+
+create a user page
+media queries for all pages
+
+- finish attendance and membership features
+
+
+
+done:
+- Search feature
+
 get the calendar working on the user home page
 - Show events by date - only future events
 - events page - show past events as well
@@ -8,10 +24,3 @@ get the calendar working on the user home page
 
 Fix formatting for all pages - just like we did for the user home page
 - fix the gray bar below the nav page
-
-- Search feature
-
-Add google maps API
-
-create a user page
-media queries for all pages

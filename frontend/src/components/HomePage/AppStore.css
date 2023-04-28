@@ -1,0 +1,34 @@
+.app-store-container {
+  border: 1px solid red;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 6rem 0;
+}
+
+.app-store-left-image-container,
+.app-store-right-image-container {
+  width: 33%;
+  border: 1px solid red;
+}
+
+.app-store-right-image-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.app-store-middle-container {
+  width: 34%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.app-store-phone-images {
+  width: 50%;
+}
+
+.app-store-middle-text {
+  font-size: 16px;
+  font-weight: 600;
+}

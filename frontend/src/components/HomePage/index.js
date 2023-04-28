@@ -5,7 +5,7 @@ import BottomLeftBlob from "../../assets/SVGFiles/BottomLeftBlob";
 import MiddleBlob from "../../assets/SVGFiles/MiddleBlob";
 import HomeImage from "../../assets/SVGFiles/HomeImage";
 import LinkUpWorks from "./LinkUpWorks";
-// import AppStore from "./AppStore";
+import AppStore from "./AppStore";
 import "./HomePage.css";
 
 function HomePage() {
@@ -39,8 +39,7 @@ function HomePage() {
           ))}
         </div>
         <LinkUpWorks />
-        {/* <AppStore />
-        <div>he</div> */}
+        <AppStore />
       </div>
     </>
   );
