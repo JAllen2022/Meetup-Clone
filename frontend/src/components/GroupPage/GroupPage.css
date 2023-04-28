@@ -1,3 +1,19 @@
+.group-details-entire-doc-body {
+  border: 1px solid red;
+  width: 100%;
+  min-height: 120vh;
+  margin-bottom: 2rem;
+}
+
+.group-details-entire-doc-body-inner {
+  border: 1px solid red;
+  min-width: 70%;
+  max-width: 100%;
+  margin: auto;
+  padding: 1.5% 0;
+  width: 50rem;
+}
+
 .group-details-header-title-body > h1 {
   margin-top: 0;
 }
@@ -5,15 +21,15 @@
 .group-details-header-outer {
   border-bottom: solid 1px lightgray;
   border-top: solid 1px lightgray;
-  padding: 1.5% 0;
   border: 1px solid red;
 }
+
 .group-details-header {
   display: flex;
   justify-content: space-between;
-  width: 70%;
   margin: auto;
   color: #212121;
+  border: 1px solid green;
 }
 
 .group-details-header-image-container {
@@ -46,13 +62,11 @@
 .group-details-nav-bar {
   padding: 0.25rem 0;
   display: flex;
-  width: 70%;
   margin: auto;
 }
 
 .group-details-main-body-wrapper {
   display: flex;
-  width: 70%;
   margin: auto;
 }
 
@@ -60,6 +74,7 @@
   display: flex;
   width: 60%;
   align-items: center;
+  justify-content: space-between;
 }
 
 .group-page-navLinks {
@@ -70,7 +85,6 @@
   margin: 0;
   padding: 0;
   height: fit-content;
-  border: 1px solid red;
   margin-right: 2.5rem;
 }
 .group-page-navLinks > span {

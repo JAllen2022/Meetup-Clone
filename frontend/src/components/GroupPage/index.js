@@ -8,10 +8,10 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteModal from "../DeleteModal";
-import About from './About'
-import Events from './Events'
-import Members from './Members'
-import Photos from './Photos'
+import About from "./About";
+import Events from "./Events";
+import Members from "./Members";
+import Photos from "./Photos";
 import FeatureComingSoon from "../FeatureComingSoon";
 import "./GroupPage.css";
 
@@ -34,7 +34,7 @@ const groupNavBar = [
   },
 ];
 
-function GroupPage({tab}) {
+function GroupPage({ tab }) {
   const { groupId } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -42,7 +42,9 @@ function GroupPage({tab}) {
   const user = useSelector((state) => state.session.user);
   const [showMenu, setShowMenu] = useState(false);
   const closeMenu = () => setShowMenu(false);
-  const memberships = useSelector((state) => state.groups.singleGroupMemberships)
+  const memberships = useSelector(
+    (state) => state.groups.singleGroupMemberships
+  );
   const groupEvents = useSelector((state) => state.groups.groupEvents);
   let groupEventsArray = Object.values(groupEvents);
 
@@ -65,7 +67,7 @@ function GroupPage({tab}) {
   );
 
   const createEvent = () => {
-    history.push(`/groups/${groupId}/create-event`)
+    history.push(`/groups/${groupId}/create-event`);
   };
 
   const editGroup = () => {
@@ -74,16 +76,15 @@ function GroupPage({tab}) {
 
   let displayBody = [];
 
-  if (tab === 'about') {
+  if (tab === "about") {
     displayBody = <About group={group} groupEventsArray={groupEventsArray} />;
-  } else if (tab === 'events') {
+  } else if (tab === "events") {
     displayBody = <Events group={group} groupEventsArray={groupEventsArray} />;
-  } else if (tab === 'members') {
+  } else if (tab === "members") {
     displayBody = <Members group={group} memberships={memberships} />;
   } else {
     displayBody = <Photos group={group} />;
   }
-
 
   const optionsHost = (
     <div className="profile-button-drop-down-top-half group-drop-menu">
@@ -94,11 +95,9 @@ function GroupPage({tab}) {
         Edit Group
       </p>
       <OpenModalMenuItem
-        itemText={<p
-          className="profile-button-drop-down-elements"
-        >
-          Delete Group
-        </p>}
+        itemText={
+          <p className="profile-button-drop-down-elements">Delete Group</p>
+        }
         onItemClick={closeMenu}
         modalComponent={<DeleteModal groupId={group.id} type={"Group"} />}
       />
@@ -151,82 +150,81 @@ function GroupPage({tab}) {
 
   return (
     <div className="group-details-entire-doc-body">
-      <div className="group-details-header-outer">
-        <div className="group-details-header">
-          <div className="group-details-header-image-container">
-            <img
-              id="group-details-header-image"
-              src={
-                groupImage?.url
-                  ? groupImage.url
-                  : "https://secure.meetupstatic.com/next/images/fallbacks/group-cover-2-wide.webp"
-              }
-              alt="group image"
-            />
-          </div>
-          <div className="group-details-header-title-body">
-            <h1>{group.name}</h1>
-            <div>
-              <i className="fa-solid fa-location-dot fa-solid-profile"></i>
-              <span className="group-details-header-spans">
-                {group.city}, {group.state}
-              </span>
+      <div className="group-details-entire-doc-body-inner">
+        <div className="group-details-header-outer">
+          <div className="group-details-header">
+            <div className="group-details-header-image-container">
+              <img
+                id="group-details-header-image"
+                src={
+                  groupImage?.url
+                    ? groupImage.url
+                    : "https://secure.meetupstatic.com/next/images/fallbacks/group-cover-2-wide.webp"
+                }
+                alt="group image"
+              />
             </div>
-            <div>
-              <i className="fa-solid fa-user-group fa-solid-profile"></i>
-              <span className="group-details-header-spans">
-                {group.numMembers} ·{" "}
-                {group.private ? "Private group" : "Public group"}
-              </span>
-            </div>
-            <div>
-              <i className="fa-solid fa-user fa-solid-profile"></i>
-              <span className="group-details-header-spans">
-                Organized By {group.Organizer?.firstName}{" "}
-                {group.Organizer?.lastName}
-              </span>
+            <div className="group-details-header-title-body">
+              <h1>{group.name}</h1>
+              <div>
+                <i className="fa-solid fa-location-dot fa-solid-profile"></i>
+                <span className="group-details-header-spans">
+                  {group.city}, {group.state}
+                </span>
+              </div>
+              <div>
+                <i className="fa-solid fa-user-group fa-solid-profile"></i>
+                <span className="group-details-header-spans">
+                  {group.numMembers} ·{" "}
+                  {group.private ? "Private group" : "Public group"}
+                </span>
+              </div>
+              <div>
+                <i className="fa-solid fa-user fa-solid-profile"></i>
+                <span className="group-details-header-spans">
+                  Organized By {group.Organizer?.firstName}{" "}
+                  {group.Organizer?.lastName}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="group-details-nav-bar-container">
-        <div className="group-details-nav-bar">
-          <div className="group-details-nav-bar-buttons-container"></div>
-          <div className="group-details-nav-bar-buttons">
-            {groupNavBar.map((ele) => (
-              <NavLink
-                exact
-                className="group-page-navLinks"
-                key={ele.name}
-                to={`/groups/${groupId}${ele.to}`}
+        <div className="group-details-nav-bar-container">
+          <div className="group-details-nav-bar">
+            <div className="group-details-nav-bar-buttons">
+              {groupNavBar.map((ele) => (
+                <NavLink
+                  exact
+                  className="group-page-navLinks"
+                  key={ele.name}
+                  to={`/groups/${groupId}${ele.to}`}
+                >
+                  <span>{ele.name}</span>
+                </NavLink>
+              ))}
+            </div>
+            <div className="group-details-nav-bar-dropdown" ref={ulRef}>
+              <button
+                className="group-detail-nav-bar-button"
+                onClick={() => setShowMenu((prev) => !prev)}
               >
-                <span>{ele.name}</span>
-              </NavLink>
-            ))}
-          </div>
-          <div className="group-details-nav-bar-dropdown" ref={ulRef}>
-            <button
-              className="group-detail-nav-bar-button"
-              onClick={() => setShowMenu((prev) => !prev)}
-            >
-              <div className="group-detail-nav-bar-inner-button-div">
-                <span>Group Actions</span>
-                <i className="fa-solid fa-angle-down"></i>
-              </div>
-            </button>
-            {showMenu && (
-              <div className="group-detail-nav-bar-dropdown-container">
-                <div className="group-detail-nav-bar-dropdown-container-items">
-                  {userType}
+                <div className="group-detail-nav-bar-inner-button-div">
+                  <span>Group Actions</span>
+                  <i className="fa-solid fa-angle-down"></i>
                 </div>
-              </div>
-            )}
+              </button>
+              {showMenu && (
+                <div className="group-detail-nav-bar-dropdown-container">
+                  <div className="group-detail-nav-bar-dropdown-container-items">
+                    {userType}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="group-details-body-container">
-        <div className="group-details-main-body-wrapper">
-             {displayBody}
+        <div className="group-details-body-container">
+          <div className="group-details-main-body-wrapper">{displayBody}</div>
         </div>
       </div>
     </div>
