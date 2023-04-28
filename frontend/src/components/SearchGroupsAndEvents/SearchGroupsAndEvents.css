@@ -3,11 +3,13 @@
   flex-grow: 1;
 }
 .search-main-inner-body {
-  width: 80%;
-  max-width: 45rem;
+  min-width: 65%;
+  max-width: 100%;
+  width: 40rem;
   margin: auto;
   margin-top: 1rem;
   margin-bottom: 2rem;
+  border: 1px solid red;
 }
 
 .all-groups-tab-event-group {
