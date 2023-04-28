@@ -37,10 +37,11 @@
 }
 
 .home-page-body {
-  padding-top: 75px;
-  padding-bottom: 75px;
+  padding: 0 1rem;
+  padding-top: 8rem;
+  min-width: 77.55%;
   max-width: 100%;
-  width: 77.55%;
+  width: 70rem;
   margin: auto;
   background-color: transparent;
 }
@@ -48,11 +49,28 @@
 .home-two-top-divs {
   display: flex;
   margin-bottom: 4rem;
+  justify-content: space-between;
+}
+
+.home-top-left-div {
+  width: 60%;
+  max-width: 540px;
+}
+
+.home-top-right-div {
+  width: 40%;
+  flex-grow: 1;
+}
+
+.home-image-svg {
+  margin-top: 1rem;
 }
 
 .home-title {
   font-weight: 700;
   font-size: 48px;
+  line-height: 1;
+  margin-top: 0;
 }
 
 .home-page-image-divs {

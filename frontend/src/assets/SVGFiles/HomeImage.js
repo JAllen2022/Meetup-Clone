@@ -4,6 +4,7 @@ export default function HomeImage() {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 724 324"
         id="home-page-image"
+        className="home-image-svg"
       >
         <g fill="none" fill-rule="evenodd">
           <path
