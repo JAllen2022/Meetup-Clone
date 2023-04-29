@@ -1,13 +1,31 @@
 .signup-outer-div {
-  height: 85vh;
-  width: 350px;
+  height: 100vh;
+  width: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
-  padding: 1rem 0;
+  margin-bottom: 1.5rem;
 }
 
 .extended {
   min-height: 650px;
+}
+
+.input-form-description-text {
+  color: #707070;
+  font-size: 12px;
+  margin: 0;
+}
+
+.terms-links {
+  color: #00798a;
+}
+
+.sign-up-terms {
+  font-size: 12px;
+  width: 75%;
+  margin: auto;
+  text-align: center;
+  margin: 0.5rem 0;
 }

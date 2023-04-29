@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import "./SignupForm.css";
+import LoginFormModal from "../LoginFormModal";
 
 function SignupFormModal() {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function SignupFormModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const [extendedDiv, setExtendedDiv] = useState("");
-  const { closeModal } = useModal();
+  const { closeModal, setModalContent } = useModal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,15 +48,29 @@ function SignupFormModal() {
     ]);
   };
 
+  const demoUserClicked = (e) => {
+    e.preventDefault();
+
+    return dispatch(
+      sessionActions.login({ credential: "demo@user.io", password: "password" })
+    ).then(() => {
+      closeModal();
+      history.push("/home");
+    });
+  };
+
   return (
     <div className={`signup-outer-div ${extendedDiv}`}>
+      <div className="x-marks-the-spot" onClick={() => closeModal()}>
+        x
+      </div>
       <div className="login-header">
         <img
           className="linkup-logo"
           src="https://see.fontimg.com/api/renderfont4/rg9Rx/eyJyIjoiZnMiLCJoIjo2OCwidyI6MjAwMCwiZnMiOjM0LCJmZ2MiOiIjRjY1OTU5IiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/TFU/ananda-black-personal-use-regular.png"
           alt="logo"
         />
-        <h1>Sign Up</h1>
+        <h1 className="login-title">Sign Up</h1>
       </div>
       <form className="modal-form" onSubmit={handleSubmit}>
         <ul>
@@ -65,7 +80,7 @@ function SignupFormModal() {
             </li>
           ))}
         </ul>
-        <div>
+        <div className="input-div">
           <label className="form-label">Email</label>
           <input
             className="form-inputs"
@@ -75,8 +90,11 @@ function SignupFormModal() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          <div className="input-form-description-text">
+            We’ll use your email address to send you updates
+          </div>
         </div>
-        <div>
+        <div className="input-div">
           <label className="form-label">Username</label>
           <input
             className="form-inputs"
@@ -86,7 +104,7 @@ function SignupFormModal() {
             required
           />
         </div>
-        <div>
+        <div className="input-div">
           <label className="form-label">First Name</label>
           <input
             className="form-inputs"
@@ -95,8 +113,12 @@ function SignupFormModal() {
             onChange={(e) => setFirstName(e.target.value)}
             required
           />
+          <div className="input-form-description-text">
+            Your name will be public on your LinkUp profile.
+          </div>
         </div>
-        <div>
+
+        <div className="input-div">
           <label className="form-label">Last Name</label>
           <input
             className="form-inputs"
@@ -106,7 +128,7 @@ function SignupFormModal() {
             required
           />
         </div>
-        <div>
+        <div className="input-div">
           <label className="form-label">Password</label>
           <input
             className="form-inputs"
@@ -116,7 +138,7 @@ function SignupFormModal() {
             required
           />
         </div>
-        <div>
+        <div className="input-div">
           <label className="form-label">Confirm Password</label>
           <input
             className="form-inputs"
@@ -130,6 +152,38 @@ function SignupFormModal() {
           Sign Up
         </button>
       </form>
+      <p className="sign-up-terms">
+        By signing up, you agree to{" "}
+        <a className="terms-links" href="https://www.meetup.com/terms/">
+          Terms of Service
+        </a>
+        ,{" "}
+        <a className="terms-links" href="https://www.meetup.com/privacy/">
+          Privacy Policy
+        </a>
+        , and{" "}
+        <a className="terms-links" href="https://www.meetup.com/cookie_policy/">
+          Cookie Policy
+        </a>
+        .
+      </p>
+      <p className="demo-user-text" type="submit">
+        Already a member?
+        <span
+          className="sign-up-span"
+          onClick={() => setModalContent(<LoginFormModal />)}
+        >
+          {" "}
+          Log in
+        </span>
+      </p>
+      <p className="demo-user-text" type="submit">
+        Try LinkUp!{" "}
+        <span className="sign-up-span" onClick={demoUserClicked}>
+          {" "}
+          Demo User
+        </span>
+      </p>
     </div>
   );
 }

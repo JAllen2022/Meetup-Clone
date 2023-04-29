@@ -6,6 +6,7 @@ import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 
 import "./LoginForm.css";
+import SignupFormModal from "../SignupFormModal";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ function LoginFormModal() {
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
-  const { closeModal } = useModal();
+  const { closeModal, setModalContent } = useModal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,35 +25,46 @@ function LoginFormModal() {
         const data = await res.json();
         if (data && data.errors) {
           setErrors(Object.values(data.errors));
-
         } else {
-        setErrors([data.message])
-      }
+          setErrors([data.message]);
+        }
       });
-    };
+  };
 
   const demoUserClicked = (e) => {
     e.preventDefault();
 
-    return dispatch(sessionActions.login({ credential:'demo@user.io', password:'password' })).then(
-      () => {
-        closeModal();
-        history.push('/home')
-      }
-    );
-  }
+    return dispatch(
+      sessionActions.login({ credential: "demo@user.io", password: "password" })
+    ).then(() => {
+      closeModal();
+      history.push("/home");
+    });
+  };
 
   return (
     <div className="login-outer-div">
+      <div className="x-marks-the-spot" onClick={() => closeModal()}>
+        x
+      </div>
       <div className="login-header">
-        <img
-          className="linkup-logo"
-          src="https://see.fontimg.com/api/renderfont4/rg9Rx/eyJyIjoiZnMiLCJoIjo2OCwidyI6MjAwMCwiZnMiOjM0LCJmZ2MiOiIjRjY1OTU5IiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/TFU/ananda-black-personal-use-regular.png"
-          alt="logo"
-        />
-        <h1>Log In</h1>
-        {/* Add this Feature later */}
-        {/* <p style={{ margin: 0 }}>Not a member yet? Sign up</p> */}
+        <div className="login-logo-container">
+          <img
+            className="linkup-logo"
+            src="https://see.fontimg.com/api/renderfont4/rg9Rx/eyJyIjoiZnMiLCJoIjo2OCwidyI6MjAwMCwiZnMiOjM0LCJmZ2MiOiIjRjY1OTU5IiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/TFU/ananda-black-personal-use-regular.png"
+            alt="logo"
+          />
+        </div>
+        <h1 className="login-title">Log In</h1>
+        <div className="login-form-sub-title" style={{ margin: 0 }}>
+          Not a member yet?{" "}
+          <span
+            className="sign-up-span"
+            onClick={() => setModalContent(<SignupFormModal />)}
+          >
+            Sign up
+          </span>
+        </div>
       </div>
       <form className="modal-form" onSubmit={handleSubmit}>
         <div>
@@ -64,7 +76,7 @@ function LoginFormModal() {
             ))}
           </ul>
         </div>
-        <div>
+        <div className="input-div">
           <label className="form-label">Username or Email</label>
           <input
             className="form-inputs"
@@ -74,7 +86,7 @@ function LoginFormModal() {
             required
           />
         </div>
-        <div>
+        <div className="input-div">
           <label className="form-label">Password</label>
           <input
             className="form-inputs"
@@ -88,17 +100,16 @@ function LoginFormModal() {
               Log In
             </button>
           </div>
-          <div>
-            <button
-              className="form-submit-button"
-              onClick={demoUserClicked}
-              type="submit"
-            >
-              Demo User
-            </button>
-          </div>
         </div>
       </form>
+
+      <p className="demo-user-text" type="submit">
+        Try LinkUp!{" "}
+        <span className="sign-up-span" onClick={demoUserClicked}>
+          {" "}
+          Demo User
+        </span>
+      </p>
     </div>
   );
 }

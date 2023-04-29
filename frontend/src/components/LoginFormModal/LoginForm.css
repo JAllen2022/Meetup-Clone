@@ -1,73 +1,118 @@
 .login-outer-div {
-    height:fit-content;
-    padding:2rem 0;
-    width:350px;
-    display:flex;
-    flex-direction: column;
-    align-items: center;
+  height: fit-content;
+  padding-bottom: 1rem;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+.x-marks-the-spot {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 1.5rem;
+  font-size: 28px;
+  font-weight: 100;
+  color: #707070;
+  cursor: pointer;
+}
 /* .form-inputs {
     border-radius:5px;
 
 } */
 
-.form-label{
-    display:block;
-    font-weight: 550;
+.form-label {
+  display: block;
+  font-weight: 500;
+  font-size: 16px;
 }
 
-.form-label, .form-inputs{
-    width:95%;
+.form-label,
+.form-inputs {
+  width: 95%;
 }
 
 .form-inputs {
-    margin-bottom:10px;
-    border: 1px solid lightgray;
-    border-radius: 3px;
-    padding: 8px 6px;
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  padding: 8px 6px;
+}
+
+.input-div {
+  margin-bottom: 1rem;
 }
 
 .login-header {
-    display:flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-title {
+  margin: 0.75rem 0;
+  font-size: 28px;
+}
+
+.login-form-sub-title {
+  font-size: 16px;
+  font-weight: 100;
+  margin: 0.5rem 0;
+}
+
+.sign-up-span {
+  color: #00798a;
+  cursor: pointer;
+}
+
+.login-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .linkup-logo {
-    width:40%;
-    border: 1.5px solid  #f65858;
-    /* border-radius: .5rem; */
-    border-radius:  25% 10%;;
-    padding:.5rem;
-    margin-top:1rem;
+  width: 40%;
+  border: 1.5px solid #f65858;
+  /* border-radius: .5rem; */
+  border-radius: 25% 10%;
+  padding: 0.5rem;
+  margin-top: 1rem;
 }
 
 .form-submit-button {
-    background-color: #f65858;
-    border:none;
-    color:white;
-    fill:white;
-    padding:8px 12px;
-    width: 100%;
-    height:3rem;
-    margin-top: 1rem;
-    font-size:1.25rem;
-    line-height: 24px;
-    border-radius: 10px;
-    font-weight:600;
-    border-style: solid;
-    cursor: pointer;
+  background-color: #e32358;
+  border: none;
+  color: white;
+  fill: white;
+  padding: 8px 12px;
+  width: 100%;
+  height: 3rem;
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  line-height: 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  border-style: solid;
+  cursor: pointer;
 }
 
-.form-submit-button:hover{
-    opacity: .9;
+.form-submit-button:hover {
+  opacity: 0.9;
 }
 
 .modal-form {
-    width:75%
+  width: 75%;
+  margin-bottom: 0.75rem;
 }
 
 .form-errors {
-    color:red
+  color: red;
+}
+
+.demo-user-text {
+  font-size: 14px;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 0.25rem;
 }

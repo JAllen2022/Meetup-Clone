@@ -65,8 +65,11 @@ function Navigation({ isLoaded }) {
               </>
             ) : (
               <>
-                <div className="english-icon">
-                  <i className="fa-regular fa-globe"></i> English
+                <div>
+                  <div className="english-icon">
+                    <i className="fa-regular fa-globe"></i> or{" "}
+                    <i class="fa-solid fa-globe"></i> English
+                  </div>
                 </div>
                 <OpenModalMenuItem
                   itemText={<div className="log-in"> Log in</div>}
