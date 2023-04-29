@@ -10,9 +10,9 @@ import imageLogo from "../../assets/LinkUpLogo.png";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
-import "./Navigation.css";
-import SearchBar from "./SearchBar";
 import WorldIcon from "../../assets/SVGFiles/WorldIcon";
+import SearchBar from "./SearchBar";
+import "./Navigation.css";
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
@@ -67,8 +67,7 @@ function Navigation({ isLoaded }) {
               <>
                 <div>
                   <div className="english-icon">
-                    <i className="fa-regular fa-globe"></i> or{" "}
-                    <i class="fa-solid fa-globe"></i> English
+                    <WorldIcon /> <span className="english-text">English</span>
                   </div>
                 </div>
                 <OpenModalMenuItem
