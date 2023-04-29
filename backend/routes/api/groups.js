@@ -535,14 +535,20 @@ router.get(
   "/:groupId/events",
   validateReqParamGroupId,
   async (req, res, next) => {
+    const { past } = req.query;
+    // take into account past events
+    const order = {};
+    const where = { groupId: req.params.groupId };
+
+    if (past) {
+      
+    }
     // Find all events
     const groupEvents = await Event.findAll({
       attributes: {
         exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
       },
-      where: {
-        groupId: req.params.groupId,
-      },
+      where,
       include: [
         {
           model: Group,
