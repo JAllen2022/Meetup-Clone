@@ -541,7 +541,10 @@ router.get(
     const where = { groupId: req.params.groupId };
 
     if (past) {
-      
+      where.startDate = {
+        [Op.lt]: new Date(), // Query for dates before the current date
+      };
+      order.push(["startDate", "DESC"]);
     }
     // Find all events
     const groupEvents = await Event.findAll({
