@@ -94,8 +94,11 @@ export const thunkGetSingleGroup = (groupId) => async (dispatch) => {
   }
 };
 
-export const thunkGetGroupEvents = (groupId) => async (dispatch) => {
-  const response = await fetch(`/api/groups/${groupId}/events`);
+export const thunkGetGroupEvents = (groupId, data) => async (dispatch) => {
+  const searchParameters = new URLSearchParams(data).toString();
+  const response = await fetch(
+    `/api/groups/${groupId}/events${searchParameters}`
+  );
 
   if (response.ok) {
     const data = await response.json();

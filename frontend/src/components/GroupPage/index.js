@@ -40,6 +40,7 @@ function GroupPage({ tab }) {
   const history = useHistory();
   const group = useSelector((state) => state.groups.singleGroup);
   const user = useSelector((state) => state.session.user);
+  const [eventTab, setEventTab] = useState("upcoming");
   const [showMenu, setShowMenu] = useState(false);
   const closeMenu = () => setShowMenu(false);
   const memberships = useSelector(
@@ -79,7 +80,14 @@ function GroupPage({ tab }) {
   if (tab === "about") {
     displayBody = <About group={group} groupEventsArray={groupEventsArray} />;
   } else if (tab === "events") {
-    displayBody = <Events group={group} groupEventsArray={groupEventsArray} />;
+    displayBody = (
+      <Events
+        group={group}
+        tab={eventTab}
+        setTab={setEventTab}
+        groupEventsArray={groupEventsArray}
+      />
+    );
   } else if (tab === "members") {
     displayBody = <Members group={group} memberships={memberships} />;
   } else {
@@ -126,9 +134,12 @@ function GroupPage({ tab }) {
 
   useEffect(() => {
     dispatch(thunkGetSingleGroup(groupId));
-    dispatch(thunkGetGroupEvents(groupId));
     dispatch(thunkGetMemberships(groupId));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(thunkGetGroupEvents(groupId));
+  }, [eventTab]);
 
   useEffect(() => {
     if (!showMenu) return;

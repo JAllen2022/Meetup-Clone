@@ -3,8 +3,7 @@ import EventCards from "./EventCards";
 import "./Events.css";
 import "./GroupPage.css";
 
-function Events({ groupEventsArray }) {
-  const [tab, setTab] = useState("upcoming");
+function Events({ groupEventsArray, tab, setTab }) {
   return (
     <>
       <div className="group-events-main-body-left event-tab-cards-left">

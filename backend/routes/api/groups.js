@@ -537,7 +537,7 @@ router.get(
   async (req, res, next) => {
     const { past } = req.query;
     // take into account past events
-    const order = {};
+    const order = [];
     const where = { groupId: req.params.groupId };
 
     if (past) {
@@ -545,13 +545,18 @@ router.get(
         [Op.lt]: new Date(), // Query for dates before the current date
       };
       order.push(["startDate", "DESC"]);
+    } else {
+      where.startDate = {
+        [Op.gt]: new Date(), // Query for dates after the current date
+      };
+      order.push(["startDate", "ASC"]);
     }
+
     // Find all events
     const groupEvents = await Event.findAll({
       attributes: {
         exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
       },
-      where,
       include: [
         {
           model: Group,
@@ -562,6 +567,8 @@ router.get(
           attributes: ["id", "city", "state"],
         },
       ],
+      where,
+      order,
     });
 
     const returnArray = [];
