@@ -1,0 +1,34 @@
+.profileIcon {
+  cursor: pointer;
+  color: #212121;
+}
+
+.profile-button-drop-down-container {
+  padding: 0.75rem 1rem;
+  position: absolute;
+  inset: 0px 10px auto auto;
+  transform: translate3d(0px, 75px, 0px);
+  border: 1px solid rgb(197, 195, 195);
+  border-radius: 0.25rem;
+  box-shadow: 0 0 5px rgb(197, 195, 195);
+  background-color: #fff;
+  z-index: 5;
+  width: 8rem;
+  font-size: 14px;
+  color: #212121;
+}
+
+.profile-button-drop-down-top-half {
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.profile-button-drop-down-elements {
+  margin: 0.85rem 0;
+  padding: 0;
+  color: #212121;
+  cursor: pointer;
+}
+
+.profile-button-drop-down-elements:hover {
+  color: #00798a;
+}

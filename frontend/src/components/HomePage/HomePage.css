@@ -132,34 +132,6 @@
   text-decoration: underline;
 }
 
-.profileIcon {
-  cursor: pointer;
-  color: #212121;
-}
-
-.profile-button-drop-down-container {
-  padding: 0.75rem 1rem;
-  position: absolute;
-  inset: 0px 10px auto auto;
-  transform: translate3d(0px, 48px, 0px);
-  border: 1px solid rgb(197, 195, 195);
-  border-radius: 0.25rem;
-  box-shadow: 0 0 5px rgb(197, 195, 195);
-  background-color: #fff;
-  z-index: 5;
-}
-
-.profile-button-drop-down-top-half {
-  border-bottom: 1px solid rgb(197, 195, 195);
-}
-
-.profile-button-drop-down-elements {
-  margin: 0.55rem 0;
-  font-size: 0.85rem;
-  padding: 0;
-  color: #212121;
-  cursor: pointer;
-}
 
 .link-up-works-container {
   width: 100%;

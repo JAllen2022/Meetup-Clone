@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import * as sessionActions from "../../store/session";
 import FeatureComingSoon from "../FeatureComingSoon";
 import OpenModalMenuItem from "./OpenModalMenuItem";
+import "./ProfileButton.css";
 
 function ProfileButton({ user, state }) {
   const { showMenu, setShowMenu } = state;
@@ -59,13 +60,13 @@ function ProfileButton({ user, state }) {
               className="profile-button-drop-down-elements"
               onClick={() => navigate("/search/events")}
             >
-              Events
+              Search events
             </p>
             <p
               className="profile-button-drop-down-elements"
               onClick={() => navigate("/search/groups")}
             >
-              Groups
+              Search groups
             </p>
           </div>
           <div className="profile-button-drop-down-top-half">
@@ -74,7 +75,7 @@ function ProfileButton({ user, state }) {
               className="profile-button-drop-down-elements"
               onClick={() => navigate("/events/attending")}
             >
-              Your Events
+              Your events
             </p>
 
             <p
@@ -82,7 +83,7 @@ function ProfileButton({ user, state }) {
               className="profile-button-drop-down-elements"
               onClick={() => navigate("/groups")}
             >
-              Your Groups
+              Your groups
             </p>
           </div>
           <div>
