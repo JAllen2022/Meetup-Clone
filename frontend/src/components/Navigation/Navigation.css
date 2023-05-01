@@ -46,6 +46,8 @@
 }
 
 .english-icon {
+  box-sizing: border-box;
+
   display: flex;
   color: #212121;
   margin-right: 20px;
@@ -60,6 +62,7 @@
 }
 
 .log-in {
+  box-sizing: border-box;
   display: inline-block;
   color: #212121;
   margin-right: 20px;
@@ -68,11 +71,15 @@
 }
 
 .log-in:hover {
+  box-sizing: border-box;
+
   font-weight: 600;
   color: #008294;
 }
 
 .sign-up {
+  box-sizing: border-box;
+
   background-color: #00798a;
   border: 1px solid;
   color: #fff;
@@ -92,6 +99,7 @@
   justify-content: space-between;
   align-items: center;
   margin-right: 1rem;
+  width: 15rem;
 }
 
 .prof-icon-nav {
