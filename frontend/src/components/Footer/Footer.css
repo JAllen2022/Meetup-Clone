@@ -77,17 +77,32 @@
   width: 40%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   text-align: center;
   font-size: 1rem;
 }
 
-.footer-language-header {
+.footer-right-title {
+  padding: 1rem;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .footer-dev-links > a {
   text-decoration: none;
-  font-size: 1.5rem;
-  color: white;
+  font-size: 2.5rem;
+  color: #ffffffb2;
   margin: 0 0.5rem;
+}
+
+.footer-bottom {
+  padding: 2rem 0;
+}
+
+.footer-copyright {
+  color: white;
+}
+
+.footer-conditions {
+  margin: 0 1rem;
+  color: #ffffffb2;
 }

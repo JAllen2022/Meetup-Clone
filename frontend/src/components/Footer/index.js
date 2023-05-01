@@ -48,7 +48,7 @@ function Footer() {
             </div>
           </div>
           <div className="footer-right-container">
-            <div> Developer Information: </div>
+            <div className="footer-right-title"> Developer Information: </div>
             <div className="footer-dev-links">
               <a href="https://github.com/JAllen2022">
                 <i className="fa-brands fa-github"></i>
@@ -58,6 +58,16 @@ function Footer() {
               </a>
             </div>
           </div>
+        </div>
+        <div className="footer-bottom">
+          <span className="footer-copyright">© 2023 Linkup </span>
+          <span className="footer-conditions">Terms of Service</span>
+          <span className="footer-conditions">Privacy Policy</span>
+          <span className="footer-conditions">
+            Do Not Sell or Share My Personal Data
+          </span>
+          <span className="footer-conditions">Cookie Policy</span>
+          <span className="footer-conditions">Help</span>
         </div>
       </div>
     </div>
