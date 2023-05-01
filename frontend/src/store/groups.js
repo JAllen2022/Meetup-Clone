@@ -15,7 +15,8 @@ const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
 const initialState = {
   allGroups: {},
   singleGroup: {},
-  groupEvents: {},
+  groupFutureEvents: [],
+  groupPastEvents: [],
   singleGroupMemberships: {},
   userGroups: {},
 };
@@ -184,9 +185,8 @@ export default function groupReducer(state = initialState, action) {
 
     case GET_GROUP_EVENTS: {
       const newObj = {};
-      const events = action.payload.Events;
-      events.map((ele) => (newObj[ele.id] = ele));
-      newState.groupEvents = newObj;
+      newState.groupFutureEvents = action.payload.FutureEvents;
+      newState.groupPastEvents = action.payload.PastEvents;
       return newState;
     }
 

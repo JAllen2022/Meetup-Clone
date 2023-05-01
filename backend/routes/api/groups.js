@@ -540,20 +540,13 @@ router.get(
     const order = [];
     const where = { groupId: req.params.groupId };
 
-    if (past) {
-      where.startDate = {
-        [Op.lt]: new Date(), // Query for dates before the current date
-      };
-      order.push(["startDate", "DESC"]);
-    } else {
-      where.startDate = {
-        [Op.gt]: new Date(), // Query for dates after the current date
-      };
-      order.push(["startDate", "ASC"]);
-    }
+    where.startDate = {
+      [Op.gt]: new Date(), // Query for dates after the current date
+    };
+    order.push(["startDate", "ASC"]);
 
-    // Find all events
-    const groupEvents = await Event.findAll({
+    // Find all events - future
+    const futureEvents = await Event.findAll({
       attributes: {
         exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
       },
@@ -566,41 +559,110 @@ router.get(
           model: Venue,
           attributes: ["id", "city", "state"],
         },
+        {
+          model: Attendance,
+          attributes: ["id"],
+          required: false,
+        },
+        {
+          model: EventImage,
+          where: { preview: true },
+          attributes: ["url"],
+          required: false,
+        },
       ],
       where,
       order,
     });
 
-    const returnArray = [];
+    const futureArray = futureEvents.map((event) => {
+      const data = event.toJSON();
+      data.numAttending =
+        data.Attendances.length > 0 ? data.Attendances.length : 0;
+      data.previewImage =
+        data.EventImages.length > 0 ? data.EventImages[0].url : null;
+      delete data.Attendances;
+      delete data.EventImages;
+      return data;
+    });
+
+    // Reset start date and order to get past dates
+    where.startDate = {
+      [Op.lt]: new Date(), // Query for dates before the current date
+    };
+    order[0] = [["startDate", "DESC"]];
+
+    const pastEvents = await Event.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
+      },
+      include: [
+        {
+          model: Group,
+          attributes: ["id", "name", "city", "state"],
+        },
+        {
+          model: Venue,
+          attributes: ["id", "city", "state"],
+        },
+        {
+          model: Attendance,
+          attributes: ["id"],
+          required: false,
+        },
+        {
+          model: EventImage,
+          where: { preview: true },
+          attributes: ["url"],
+          required: false,
+        },
+      ],
+      where,
+      order,
+    });
+
+    const pastArray = pastEvents.map((event) => {
+      const data = event.toJSON();
+      data.numAttending =
+        data.Attendances.length > 0 ? data.Attendances.length : 0;
+      data.previewImage =
+        data.EventImages.length > 0 ? data.EventImages[0].url : null;
+      delete data.Attendances;
+      delete data.EventImages;
+      return data;
+    });
 
     // Lazy load numAttending as well as previewImage
-    for (let i = 0; i < groupEvents.length; i++) {
-      const event = groupEvents[i].toJSON();
-      const attendees = await Attendance.count({
-        where: {
-          eventId: event.id,
-        },
-      });
+    // for (let i = 0; i < groupEvents.length; i++) {
+    //   const event = groupEvents[i].toJSON();
+    //   const attendees = await Attendance.count({
+    //     where: {
+    //       eventId: event.id,
+    //     },
+    //   });
 
-      event.numAttending = attendees;
+    //   event.numAttending = attendees;
 
-      // Find any EventImage where preview is true
-      const eventImage = await EventImage.findOne({
-        where: {
-          eventId: event.id,
-          preview: true,
-        },
-        raw: true,
-      });
+    //   // Find any EventImage where preview is true
+    //   const eventImage = await EventImage.findOne({
+    //     where: {
+    //       eventId: event.id,
+    //       preview: true,
+    //     },
+    //     raw: true,
+    //   });
 
-      // If an event image is found set it equal to previewImage property. If not, set to null
-      if (eventImage) event.previewImage = eventImage.url;
-      else event.previewImage = null;
+    //   // If an event image is found set it equal to previewImage property. If not, set to null
+    //   if (eventImage) event.previewImage = eventImage.url;
+    //   else event.previewImage = null;
 
-      returnArray.push(event);
-    }
+    //   returnArray.push(event);
+    // }
 
-    res.json({ Events: returnArray });
+    res.json({
+      FutureEvents: futureArray,
+      PastEvents: pastArray,
+    });
   }
 );
 

@@ -46,7 +46,7 @@ function GroupPage({ tab }) {
   const memberships = useSelector(
     (state) => state.groups.singleGroupMemberships
   );
-  const groupEvents = useSelector((state) => state.groups.groupEvents);
+  const groupEvents = useSelector((state) => state.groups.groupFutureEvents);
   let groupEventsArray = Object.values(groupEvents);
 
   const optionsMember = (

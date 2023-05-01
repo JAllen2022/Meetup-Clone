@@ -82,7 +82,6 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
 
   // If URL params provided,
   if (name) where.name = { [Op.like]: `%${name}%` };
-  console.log("did we add name?", where.name, name);
   if (type) where.type = res.locals.type;
   if (startDate)
     where.startDate = {
