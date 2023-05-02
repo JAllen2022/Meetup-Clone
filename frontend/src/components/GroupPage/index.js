@@ -54,29 +54,17 @@ function GroupPage({ tab }) {
   const userMem = memberships[user.id];
 
   let buttonName = "";
+
   if (userMem) {
-    if (userMem.status === "host") buttonName = "You're the host";
-    if (userMem.status === "co-host") buttonName = "You're a co-host";
+    console.log("checking userMem", userMem?.Membership);
+    console.log("checking this,", userMem.Membership.status == "host");
+    if (userMem.Membership.status == "host") buttonName = "You're the host";
+    else if (userMem.Membership.status == "co-host")
+      buttonName = "You're a co-host";
     else buttonName = "You're a member";
   }
 
-  const optionsMember = (
-    <div className="profile-button-drop-down-top-half">
-      <OpenModalMenuItem
-        itemText={
-          <p className="profile-button-drop-down-elements">Coming Soon</p>
-        }
-        onItemClick={closeMenu}
-        modalComponent={<FeatureComingSoon />}
-      />
-    </div>
-  );
-
-  const optionsGuest = (
-    <div className="profile-button-drop-down-top-half">
-      <p className="profile-button-drop-down-elements">Request Membership</p>
-    </div>
-  );
+  console.log("what is buttonName", buttonName);
 
   const createEvent = () => {
     history.push(`/groups/${groupId}/create-event`);
@@ -105,24 +93,48 @@ function GroupPage({ tab }) {
     displayBody = <Photos group={group} />;
   }
 
-  const optionsHost = (
-    <div className="profile-button-drop-down-top-half group-drop-menu">
-      <p className="profile-button-drop-down-elements" onClick={createEvent}>
+  const optionsPending = <div className="group-drop-menu"></div>;
+
+  const optionsMember = (
+    <>
+      <div className="group-drop-menu-options" onClick={() => dispatch()}>
+        {" "}
+        Leave this group
+      </div>
+    </>
+  );
+
+  const optionsCoHost = (
+    <>
+      <div className="group-drop-menu-options" onClick={createEvent}>
         Create Event
-      </p>
-      <p className="profile-button-drop-down-elements" onClick={editGroup}>
+      </div>
+      <div className="group-drop-menu-options" onClick={editGroup}>
         Edit Group
-      </p>
+      </div>
+      <div className="group-drop-menu-options" onClick={() => dispatch()}>
+        {" "}
+        Leave this group
+      </div>
+    </>
+  );
+
+  const optionsHost = (
+    <>
+      <div className="group-drop-menu-options" onClick={createEvent}>
+        Create Event
+      </div>
+      <div className="group-drop-menu-options" onClick={editGroup}>
+        Edit Group
+      </div>
       <OpenModalMenuItem
-        itemText={
-          <p className="profile-button-drop-down-elements">Delete Group</p>
-        }
+        itemText={<div className="group-drop-menu-options">Delete Group</div>}
         onItemClick={closeMenu}
         modalComponent={<DeleteModal groupId={group.id} type={"Group"} />}
       />
-    </div>
+    </>
   );
-  const [userType, setUserType] = useState(optionsGuest);
+  const [userType, setUserType] = useState(optionsMember);
   const ulRef = useRef();
 
   let groupImage = {};
@@ -141,7 +153,7 @@ function GroupPage({ tab }) {
         setUserType(optionsMember);
       }
     }
-  }, [user, group]);
+  }, [user, group]); // change this to membership instead
 
   useEffect(() => {
     dispatch(thunkGetSingleGroup(groupId));

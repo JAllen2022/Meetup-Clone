@@ -221,15 +221,24 @@
 }
 
 .group-detail-nav-bar-dropdown-container-items {
+  box-sizing: border-box;
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  /* padding: 0.5rem; */
   border-radius: 0.25rem;
-  inset: 0.2rem 1rem auto;
-  width: 7.85rem;
+  width: 10rem;
   z-index: 4;
+  top: 7px;
+  left: -7px;
   border: 1px solid rgb(197, 195, 195);
-  border-radius: 0.25rem;
+  border-radius: 5px;
   box-shadow: 0 0 5px rgb(197, 195, 195);
   background-color: #fff;
+  /* border: 1px solid red; */
+  font-size: 14px;
+  font-weight: 100;
+  color: #212121;
 }
 
 .group-page-user-join-button {
@@ -244,4 +253,15 @@
 
 .group-page-user-join-button:hover {
   opacity: 0.9;
+}
+
+.group-drop-menu-options {
+  /* border: 1px solid red; */
+  padding: 0.5rem 0;
+  padding-left: 1rem;
+  cursor: pointer;
+}
+
+.group-drop-menu-options:hover {
+  background-color: rgb(224, 229, 233);
 }
