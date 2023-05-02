@@ -53,6 +53,13 @@ function GroupPage({ tab }) {
 
   const userMem = memberships[user.id];
 
+  let buttonName = "";
+  if (userMem) {
+    if (userMem.status === "host") buttonName = "You're the host";
+    if (userMem.status === "co-host") buttonName = "You're a co-host";
+    else buttonName = "You're a member";
+  }
+
   const optionsMember = (
     <div className="profile-button-drop-down-top-half">
       <OpenModalMenuItem
@@ -232,7 +239,7 @@ function GroupPage({ tab }) {
                     onClick={() => setShowMenu((prev) => !prev)}
                   >
                     <div className="group-detail-nav-bar-inner-button-div">
-                      <span>Group Actions</span>
+                      <span>{buttonName}</span>
                       <i className="fa-solid fa-angle-down"></i>
                     </div>
                   </button>
