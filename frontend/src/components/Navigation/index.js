@@ -46,7 +46,11 @@ function Navigation({ isLoaded }) {
           )}
         </div>
         {isLoaded && (
-          <div className="nav-bar-user-right">
+          <div
+            className={
+              sessionUser ? "nav-bar-user-right-login" : "nav-bar-user-right"
+            }
+          >
             {sessionUser ? (
               <>
                 <div className="nav-bar-create-group">

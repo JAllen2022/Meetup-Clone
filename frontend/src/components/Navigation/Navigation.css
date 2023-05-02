@@ -93,13 +93,18 @@
   background-color: #2793a1;
 }
 
-.nav-bar-user-right {
+.nav-bar-user-right,
+.nav-bar-user-right-login {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin-right: 1rem;
   width: 15rem;
+}
+
+.nav-bar-user-right-login {
+  width: 17rem;
 }
 
 .prof-icon-nav {
