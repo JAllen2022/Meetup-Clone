@@ -5,7 +5,7 @@
   min-height: 100vh;
   margin-top: 2.5rem;
   display: flex;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 
 .user-group-page-left-container {
