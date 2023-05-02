@@ -1,21 +1,19 @@
 
 To-do:
-- log in modal adjust
-- sign up modal - adjust
-- add app component to home page
-
+- finish attendance and membership features
 Add google maps API
 
-create a user page
+Extra:
 media queries for all pages
-
-- finish attendance and membership features
+create a user page
 
 
 
 done:
 - Search feature
+- log in modal adjust- add app component to home page
 
+- sign up modal - adjust
 get the calendar working on the user home page
 - Show events by date - only future events
 - events page - show past events as well

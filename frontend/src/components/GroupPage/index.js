@@ -4,6 +4,8 @@ import {
   thunkGetSingleGroup,
   thunkGetGroupEvents,
   thunkGetMemberships,
+  thunkAddMembership,
+  resetSingleGroup,
 } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
@@ -48,6 +50,8 @@ function GroupPage({ tab }) {
   );
   const groupEvents = useSelector((state) => state.groups.groupFutureEvents);
   let groupEventsArray = Object.values(groupEvents);
+
+  const userMem = memberships[user.id];
 
   const optionsMember = (
     <div className="profile-button-drop-down-top-half">
@@ -134,12 +138,16 @@ function GroupPage({ tab }) {
 
   useEffect(() => {
     dispatch(thunkGetSingleGroup(groupId));
+    console.log("we are here");
     dispatch(thunkGetMemberships(groupId));
+    dispatch(thunkGetGroupEvents(groupId));
+    return () => {
+      dispatch(resetSingleGroup());
+    };
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(thunkGetGroupEvents(groupId));
-  }, [eventTab]);
+  // useEffect(() => {
+  // }, [eventTab]);
 
   useEffect(() => {
     if (!showMenu) return;
@@ -193,8 +201,10 @@ function GroupPage({ tab }) {
               <div>
                 <i className="fa-solid fa-user fa-solid-profile"></i>
                 <span className="group-details-header-spans">
-                  Organized By {group.Organizer?.firstName}{" "}
-                  {group.Organizer?.lastName}
+                  Organized By{" "}
+                  <span className="group-details-header-span-group-org">
+                    {group.Organizer?.firstName} {group.Organizer?.lastName}
+                  </span>
                 </span>
               </div>
             </div>
@@ -215,20 +225,32 @@ function GroupPage({ tab }) {
               ))}
             </div>
             <div className="group-details-nav-bar-dropdown" ref={ulRef}>
-              <button
-                className="group-detail-nav-bar-button"
-                onClick={() => setShowMenu((prev) => !prev)}
-              >
-                <div className="group-detail-nav-bar-inner-button-div">
-                  <span>Group Actions</span>
-                  <i className="fa-solid fa-angle-down"></i>
-                </div>
-              </button>
-              {showMenu && (
-                <div className="group-detail-nav-bar-dropdown-container">
-                  <div className="group-detail-nav-bar-dropdown-container-items">
-                    {userType}
-                  </div>
+              {userMem ? (
+                <>
+                  <button
+                    className="group-detail-nav-bar-button"
+                    onClick={() => setShowMenu((prev) => !prev)}
+                  >
+                    <div className="group-detail-nav-bar-inner-button-div">
+                      <span>Group Actions</span>
+                      <i className="fa-solid fa-angle-down"></i>
+                    </div>
+                  </button>
+                  {showMenu && (
+                    <div className="group-detail-nav-bar-dropdown-container">
+                      <div className="group-detail-nav-bar-dropdown-container-items">
+                        {userType}
+                      </div>
+                    </div>
+                  )}{" "}
+                </>
+              ) : (
+                <div
+                  className="group-page-user-join-button"
+                  onClick={() => dispatch(thunkAddMembership(groupId))}
+                >
+                  {" "}
+                  Join this group
                 </div>
               )}
             </div>

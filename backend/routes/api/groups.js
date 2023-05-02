@@ -172,6 +172,10 @@ router.get(
   "/:groupId/members",
   validateReqParamGroupId,
   async (req, res, next) => {
+    console.log("we're in here");
+    const output = {};
+    let addUserInfo = false;
+
     // Get Membership to check whether user is host or co-host
     const userStatus = await Membership.findOne({
       where: {
@@ -181,7 +185,6 @@ router.get(
       raw: true,
     });
 
-    const output = {};
     let where = {
       groupId: req.params.groupId,
     };
@@ -194,7 +197,9 @@ router.get(
       where.status = {
         [Op.notIn]: ["pending"],
       };
+      // to the return array, especially if they're status is pending.
     }
+    if (userStatus?.status === "pending") addUserInfo = true; // We want to be able to add the user's information we just requested
 
     const userArray = await User.findAll({
       attributes: ["id", "firstName", "lastName"],
@@ -224,9 +229,18 @@ router.get(
       memberArray.push(user);
     }
 
-    output.Members = memberArray;
+    if (addUserInfo) {
+      memberArray.push({
+        id: req.user.id,
+        Membership: {
+          status: userStatus.status,
+        },
+      });
+    }
 
     output.Members = memberArray;
+
+    console.log("checking output", output);
 
     res.json(output);
   }
@@ -239,6 +253,7 @@ router.post(
   validateReqParamGroupId,
   requireAuth,
   async (req, res, next) => {
+    console.log("checking the user", req.user);
     // Get current membership status
     const getMemStatus = await Membership.findOne({
       where: {
@@ -249,16 +264,37 @@ router.post(
 
     // If current membership status does not exist, create one and return
     if (!getMemStatus) {
-      const membership = await Membership.create({
-        groupId: req.params.groupId,
-        userId: req.user.id,
-        status: "pending",
+      const group = await Group.findByPk(req.params.groupId, {
+        raw: true,
       });
 
-      return res.json({
-        status: "pending",
-        memberId: req.user.id,
-      });
+      // Check to see if group is public or private. If public, make the user a member
+      // If private, set status to pending
+      if (group.private) {
+        const membership = await Membership.create({
+          groupId: req.params.groupId,
+          userId: req.user.id,
+          status: "pending",
+        });
+
+        return res.json({
+          status: "pending",
+          memberId: req.user.id,
+        });
+      } else {
+        const membership = await Membership.create({
+          groupId: req.params.groupId,
+          userId: req.user.id,
+          status: "member",
+        });
+
+        return res.json({
+          status: "member",
+          memberId: req.user.id,
+          firstName: req.user.firstName,
+          lastName: req.user.lastName,
+        });
+      }
 
       // If user already requested for membership, and status is pending, return 400 error
     } else if (getMemStatus.status == "pending") {

@@ -4,13 +4,17 @@ const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_EVENTS = "groups/GET_GROUP_EVENTS";
 const CREATE_GROUP = "groups/CREATE_GROUP";
-const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
-const RESET_ALL_GROUPS = "groups/RESET_ALL_GROUPS";
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const ADD_GROUP_IMAGE = "groups/ADD_GROUP_IMAGE";
-const GET_MEMBERSHIPS = "groups/GET_MEMBERSHIPS";
 const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
+
+// Reseting Group State
+const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
+const RESET_ALL_GROUPS = "groups/RESET_ALL_GROUPS";
+// Group Memberships
+const GET_MEMBERSHIPS = "groups/GET_MEMBERSHIPS";
+const ADD_MEMBERSHIP = "groups/ADD_MEMBERSHIP";
 
 const initialState = {
   allGroups: {},
@@ -63,6 +67,11 @@ export const addGroupImage = (newImage, groupId) => ({
 
 export const getMemberships = (memberships) => ({
   type: GET_MEMBERSHIPS,
+  payload: memberships,
+});
+
+export const addMembership = (memberships) => ({
+  type: ADD_MEMBERSHIP,
   payload: memberships,
 });
 
@@ -154,11 +163,24 @@ export const thunkAddGroupImage = (newImage, groupId) => async (dispatch) => {
 };
 
 export const thunkGetMemberships = (groupId) => async (dispatch) => {
+  console.log("we're getting membership");
   const response = await csrfFetch(`/api/groups/${groupId}/members`);
 
   if (response.ok) {
+    console.log("something is up here");
     const data = await response.json();
     return dispatch(getMemberships(data.Members));
+  }
+};
+
+export const thunkAddMembership = (groupId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/groups/${groupId}/membership`, {
+    method: "POST",
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return dispatch(addMembership(data));
   }
 };
 
@@ -199,7 +221,9 @@ export default function groupReducer(state = initialState, action) {
 
     case RESET_SINGLE_GROUP:
       newState.singleGroup = {};
-      newState.groupEvents = {};
+      newState.groupFutureEvents = {};
+      newState.groupPastEvents = {};
+      newState.singleGroupMemberships = {};
       return newState;
 
     case UPDATE_GROUP:
@@ -240,6 +264,23 @@ export default function groupReducer(state = initialState, action) {
       });
       newState.singleGroupMemberships = membersObj;
       return newState;
+
+    case ADD_MEMBERSHIP: {
+      const { memberId, status, firstName, lastName } = action.payload;
+
+      newState.singleGroupMemberships = {
+        ...state.singleGroupMemberships,
+        [memberId]: {
+          id: memberId,
+          firstName,
+          lastName,
+          Membership: {
+            status,
+          },
+        },
+      };
+      return newState;
+    }
 
     case RESET_ALL_GROUPS:
       newState.allGroups = {};

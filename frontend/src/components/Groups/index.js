@@ -15,7 +15,7 @@ export default function Groups() {
     if (myGroupsArray.length < 1) {
       dispatch(thunkGetUserGroups());
     }
-    dispatch(resetSingleGroup)
+    // dispatch(resetSingleGroup);
   }, []);
 
   console.log("checking group arrays", myGroupsArray);
