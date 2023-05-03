@@ -6,6 +6,7 @@ import {
   thunkGetMemberships,
   thunkAddMembership,
   resetSingleGroup,
+  thunkDeleteMembership,
 } from "../../store/groups";
 import { useSelector, useDispatch } from "react-redux";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
@@ -56,15 +57,11 @@ function GroupPage({ tab }) {
   let buttonName = "";
 
   if (userMem) {
-    console.log("checking userMem", userMem?.Membership);
-    console.log("checking this,", userMem.Membership.status == "host");
     if (userMem.Membership.status == "host") buttonName = "You're the host";
     else if (userMem.Membership.status == "co-host")
       buttonName = "You're a co-host";
     else buttonName = "You're a member";
   }
-
-  console.log("what is buttonName", buttonName);
 
   const createEvent = () => {
     history.push(`/groups/${groupId}/create-event`);
@@ -93,11 +90,16 @@ function GroupPage({ tab }) {
     displayBody = <Photos group={group} />;
   }
 
+  const deleteMembershipFunc = () => {
+    dispatch(thunkDeleteMembership(groupId, user.id));
+    setShowMenu(false);
+  };
+
   const optionsPending = <div className="group-drop-menu"></div>;
 
   const optionsMember = (
     <>
-      <div className="group-drop-menu-options" onClick={() => dispatch()}>
+      <div className="group-drop-menu-options" onClick={deleteMembershipFunc}>
         {" "}
         Leave this group
       </div>
@@ -112,7 +114,7 @@ function GroupPage({ tab }) {
       <div className="group-drop-menu-options" onClick={editGroup}>
         Edit Group
       </div>
-      <div className="group-drop-menu-options" onClick={() => dispatch()}>
+      <div className="group-drop-menu-options" onClick={deleteMembershipFunc}>
         {" "}
         Leave this group
       </div>

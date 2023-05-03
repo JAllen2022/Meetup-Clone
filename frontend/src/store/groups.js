@@ -76,7 +76,7 @@ export const addMembership = (memberships) => ({
   payload: memberships,
 });
 
-export const removeMembership = (userId) => ({
+export const deleteMembership = (userId) => ({
   type: DELETE_MEMBERSHIP,
   payload: userId,
 });
@@ -191,15 +191,14 @@ export const thunkAddMembership = (groupId) => async (dispatch) => {
 };
 
 export const thunkDeleteMembership = (groupId, userId) => async (dispatch) => {
-  const response = await csrfFetch(`/api/groups/${groupId}/membership`,
-    {
-      method: "DELETE",
-      
-    });
+  const response = await csrfFetch(`/api/groups/${groupId}/membership`, {
+    method: "DELETE",
+    body: JSON.stringify({ memberId: userId }),
+  });
 
   if (response.ok) {
     const data = await response.json();
-    return dispatch(addMembership(data));
+    return dispatch(deleteMembership(userId));
   }
 };
 
