@@ -55,6 +55,9 @@ export default function Calendar({ day, setDay }) {
   }
   for (let i = 1; i <= lastDay?.getDate(); i++) {
     // Check to see if the day is the current day, if so, we style it to highlight the day the user selected
+    console.log("checking day", day, date);
+    console.log("checking date", date);
+    console.log("checking bool", day < date);
     if (
       day &&
       month === day.getMonth() &&
@@ -91,7 +94,9 @@ export default function Calendar({ day, setDay }) {
         <div
           key={`${i}`}
           onClick={() =>
-            day < date
+            month <= date.getMonth() &&
+            displayYear <= date.getFullYear() &&
+            i < date.getDate()
               ? history.push("/events/past")
               : setDay(new Date(displayYear, month, i))
           }
