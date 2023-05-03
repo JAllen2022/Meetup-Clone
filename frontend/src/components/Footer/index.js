@@ -13,7 +13,7 @@ function Footer() {
     <div className="footer-outer-container">
       <div className="footer-inner-container">
         <div className="footer-top">
-          Create your own Meetup group.{" "}
+          Create your own Linkup group.{" "}
           <span
             className="footer-get-started-button"
             onClick={() =>
@@ -50,10 +50,13 @@ function Footer() {
           <div className="footer-right-container">
             <div className="footer-right-title"> Developer Information: </div>
             <div className="footer-dev-links">
-              <a href="https://github.com/JAllen2022">
+              <a href="https://github.com/JAllen2022" target="_blank">
                 <i className="fa-brands fa-github"></i>
               </a>{" "}
-              <a href="https://www.linkedin.com/in/jasonallen715/">
+              <a
+                href="https://www.linkedin.com/in/jasonallen715/"
+                target="_blank"
+              >
                 <i className="fa-brands fa-linkedin"></i>
               </a>
             </div>
