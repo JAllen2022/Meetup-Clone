@@ -14,7 +14,8 @@
   background-color: white;
   border-radius: 0.15rem;
   margin-right: 1rem;
-  padding: 0.5rem 0;
+  padding: 1.5rem 0;
+  padding-left: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -23,18 +24,19 @@
 
 .group-details-selected {
   /* border: 1px solid red; */
-  border-right: 2px solid #008294;
+  border-right: 3px solid rgb(0, 162, 199);
+  color: rgb(0, 162, 199);
   width: 95%;
-  margin: 0.25rem 0;
+  margin: 0.5rem 0;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .group-details-not-selected {
   /* border: 1px solid red; */
-  border-right: 2px solid transparent;
+  border-right: 3px solid transparent;
   width: 95%;
-  margin: 0.25rem 0;
+  margin: 0.5rem 0;
   font-size: 1rem;
   cursor: pointer;
 }

@@ -23,6 +23,8 @@ const initialState = {
   groupFutureEvents: [],
   groupPastEvents: [],
   singleGroupMemberships: {},
+  singleGroupLeadership: {},
+  singleGroupPending: {},
   userGroups: {},
 };
 
@@ -242,6 +244,8 @@ export default function groupReducer(state = initialState, action) {
       newState.groupFutureEvents = {};
       newState.groupPastEvents = {};
       newState.singleGroupMemberships = {};
+      newState.singleGroupLeadership = {};
+      newState.singleGroupPending = {};
       return newState;
 
     case UPDATE_GROUP:

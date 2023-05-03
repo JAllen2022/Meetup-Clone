@@ -15,7 +15,6 @@ import About from "./About";
 import Events from "./Events";
 import Members from "./Members";
 import Photos from "./Photos";
-import FeatureComingSoon from "../FeatureComingSoon";
 import "./GroupPage.css";
 
 const groupNavBar = [
