@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   width: 60%;
-  padding-top: 1rem;
+  margin-top: 1.25rem;
+  background-color: white;
 }
 
 .group-events-main-body-left {

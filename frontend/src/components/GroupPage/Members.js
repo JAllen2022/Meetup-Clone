@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import ProfileCard from "../ProfileCard";
+import DetailedProfileCard from "./DetailedProfileCard";
 import "./GroupPage.css";
 import "./Members.css";
 
@@ -15,20 +15,41 @@ function Members({ memberships }) {
   const curUser = memberships[user.id];
   if (!curUser) return <h1>Page Loading</h1>;
   const curUserStatus = curUser.Membership;
+  const curUserHost = curUser.Membership.status === "host";
+  const curUserCoHost = curUser.Membership.status === "co-host";
 
   const pendingArray = memberArray
     .filter((ele) => ele.Membership.status === "pending")
-    .map((ele) => <ProfileCard key={ele.id} member={ele} />);
+    .map((ele) => (
+      <DetailedProfileCard
+        key={ele.id}
+        member={ele}
+        host={curUserHost}
+        coHost={curUserCoHost}
+      />
+    ));
 
   const allMemberArray = memberArray.map((ele) => (
-    <ProfileCard key={ele.id} member={ele} />
+    <DetailedProfileCard
+      key={ele.id}
+      member={ele}
+      host={curUserHost}
+      coHost={curUserCoHost}
+    />
   ));
   const leadershipArray = memberArray
     .filter(
       (ele) =>
         ele.Membership.status === "host" || ele.Membership.status === "co-host"
     )
-    .map((ele) => <ProfileCard key={ele.id} member={ele} />);
+    .map((ele) => (
+      <DetailedProfileCard
+        key={ele.id}
+        member={ele}
+        host={curUserHost}
+        coHost={curUserCoHost}
+      />
+    ));
 
   if (tab === "allmembers") displayArray = allMemberArray;
   else if (tab === "leadership") displayArray = leadershipArray;

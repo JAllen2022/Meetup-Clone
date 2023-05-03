@@ -1,0 +1,34 @@
+.detailed-profile-card {
+  border: 1px solid red;
+  display: flex;
+  padding: 1rem 0.5rem;
+  align-items: center;
+  position: relative;
+}
+
+.detailed-profile-card-name {
+  padding-left: 1rem;
+}
+
+.detailed-profile-card-menu-elipses {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+}
+
+.detailed-profile-card-menu-container {
+  position: absolute;
+  right: -20px;
+  bottom: -95px;
+  border: 1px solid red;
+  background-color: white;
+  z-index: 4;
+  padding: 0 1rem;
+  font-size: 14px;
+  font-weight: 100;
+  box-shadow: 0 0 5px rgb(197, 195, 195);
+  border: 1px solid rgb(197, 195, 195);
+}
+
+.detailed-profile-card-menu-option {
+}
