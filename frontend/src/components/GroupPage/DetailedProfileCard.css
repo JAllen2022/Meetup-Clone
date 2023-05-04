@@ -1,13 +1,24 @@
 .detailed-profile-card {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   display: flex;
-  padding: 1rem 0.5rem;
+  padding: 1rem 1rem;
   align-items: center;
   position: relative;
 }
 
-.detailed-profile-card-name {
+.detailed-profile-info {
   padding-left: 1rem;
+  color: #212121;
+}
+
+.detailed-profile-card-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.detailed-profile-card-joined {
+  font-size: 14px;
+  font-weight: 100;
 }
 
 .detailed-profile-card-menu-elipses {
@@ -19,8 +30,8 @@
 .detailed-profile-card-menu-container {
   position: absolute;
   right: -20px;
-  bottom: -95px;
-  border: 1px solid red;
+  top: 55px;
+  /* border: 1px solid red; */
   background-color: white;
   z-index: 4;
   padding: 0 1rem;
@@ -28,7 +39,4 @@
   font-weight: 100;
   box-shadow: 0 0 5px rgb(197, 195, 195);
   border: 1px solid rgb(197, 195, 195);
-}
-
-.detailed-profile-card-menu-option {
 }

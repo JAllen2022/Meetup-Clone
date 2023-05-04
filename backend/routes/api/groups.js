@@ -172,7 +172,6 @@ router.get(
   "/:groupId/members",
   validateReqParamGroupId,
   async (req, res, next) => {
-    console.log("we're in here");
     const output = {};
     let addUserInfo = false;
 
@@ -202,7 +201,7 @@ router.get(
     if (userStatus?.status === "pending") addUserInfo = true; // We want to be able to add the user's information we just requested
 
     const userArray = await User.findAll({
-      attributes: ["id", "firstName", "lastName"],
+      attributes: ["id", "firstName", "lastName", "createdAt"],
       include: {
         model: Membership,
         where,
@@ -239,8 +238,6 @@ router.get(
     }
 
     output.Members = memberArray;
-
-    console.log("checking output", output);
 
     res.json(output);
   }
@@ -440,6 +437,36 @@ router.put(
       }
     }
 
+    // Changing a co-host to a member
+    if (foundMemJSON.status === "co-host" && status === "member") {
+      // Current user must be the host of the group
+      if (userMembership.status === "host") {
+        foundMembership.status = "member";
+        await foundMembership.save();
+
+        const checkMem = await Membership.findByPk(foundMembership.id, {
+          attributes: ["id", "groupId", "status"],
+        });
+
+        const checkMemJSON = checkMem.toJSON();
+        checkMemJSON.memberId = memberId;
+
+        return res.json(checkMemJSON);
+
+        // If user is not the host, then throw an error
+      } else {
+        const err = new Error(
+          `Cannot change a membership status to co-host. User must be organizer/host. `
+        );
+        err.title =
+          "Cannot change a membership status to co-host. User must be organizer/host.";
+        err.errors = [
+          `Cannot change a membership status to co-host. User must be organizer/host.`,
+        ];
+        err.status = 403;
+        return next(err);
+      }
+    }
     // Extra error catching in case user tries to change
     res.status(400).json({
       message: `Cannot change memberId, ${memberId}, status from ${foundMemJSON.status} to ${status}`,

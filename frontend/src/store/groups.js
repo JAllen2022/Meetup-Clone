@@ -12,9 +12,11 @@ const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
 // Reseting Group State
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
 const RESET_ALL_GROUPS = "groups/RESET_ALL_GROUPS";
+
 // Group Memberships
 const GET_MEMBERSHIPS = "groups/GET_MEMBERSHIPS";
 const ADD_MEMBERSHIP = "groups/ADD_MEMBERSHIP";
+const EDIT_MEMBERSHIP = "groups/EDIT_MEMBERSHIP";
 const DELETE_MEMBERSHIP = "groups/REMOVE_MEMBERSHIP";
 
 const initialState = {
@@ -75,6 +77,11 @@ export const getMemberships = (memberships) => ({
 
 export const addMembership = (memberships) => ({
   type: ADD_MEMBERSHIP,
+  payload: memberships,
+});
+
+export const editMembership = (memberships) => ({
+  type: EDIT_MEMBERSHIP,
   payload: memberships,
 });
 
@@ -192,6 +199,18 @@ export const thunkAddMembership = (groupId) => async (dispatch) => {
   }
 };
 
+export const thunkEditMembership = (groupId, data) => async (dispatch) => {
+  const response = await csrfFetch(`/api/groups/${groupId}/membership`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return dispatch(editMembership(data));
+  }
+};
+
 export const thunkDeleteMembership = (groupId, userId) => async (dispatch) => {
   const response = await csrfFetch(`/api/groups/${groupId}/membership`, {
     method: "DELETE",
@@ -296,6 +315,20 @@ export default function groupReducer(state = initialState, action) {
           id: memberId,
           firstName,
           lastName,
+          Membership: {
+            status,
+          },
+        },
+      };
+      return newState;
+    }
+
+    case EDIT_MEMBERSHIP: {
+      const { memberId, status } = action.payload;
+      newState.singleGroupMemberships = {
+        ...state.singleGroupMemberships,
+        [memberId]: {
+          ...state.singleGroupMemberships[memberId],
           Membership: {
             status,
           },
