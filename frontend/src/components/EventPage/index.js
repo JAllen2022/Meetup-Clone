@@ -20,6 +20,7 @@ function EventPage() {
   const [eventImage, setEventImage] = useState();
   const [showMenu, setShowMenu] = useState(false);
   const [allowEdit, setAllowEdit] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const groupInfo = event.Group;
   const venueInfo = event.Venue;
   const closeMenu = () => setShowMenu(false);
@@ -27,7 +28,9 @@ function EventPage() {
     (state) => state.groups.singleGroupMemberships
   );
   const attendees = useSelector((state) => state.events.singleEventAttendees);
-  const attendeesArray = Object.values(attendees).slice(0, 4);
+  const attendeesArray = showAll
+    ? Object.values(attendees)
+    : Object.values(attendees).slice(0, 4);
   const host = Object.values(attendees).find(
     (ele) => ele.Attendance.status === "host"
   );
@@ -141,7 +144,15 @@ function EventPage() {
                 <p>{event.description}</p>
               </div>
               <div>
-                <h3>Attendees ({event.numAttending})</h3>
+                <h3 className="attendees-title">
+                  Attendees ({event.numAttending}){" "}
+                  <span
+                    className="see-all-event-attendees"
+                    onClick={() => setShowAll((prev) => !prev)}
+                  >
+                    See all
+                  </span>
+                </h3>
               </div>
               <div className="event-attendees">
                 {attendees

@@ -113,7 +113,7 @@ function Members({ memberships }) {
           )}
         </div>
       </div>
-      <div className="group-events-main-body-right event-tab-cards-right">
+      <div className="group-events-main-body-right members">
         {displayArray}
       </div>
     </>

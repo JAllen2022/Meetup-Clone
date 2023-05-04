@@ -3,9 +3,14 @@
   flex-direction: column;
   width: 60%;
   margin-top: 1.25rem;
-  background-color: white;
+  background-color: transparent;
   min-height: 80vh;
   align-items: center;
+  border-radius: 5px;
+}
+
+.group-events-main-body-right.members {
+  background-color: white;
 }
 
 .group-events-main-body-left {
