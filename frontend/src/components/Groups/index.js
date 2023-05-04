@@ -12,9 +12,8 @@ export default function Groups() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (myGroupsArray.length < 1) {
-      dispatch(thunkGetUserGroups());
-    }
+    dispatch(thunkGetUserGroups());
+
     // dispatch(resetSingleGroup);
   }, []);
 
