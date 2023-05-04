@@ -17,7 +17,6 @@ export default function Groups() {
     // dispatch(resetSingleGroup);
   }, []);
 
-  console.log("checking group arrays", myGroupsArray);
 
   return (
     <div className="user-group-page-outer-container">

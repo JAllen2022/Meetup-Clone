@@ -315,6 +315,7 @@ export default function groupReducer(state = initialState, action) {
           id: memberId,
           firstName,
           lastName,
+          createdAt: new Date(),
           Membership: {
             status,
           },

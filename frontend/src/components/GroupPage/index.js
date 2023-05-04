@@ -54,12 +54,16 @@ function GroupPage({ tab }) {
   const userMem = memberships[user.id];
 
   let buttonName = "";
+  let statusPending = false;
 
   if (userMem) {
     if (userMem.Membership.status == "host") buttonName = "You're the host";
     else if (userMem.Membership.status == "co-host")
       buttonName = "You're a co-host";
-    else buttonName = "You're a member";
+    else if (userMem.Membership.status === "pending") {
+      buttonName = "Status pending";
+      statusPending = true;
+    } else buttonName = "You're a member";
   }
 
   const createEvent = () => {
@@ -100,7 +104,7 @@ function GroupPage({ tab }) {
     <>
       <div className="group-drop-menu-options" onClick={deleteMembershipFunc}>
         {" "}
-        Leave this group
+        {statusPending ? "Cancel group invitation" : "Leave this group"}
       </div>
     </>
   );

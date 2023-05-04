@@ -13,12 +13,13 @@ function Members({ memberships }) {
   let displayArray = [];
 
   const curUser = memberships[user.id];
-  if (!curUser) return <h1>Page Loading</h1>;
-  const curUserStatus = curUser.Membership;
-  const curUserHost = curUser.Membership.status === "host";
-  const curUserCoHost = curUser.Membership.status === "co-host";
-
-  console.log("checking current user", curUser, curUserCoHost, curUserHost);
+  if (!memberArray.length) return <h1>Page Loading</h1>;
+  let curUserStatus, curUserHost, curUserCoHost;
+  if (curUser) {
+    curUserStatus = curUser.Membership;
+    curUserHost = curUser.Membership.status === "host";
+    curUserCoHost = curUser.Membership.status === "co-host";
+  }
 
   const pendingArray = memberArray
     .filter((ele) => ele.Membership.status === "pending")
@@ -31,14 +32,16 @@ function Members({ memberships }) {
       />
     ));
 
-  const allMemberArray = memberArray.map((ele) => (
-    <DetailedProfileCard
-      key={ele.id}
-      member={ele}
-      host={curUserHost}
-      coHost={curUserCoHost}
-    />
-  ));
+  const allMemberArray = memberArray
+    .filter((ele) => ele.Membership.status !== "pending")
+    .map((ele) => (
+      <DetailedProfileCard
+        key={ele.id}
+        member={ele}
+        host={curUserHost}
+        coHost={curUserCoHost}
+      />
+    ));
   const leadershipArray = memberArray
     .filter(
       (ele) =>
@@ -90,8 +93,8 @@ function Members({ memberships }) {
               {leadershipArray.length}
             </span>
           </p>
-          {curUserStatus.status === "host" ||
-          curUserStatus.status === "co-host" ? (
+          {curUserStatus?.status === "host" ||
+          curUserStatus?.status === "co-host" ? (
             <p
               className={
                 tab === "pending"
