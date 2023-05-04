@@ -20,7 +20,10 @@ function LoginFormModal() {
     e.preventDefault();
     setErrors([]);
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
+      .then(() => {
+        closeModal();
+        history.push("/home");
+      })
       .catch(async (res) => {
         const data = await res.json();
         if (data && data.errors) {
