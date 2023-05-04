@@ -45,26 +45,27 @@ function GroupPage({ tab }) {
   const [eventTab, setEventTab] = useState("upcoming");
   const [showMenu, setShowMenu] = useState(false);
   const closeMenu = () => setShowMenu(false);
+  const ulRef = useRef();
+
   const memberships = useSelector(
     (state) => state.groups.singleGroupMemberships
   );
   const groupEvents = useSelector((state) => state.groups.groupFutureEvents);
+  const groupPastEvents = useSelector((state) => state.groups.groupPastEvents);
+
   let groupEventsArray = Object.values(groupEvents);
+  let groupPastEventsArray = Object.values(groupPastEvents);
 
   const userMem = memberships[user.id];
 
   let buttonName = "";
   let statusPending = false;
+  let showOptions = "";
 
-  if (userMem) {
-    if (userMem.Membership.status == "host") buttonName = "You're the host";
-    else if (userMem.Membership.status == "co-host")
-      buttonName = "You're a co-host";
-    else if (userMem.Membership.status === "pending") {
-      buttonName = "Status pending";
-      statusPending = true;
-    } else buttonName = "You're a member";
-  }
+  const deleteMembershipFunc = () => {
+    dispatch(thunkDeleteMembership(groupId, user.id));
+    setShowMenu(false);
+  };
 
   const createEvent = () => {
     history.push(`/groups/${groupId}/create-event`);
@@ -73,32 +74,6 @@ function GroupPage({ tab }) {
   const editGroup = () => {
     history.push(`/groups/${groupId}/edit`);
   };
-
-  let displayBody = [];
-
-  if (tab === "about") {
-    displayBody = <About group={group} groupEventsArray={groupEventsArray} />;
-  } else if (tab === "events") {
-    displayBody = (
-      <Events
-        group={group}
-        tab={eventTab}
-        setTab={setEventTab}
-        groupEventsArray={groupEventsArray}
-      />
-    );
-  } else if (tab === "members") {
-    displayBody = <Members group={group} memberships={memberships} />;
-  } else {
-    displayBody = <Photos group={group} />;
-  }
-
-  const deleteMembershipFunc = () => {
-    dispatch(thunkDeleteMembership(groupId, user.id));
-    setShowMenu(false);
-  };
-
-  const optionsPending = <div className="group-drop-menu"></div>;
 
   const optionsMember = (
     <>
@@ -139,26 +114,52 @@ function GroupPage({ tab }) {
       />
     </>
   );
-  const [userType, setUserType] = useState(optionsMember);
-  const ulRef = useRef();
+
+  if (userMem) {
+    if (userMem.Membership.status == "host") {
+      buttonName = "You're the host";
+      showOptions = optionsHost;
+    } else if (userMem.Membership.status == "co-host") {
+      buttonName = "You're a co-host";
+      showOptions = optionsCoHost;
+    } else if (userMem.Membership.status === "pending") {
+      buttonName = "Status pending";
+      statusPending = true;
+      showOptions = optionsMember;
+    } else {
+      buttonName = "You're a member";
+      showOptions = optionsMember;
+    }
+  }
+
+  let displayBody = [];
+
+  if (tab === "about") {
+    displayBody = (
+      <About
+        group={group}
+        groupEventsArray={groupEventsArray}
+        groupPastEvents={groupPastEventsArray}
+      />
+    );
+  } else if (tab === "events") {
+    displayBody = (
+      <Events
+        group={group}
+        tab={eventTab}
+        setTab={setEventTab}
+        groupEventsArray={groupEventsArray}
+      />
+    );
+  } else if (tab === "members") {
+    displayBody = <Members group={group} memberships={memberships} />;
+  } else {
+    displayBody = <Photos group={group} />;
+  }
 
   let groupImage = {};
   if (group.GroupImages)
     groupImage = group.GroupImages.find((ele) => ele.preview === true);
-
-  // Three options for Group Actions button
-  // If you are the owner, you can edit and delete the group
-  // If you are a logged in user - you can request membership
-  // if you are not logged in - do not show the button
-  useEffect(() => {
-    if (user && group.Organizer) {
-      if (user.id === group.Organizer.id) {
-        setUserType(optionsHost);
-      } else {
-        setUserType(optionsMember);
-      }
-    }
-  }, [user, group]); // change this to membership instead
 
   useEffect(() => {
     dispatch(thunkGetSingleGroup(groupId));
@@ -218,8 +219,12 @@ function GroupPage({ tab }) {
               <div>
                 <i className="fa-solid fa-user-group fa-solid-profile"></i>
                 <span className="group-details-header-spans">
-                  {group.numMembers} ·{" "}
-                  {group.private ? "Private group" : "Public group"}
+                  {
+                    Object?.values(memberships)?.filter(
+                      (ele) => ele?.Membership?.status !== "pending"
+                    )?.length
+                  }{" "}
+                  · {group.private ? "Private group" : "Public group"}
                 </span>
               </div>
               <div>
@@ -263,7 +268,7 @@ function GroupPage({ tab }) {
                   {showMenu && (
                     <div className="group-detail-nav-bar-dropdown-container">
                       <div className="group-detail-nav-bar-dropdown-container-items">
-                        {userType}
+                        {showOptions}
                       </div>
                     </div>
                   )}{" "}

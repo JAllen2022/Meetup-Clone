@@ -1,9 +1,10 @@
 .detailed-profile-card {
-  /* border: 1px solid red; */
+  box-sizing: border-box;
   display: flex;
   padding: 1rem 1rem;
   align-items: center;
   position: relative;
+  width: 100%;
 }
 
 .detailed-profile-info {
