@@ -30,7 +30,7 @@
 .detailed-profile-card-menu-container {
   position: absolute;
   right: -20px;
-  top: 55px;
+  top: 60px;
   /* border: 1px solid red; */
   background-color: white;
   z-index: 4;
@@ -39,4 +39,5 @@
   font-weight: 100;
   box-shadow: 0 0 5px rgb(197, 195, 195);
   border: 1px solid rgb(197, 195, 195);
+  border-radius: 5px;
 }

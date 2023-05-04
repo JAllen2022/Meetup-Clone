@@ -18,6 +18,8 @@ function Members({ memberships }) {
   const curUserHost = curUser.Membership.status === "host";
   const curUserCoHost = curUser.Membership.status === "co-host";
 
+  console.log("checking current user", curUser, curUserCoHost, curUserHost);
+
   const pendingArray = memberArray
     .filter((ele) => ele.Membership.status === "pending")
     .map((ele) => (
@@ -48,6 +50,7 @@ function Members({ memberships }) {
         member={ele}
         host={curUserHost}
         coHost={curUserCoHost}
+        leadership={true}
       />
     ));
 
@@ -55,7 +58,7 @@ function Members({ memberships }) {
   else if (tab === "leadership") displayArray = leadershipArray;
   else displayArray = pendingArray;
 
-  if (!displayArray.length) displayArray.push(<h1>No pending requests.</h1>);
+  // if (!displayArray.length) displayArray.push(<h1>No pending requests.</h1>);
 
   return (
     <>
@@ -70,6 +73,9 @@ function Members({ memberships }) {
             onClick={() => setTab("allmembers")}
           >
             All members
+            <span className="member-count-display">
+              {allMemberArray.length}
+            </span>
           </p>
           <p
             className={
@@ -80,6 +86,9 @@ function Members({ memberships }) {
             onClick={() => setTab("leadership")}
           >
             Leadership team
+            <span className="member-count-display">
+              {leadershipArray.length}
+            </span>
           </p>
           {curUserStatus.status === "host" ||
           curUserStatus.status === "co-host" ? (
@@ -92,6 +101,9 @@ function Members({ memberships }) {
               onClick={() => setTab("pending")}
             >
               Pending members
+              <span className="member-count-display">
+                {pendingArray.length}
+              </span>
             </p>
           ) : (
             ""

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import "./DetailedProfileCard.css";
 import { thunkDeleteMembership, thunkEditMembership } from "../../store/groups";
 
-function DetailedProfileCard({ member, host, coHost }) {
+function DetailedProfileCard({ member, host, coHost, leadership }) {
   const { groupId } = useParams();
   const [showMenu, setShowMenu] = useState(false);
   const user = useSelector((state) => state.session.user);
@@ -110,6 +110,13 @@ function DetailedProfileCard({ member, host, coHost }) {
         <div className="detailed-profile-card-name">
           {member.firstName} {member.lastName}
         </div>
+        {leadership && (
+          <div className="detailed-profile-card-joined">
+            {member.Membership.status === "host"
+              ? "Organizer"
+              : "Assistant organizer"}
+          </div>
+        )}
         <div className="detailed-profile-card-joined">{displayDateString}</div>
       </div>
       {userOptions}

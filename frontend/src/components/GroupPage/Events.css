@@ -31,6 +31,7 @@
   margin: 0.5rem 0;
   font-size: 1rem;
   font-weight: 600;
+  position: relative;
 }
 
 .group-details-not-selected {
@@ -40,6 +41,7 @@
   margin: 0.5rem 0;
   font-size: 1rem;
   cursor: pointer;
+  position: relative;
 }
 
 .no-event {
