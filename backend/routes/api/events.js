@@ -65,21 +65,6 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     },
   ];
 
-  // Generate the query object
-  const query = {
-    where,
-    attributes: {
-      exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
-    },
-    include,
-    group: ["Event.id"],
-    order: [
-      ["startDate", "ASC"], // Order by startDate in ascending order
-    ],
-    // limit,
-    // offset,
-  };
-
   // If URL params provided,
   if (name) where.name = { [Op.like]: `%${name}%` };
   if (type) where.type = res.locals.type;
@@ -93,14 +78,34 @@ router.get("/", validateEventQueryParamInput, async (req, res, next) => {
     };
   // If we are searching from the user page
   if (user) {
-    include[0].include = {
-      model: Membership,
-      where: { userId },
-      attributes: [],
+    // include[0].include = {
+    //   model: Membership,
+    //   where: { userId: req.user.id },
+    //   attributes: [],
+    //   required: true,
+    // };
+    where["groupId"] = {
+      [Op.in]: sequelize.literal(
+        `(SELECT "groupId" FROM "Memberships" WHERE "userId" = ${userId})`
+      ),
     };
-    delete query.limit;
-    delete query.offset;
   }
+
+  // Generate the query object
+  const query = {
+    where,
+    attributes: {
+      exclude: ["createdAt", "updatedAt", "description", "capacity", "price"],
+    },
+    include,
+    group: ["Event.id"],
+    order: [
+      ["startDate", "ASC"], // Order by startDate in ascending order
+    ],
+  };
+
+  console.log("checking to make sure user is true", userId);
+  console.log("checking to make sure user is true", include);
 
   const allEvents = await Event.findAndCountAll(query);
   const count = allEvents.count.length;
