@@ -526,7 +526,11 @@ router.delete(
     const targetMemJSON = targetMem.toJSON();
 
     // If current user is host of the group, and deleting a user's membership
-    if (currUserJSON.status === "host" || targetMemJSON.userId == req.user.id) {
+    if (
+      currUserJSON.status === "host" ||
+      currUserJSON.status === "co-host" ||
+      targetMemJSON.userId == req.user.id
+    ) {
       await targetMem.destroy();
 
       return res.json({
