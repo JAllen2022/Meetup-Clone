@@ -9,9 +9,14 @@ const RESET_SINGLE_EVENT = "events/RESET_SINGLE_EVENT";
 const RESET_ALL_EVENTS = "events/RESET_ALL_EVENTS";
 const DELETE_EVENT = "events/DELETE_EVENT";
 const DELETE_ALL_GROUP_EVENTS = "events/DELETE_ALL_GROUP_EVENTS";
-const GET_ATTENDEES = "events/GET_ATTENDEES";
 const GET_USER_EVENTS = "events/GET_USER_EVENTS";
 const GET_HOMEPAGE_EVENTS = "events/GET_HOMEPAGE_EVENTS";
+
+// Attendance
+const GET_ATTENDEES = "events/GET_ATTENDEES";
+const ADD_ATTENDANCE = "events/ADD_ATTENDANCE";
+const EDIT_ATTENDANCE = "events/EDIT_ATTENDANCE";
+const DELETE_ATTENDANCE = "evnets/REMOVE_ATTENDANCE";
 
 const initialState = {
   allEvents: [],
@@ -60,11 +65,6 @@ export const deleteAllGroupEvents = (groupId) => ({
   payload: groupId,
 });
 
-export const getAttendees = (attendees) => ({
-  type: GET_ATTENDEES,
-  payload: attendees,
-});
-
 export const resetAllEvents = () => ({
   type: RESET_ALL_EVENTS,
 });
@@ -72,6 +72,26 @@ export const resetAllEvents = () => ({
 export const getUserEvents = (events) => ({
   type: GET_USER_EVENTS,
   payload: events,
+});
+
+// Attendance
+export const getAttendees = (attendees) => ({
+  type: GET_ATTENDEES,
+  payload: attendees,
+});
+export const addAttendance = (attendance) => ({
+  type: ADD_ATTENDANCE,
+  payload: attendance,
+});
+
+export const editAttendance = (attendance) => ({
+  type: EDIT_ATTENDANCE,
+  payload: attendance,
+});
+
+export const deleteAttendance = (attendance) => ({
+  type: DELETE_ATTENDANCE,
+  payload: attendance,
 });
 
 /* ------ SELECTORS ------ */
@@ -140,6 +160,16 @@ export const thunkDeleteEvent = (eventId) => async (dispatch) => {
   }
 };
 
+export const thunkGetUserEvents = (data) => async (dispatch) => {
+  const searchParameters = new URLSearchParams(data).toString();
+  const response = await csrfFetch(`/api/events/current?${searchParameters}`);
+
+  if (response.ok) {
+    const events = await response.json();
+    return dispatch(getUserEvents(events));
+  }
+};
+
 export const thunkGetAttendees = (eventId) => async (dispatch) => {
   const response = await csrfFetch(`/api/events/${eventId}/attendees`);
 
@@ -149,13 +179,42 @@ export const thunkGetAttendees = (eventId) => async (dispatch) => {
   }
 };
 
-export const thunkGetUserEvents = (data) => async (dispatch) => {
-  const searchParameters = new URLSearchParams(data).toString();
-  const response = await csrfFetch(`/api/events/current?${searchParameters}`);
+export const thunkAddAttendance = (eventId, data) => async (dispatch) => {
+  // Data is {userId, status}
+  const response = await csrfFetch(`/api/events/${eventId}/attendees`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 
   if (response.ok) {
-    const events = await response.json();
-    return dispatch(getUserEvents(events));
+    const data = await response.json();
+    return dispatch(addAttendance(data.Attendees));
+  }
+};
+
+export const thunkEditAttendance = (eventId, data) => async (dispatch) => {
+  // Data is {userId, status}
+  const response = await csrfFetch(`/api/events/${eventId}/attendees`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return dispatch(editAttendance(data.Attendees));
+  }
+};
+
+export const thunkDeleteAttendance = (eventId, data) => async (dispatch) => {
+  // data is {userId}
+  const response = await csrfFetch(`/api/events/${eventId}/attendees`, {
+    method: "DELETE",
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return dispatch(deleteAttendance(data.Attendees));
   }
 };
 
