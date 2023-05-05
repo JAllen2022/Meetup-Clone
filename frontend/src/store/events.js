@@ -189,6 +189,9 @@ export const thunkAddAttendance = (eventId, data) => async (dispatch) => {
   if (response.ok) {
     const data = await response.json();
     return dispatch(addAttendance(data.Attendees));
+  } else {
+    const err = await response.json();
+    return err;
   }
 };
 
@@ -278,6 +281,33 @@ export default function eventsReducer(state = initialState, action) {
         attendeesObj[attendee.id] = attendee;
       });
       newState.singleEventAttendees = attendeesObj;
+      return newState;
+
+    case ADD_ATTENDANCE: {
+      const { userId, status } = action.payload;
+      newState.singleEventAttendees = {
+        ...state.singleEventAttendees,
+        [userId]: { id: userId, Attendance: { status } },
+      };
+      return newState;
+    }
+    case EDIT_ATTENDANCE: {
+      const { userId, status } = action.payload;
+      newState.singleEventAttendees = {
+        ...state.singleEventAttendees,
+        [userId]: {
+          ...state.singleEventAttendees[userId],
+          Attendance: { status },
+        },
+      };
+      return newState;
+    }
+    case DELETE_ATTENDANCE:
+      const { userId } = action.payload;
+      newState.singleEventAttendees = {
+        ...state.singleEventAttendees,
+      };
+      delete newState.singleEventAttendees[userId];
       return newState;
     case RESET_ALL_EVENTS:
       newState.allEvents = {};
