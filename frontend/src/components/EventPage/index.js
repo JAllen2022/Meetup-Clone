@@ -1,7 +1,14 @@
 import { useParams, useHistory, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useRef } from "react";
-import { thunkGetSingleEvent, thunkGetAttendees } from "../../store/events";
+import {
+  thunkGetSingleEvent,
+  thunkGetAttendees,
+  deleteAttendance,
+  addAttendance,
+  thunkAddAttendance,
+  thunkDeleteAttendance,
+} from "../../store/events";
 import { thunkGetMemberships } from "../../store/groups";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteModal from "../DeleteModal";
@@ -28,13 +35,22 @@ function EventPage() {
     (state) => state.groups.singleGroupMemberships
   );
   const attendees = useSelector((state) => state.events.singleEventAttendees);
+  const curUser = attendees[user.id];
+  let userAttending = false;
+
+  if (curUser) {
+    if (curUser.Attendance.status !== "waitlist") {
+      userAttending = true;
+    }
+  }
+  console.log("checking curUser", curUser, userAttending);
   const attendeesArray = showAll
     ? Object.values(attendees)
     : Object.values(attendees).slice(0, 4);
   const host = Object.values(attendees).find(
     (ele) => ele.Attendance.status === "host"
   );
-  // console.log('checking event0', event)
+
   let venueCity = "";
   let venueState = "";
   let startTimeString = "";
@@ -53,6 +69,17 @@ function EventPage() {
       : "Online";
 
   const directToGroup = () => history.push(`/groups/${groupInfo.id}/about`);
+
+  const attendingDispatch = async () => {
+    if (userAttending) {
+      dispatch(thunkDeleteAttendance(event.id, user.id));
+    } else {
+      const res = await dispatch(thunkAddAttendance(event.id));
+      console.log("checking response here", res);
+      const myResp = await res.json();
+      console.log("checking myResp", myResp);
+    }
+  };
 
   // This is where we set the 'Event Options button dependent on the user's status
   useEffect(() => {
@@ -257,11 +284,11 @@ function EventPage() {
                   )}
                 </>
               )}
-              <div className="event-sticky-footer-attend-button">
-                <OpenModalMenuItem
-                  itemText={<div className="">Attend</div>}
-                  modalComponent={<FeatureComingSoon eventId={event.id} />}
-                />
+              <div
+                className="event-sticky-footer-attend-button"
+                onClick={attendingDispatch}
+              >
+                {userAttending ? <p>Attending</p> : "Attend"}
               </div>
             </div>
           </div>

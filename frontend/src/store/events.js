@@ -179,25 +179,24 @@ export const thunkGetAttendees = (eventId) => async (dispatch) => {
   }
 };
 
-export const thunkAddAttendance = (eventId, data) => async (dispatch) => {
-  // Data is {userId, status}
-  const response = await csrfFetch(`/api/events/${eventId}/attendees`, {
+export const thunkAddAttendance = (eventId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/events/${eventId}/attendance`, {
     method: "POST",
-    body: JSON.stringify(data),
-  });
-
+  }).catch((e) => e);
+  console.log("checking our little thingy", response);
   if (response.ok) {
     const data = await response.json();
-    return dispatch(addAttendance(data.Attendees));
-  } else {
-    const err = await response.json();
-    return err;
+    return dispatch(addAttendance(data));
   }
+  console.log("we in here");
+  const err = await response.json();
+  console.log("checking err", err);
+  return response;
 };
 
 export const thunkEditAttendance = (eventId, data) => async (dispatch) => {
   // Data is {userId, status}
-  const response = await csrfFetch(`/api/events/${eventId}/attendees`, {
+  const response = await csrfFetch(`/api/events/${eventId}/attendance`, {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -210,14 +209,14 @@ export const thunkEditAttendance = (eventId, data) => async (dispatch) => {
 
 export const thunkDeleteAttendance = (eventId, data) => async (dispatch) => {
   // data is {userId}
-  const response = await csrfFetch(`/api/events/${eventId}/attendees`, {
+  const response = await csrfFetch(`/api/events/${eventId}/attendance`, {
     method: "DELETE",
     body: JSON.stringify(data),
   });
 
   if (response.ok) {
     const data = await response.json();
-    return dispatch(deleteAttendance(data.Attendees));
+    return dispatch(deleteAttendance(data.userId));
   }
 };
 
@@ -303,11 +302,10 @@ export default function eventsReducer(state = initialState, action) {
       return newState;
     }
     case DELETE_ATTENDANCE:
-      const { userId } = action.payload;
       newState.singleEventAttendees = {
         ...state.singleEventAttendees,
       };
-      delete newState.singleEventAttendees[userId];
+      delete newState.singleEventAttendees[action.payload];
       return newState;
     case RESET_ALL_EVENTS:
       newState.allEvents = {};
