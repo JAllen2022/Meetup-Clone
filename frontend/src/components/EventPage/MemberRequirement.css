@@ -1,0 +1,29 @@
+.member-requirement-modal {
+  width: 50vw;
+  /* height: 30vh; */
+  /* padding: 2rem; */
+  padding-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(253, 228, 207);
+  border-radius: 0.5rem;
+}
+
+.member-requirement-inner-container {
+  width: 80%;
+  height: 80%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.member-requirement-modal-span-direct {
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.member-requirement-modal-span-direct:hover {
+  color: rgb(61, 61, 158);
+}

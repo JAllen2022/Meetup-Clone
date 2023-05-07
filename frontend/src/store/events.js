@@ -187,11 +187,7 @@ export const thunkAddAttendance = (eventId) => async (dispatch) => {
   if (response.ok) {
     const data = await response.json();
     return dispatch(addAttendance(data));
-  }
-  console.log("we in here");
-  const err = await response.json();
-  console.log("checking err", err);
-  return response;
+  } else return response;
 };
 
 export const thunkEditAttendance = (eventId, data) => async (dispatch) => {

@@ -14,13 +14,16 @@ import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteModal from "../DeleteModal";
 import formatDateString from "../../util/formatDateString.js";
 import ProfileCard from "../ProfileCard";
+import { useModal } from "../../context/Modal";
 import "./EventPage.css";
-import FeatureComingSoon from "../FeatureComingSoon";
+import MemberRequirement from "./MemberRequirement";
 
 function EventPage() {
   const { eventId } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
+  const { setModalContent } = useModal();
+
   const ulRef = useRef();
   const event = useSelector((state) => state.events.singleEvent);
   const user = useSelector((state) => state.session.user);
@@ -77,7 +80,9 @@ function EventPage() {
       const res = await dispatch(thunkAddAttendance(event.id));
       console.log("checking response here", res);
       const myResp = await res.json();
-      console.log("checking myResp", myResp);
+      if (myResp) {
+        setModalContent(<MemberRequirement group={groupInfo} />);
+      }
     }
   };
 
@@ -173,12 +178,14 @@ function EventPage() {
               <div>
                 <h3 className="attendees-title">
                   Attendees ({event.numAttending}){" "}
-                  <span
-                    className="see-all-event-attendees"
-                    onClick={() => setShowAll((prev) => !prev)}
-                  >
-                    See all
-                  </span>
+                  {event.numAttending > 4 && (
+                    <span
+                      className="see-all-event-attendees"
+                      onClick={() => setShowAll((prev) => !prev)}
+                    >
+                      See all
+                    </span>
+                  )}
                 </h3>
               </div>
               <div className="event-attendees">
