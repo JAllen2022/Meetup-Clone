@@ -183,7 +183,7 @@ export const thunkAddAttendance = (eventId) => async (dispatch) => {
   const response = await csrfFetch(`/api/events/${eventId}/attendance`, {
     method: "POST",
   }).catch((e) => e);
-  console.log("checking our little thingy", response);
+
   if (response.ok) {
     const data = await response.json();
     return dispatch(addAttendance(data));
@@ -193,13 +193,13 @@ export const thunkAddAttendance = (eventId) => async (dispatch) => {
 export const thunkEditAttendance = (eventId, data) => async (dispatch) => {
   // Data is {userId, status}
   const response = await csrfFetch(`/api/events/${eventId}/attendance`, {
-    method: "POST",
+    method: "PUT",
     body: JSON.stringify(data),
   });
 
   if (response.ok) {
     const data = await response.json();
-    return dispatch(editAttendance(data.Attendees));
+    return dispatch(editAttendance(data));
   }
 };
 
