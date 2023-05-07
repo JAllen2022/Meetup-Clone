@@ -211,7 +211,7 @@ export const thunkDeleteAttendance = (eventId, data) => async (dispatch) => {
   });
 
   if (response.ok) {
-    const data = await response.json();
+    const dat = await response.json();
     return dispatch(deleteAttendance(data.userId));
   }
 };

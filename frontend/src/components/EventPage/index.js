@@ -40,19 +40,32 @@ function EventPage() {
   const attendees = useSelector((state) => state.events.singleEventAttendees);
   const curUser = attendees[user.id];
   let userAttending = false;
+  let pendingArray = [];
 
   if (curUser) {
-    if (curUser.Attendance.status !== "waitlist") {
+    if (
+      curUser.Attendance.status !== "waitlist" &&
+      curUser.Attendance.status !== "pending"
+    ) {
       userAttending = true;
     }
   }
-  console.log("checking curUser", curUser, userAttending);
-  const attendeesArray = showAll
-    ? Object.values(attendees)
-    : Object.values(attendees).slice(0, 4);
+  console.log("checking curUser 123123123", curUser, userAttending);
+  const attendeesArray = Object.values(attendees).filter(
+    (ele) =>
+      ele.Attendance.status !== "pending" &&
+      ele.Attendance.status !== "waitlist"
+  );
   const host = Object.values(attendees).find(
     (ele) => ele.Attendance.status === "host"
   );
+  const hostBool = user?.id === host?.id;
+
+  if (hostBool) {
+    pendingArray = Object.values(attendees).filter(
+      (ele) => ele.Attendance.status === "pending"
+    );
+  }
 
   let venueCity = "";
   let venueState = "";
@@ -177,7 +190,7 @@ function EventPage() {
               </div>
               <div>
                 <h3 className="attendees-title">
-                  Attendees ({event.numAttending}){" "}
+                  Attendees ({attendeesArray.length}){" "}
                   {event.numAttending > 4 && (
                     <span
                       className="see-all-event-attendees"
@@ -189,12 +202,60 @@ function EventPage() {
                 </h3>
               </div>
               <div className="event-attendees">
-                {attendees
+                {showAll
                   ? attendeesArray.map((ele) => (
-                      <ProfileCard key={ele.id} member={ele} />
+                      <ProfileCard
+                        key={ele.id}
+                        member={ele}
+                        host={host}
+                        eventId={event.id}
+                        hostBool={hostBool}
+                      />
                     ))
-                  : null}
+                  : attendeesArray
+                      .slice(0, 4)
+                      .map((ele) => (
+                        <ProfileCard
+                          key={ele.id}
+                          member={ele}
+                          host={host}
+                          eventId={event.id}
+                          hostBool={hostBool}
+                        />
+                      ))}
               </div>
+              {hostBool && (
+                <>
+                  {" "}
+                  <div>
+                    <h3 className="attendees-title">
+                      Pending ({pendingArray.length}){" "}
+                      {pendingArray.length > 4 && (
+                        <span
+                          className="see-all-event-attendees"
+                          onClick={() => setShowAll((prev) => !prev)}
+                        >
+                          See all
+                        </span>
+                      )}
+                    </h3>
+                  </div>
+                  <div className="event-attendees">
+                    {pendingArray.length
+                      ? pendingArray.map((ele) => (
+                          <ProfileCard
+                            key={ele.id}
+                            member={ele}
+                            pending={true}
+                            host={host}
+                            eventId={event.id}
+                            hostBool={hostBool}
+                          />
+                        ))
+                      : null}
+                  </div>
+                </>
+              )}
             </div>
             <div className="event-body-right">
               <div className="event-body-right-sticky-container">

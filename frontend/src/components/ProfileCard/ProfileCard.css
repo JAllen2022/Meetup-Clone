@@ -37,3 +37,17 @@
   font-size: 0.95rem;
   text-align: center;
 }
+
+.event-attendees-pending {
+  text-align: center;
+}
+
+.event-pending-buttons {
+  padding: 0 0.5rem;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.event-pending-buttons:hover {
+  color: #008294;
+}
