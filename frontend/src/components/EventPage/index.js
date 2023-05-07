@@ -99,6 +99,11 @@ function EventPage() {
     }
   };
 
+  const deleteAttendingDispatch = () => {
+    if (hostBool) return;
+    else dispatch(thunkDeleteAttendance(event.id, { userId: user.id }));
+  };
+
   // This is where we set the 'Event Options button dependent on the user's status
   useEffect(() => {
     if (memberships) {
@@ -321,7 +326,8 @@ function EventPage() {
                     className="event-sticky-footer-event-options"
                     onClick={() => setShowMenu((prev) => !prev)}
                   >
-                    Event Actions <i className="fa-solid fa-angle-up"></i>
+                    Event Actions{" "}
+                    <i className="fa-solid fa-angle-up event-actions-carrot"></i>
                   </div>
                   {showMenu && (
                     <div className="event-sticky-footer-event-option-menu-container">
@@ -352,12 +358,24 @@ function EventPage() {
                   )}
                 </>
               )}
-              <div
-                className="event-sticky-footer-attend-button"
-                onClick={attendingDispatch}
-              >
-                {userAttending ? <p>Attending</p> : "Attend"}
-              </div>
+              {userAttending ? (
+                <div
+                  className={`event-sticky-footer-event-options ${
+                    hostBool ? "no-pointer" : ""
+                  }`}
+                  onClick={deleteAttendingDispatch}
+                >
+                  {" "}
+                  Attending
+                </div>
+              ) : (
+                <div
+                  className="event-sticky-footer-attend-button"
+                  onClick={attendingDispatch}
+                >
+                  Attend
+                </div>
+              )}
             </div>
           </div>
         </div>

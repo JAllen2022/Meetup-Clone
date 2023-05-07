@@ -188,7 +188,6 @@
 
 .event-sticky-footer-event-options {
   background-color: white;
-
   color: rgb(0 152 171/1);
   border: 1px solid rgb(0 152 171/1);
   padding: 8px 12px;
@@ -198,6 +197,12 @@
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.event-sticky-footer-event-options.no-pointer {
+  cursor: auto;
 }
 
 .event-sticky-footer-attend-button {
@@ -268,4 +273,8 @@
   right: 0;
   top: 0;
   font-weight: 100;
+}
+
+.event-actions-carrot {
+  padding-left: 0.25rem;
 }
