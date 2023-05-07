@@ -328,9 +328,10 @@ router.get(
       )
     ) {
       query.include.where = {
-        status: {
-          [Op.notIn]: ["pending"],
-        },
+        [Op.or]: [
+          { userId: req.user.id }, // show pending status for current user
+          { status: { [Op.not]: "pending" } }, // show non-pending statuses
+        ],
       };
     }
 
@@ -351,6 +352,15 @@ router.get(
       returnObj.Attendees.push(attendee);
     }
 
+    if (
+      !currentUser ||
+      !(
+        currentUserJSON.status === "host" ||
+        currentUserJSON.status === "co-host"
+      )
+    ) {
+      const attendeeList = await User.findAll(query);
+    }
     res.json(returnObj);
   }
 );
