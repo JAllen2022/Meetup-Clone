@@ -40,6 +40,7 @@ function EventPage() {
   const attendees = useSelector((state) => state.events.singleEventAttendees);
   const curUser = attendees[user.id];
   let userAttending = false;
+  let userPending = false;
   let pendingArray = [];
 
   if (curUser) {
@@ -48,8 +49,11 @@ function EventPage() {
       curUser.Attendance.status !== "pending"
     ) {
       userAttending = true;
+    } else {
+      userPending = true;
     }
   }
+
   console.log("checking curUser 123123123", curUser, userAttending);
   const attendeesArray = Object.values(attendees).filter(
     (ele) =>
@@ -92,8 +96,7 @@ function EventPage() {
     } else {
       const res = await dispatch(thunkAddAttendance(event.id));
       console.log("checking response here", res);
-      const myResp = await res.json();
-      if (myResp) {
+      if (res) {
         setModalContent(<MemberRequirement group={groupInfo} />);
       }
     }
@@ -371,9 +374,11 @@ function EventPage() {
               ) : (
                 <div
                   className="event-sticky-footer-attend-button"
-                  onClick={attendingDispatch}
+                  onClick={
+                    userPending ? deleteAttendingDispatch : attendingDispatch
+                  }
                 >
-                  Attend
+                  {userPending ? "Pending" : "Attend"}
                 </div>
               )}
             </div>
