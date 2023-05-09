@@ -17,6 +17,7 @@ import ProfileCard from "../ProfileCard";
 import { useModal } from "../../context/Modal";
 import "./EventPage.css";
 import MemberRequirement from "./MemberRequirement";
+import Map from "./Map";
 
 function EventPage() {
   const { eventId } = useParams();
@@ -308,6 +309,9 @@ function EventPage() {
                       {eventLocation}
                     </div>
                   </div>
+                </div>
+                <div className="event-body-right-event-info-container">
+                  <Map />
                 </div>
               </div>
             </div>
