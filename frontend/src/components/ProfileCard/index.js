@@ -5,7 +5,6 @@ import { thunkDeleteAttendance, thunkEditAttendance } from "../../store/events";
 function ProfileCard({ member, host, hostBool, eventId }) {
   const isHost = host.id === member.id;
   const dispatch = useDispatch();
-  console.log("checking member", member);
 
   const editAttendance = () => {
     dispatch(
@@ -30,11 +29,12 @@ function ProfileCard({ member, host, hostBool, eventId }) {
       </div>
       {hostBool && !isHost && (
         <div className="event-attendees-pending">
-          {member.Attendance.status !== "attending" && (
-            <span className="event-pending-buttons" onClick={editAttendance}>
-              <i class="fa-regular fa-circle-check"></i>
-            </span>
-          )}
+          {member.Attendance.status !== "attending" &&
+            member.Attendance.status !== "member" && (
+              <span className="event-pending-buttons" onClick={editAttendance}>
+                <i class="fa-regular fa-circle-check"></i>
+              </span>
+            )}
           <span className="event-pending-buttons" onClick={removeAttendance}>
             <i class="fa-regular fa-circle-xmark"></i>
           </span>

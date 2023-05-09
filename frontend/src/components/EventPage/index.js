@@ -310,9 +310,11 @@ function EventPage() {
                     </div>
                   </div>
                 </div>
-                <div className="event-body-right-event-info-container">
-                  <Map />
-                </div>
+                {venueInfo && (
+                  <div className="event-body-right-event-info-container">
+                    <Map venue={venueInfo} />
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
+// import dotenv from "dotenv";
 
-const GoogleMap = () => {
+// dotenv.config();
+
+// const apiKey = process.env.MAPS_KEY;
+
+const GoogleMap = ({ venue }) => {
   const [map, setMap] = useState(null);
 
   const loader = new Loader({
-    apiKey: "AIzaSyDDvtQm_4Vy4fJAk0iXGHZ-ozoiK0_vEVA",
+    apiKey: "apiKey",
     version: "weekly",
     libraries: ["places"],
   });
 
+  const center = {
+    lat: venue.lat,
+    lng: venue.lng,
+  };
+
   const mapOptions = {
-    center: {
-      lat: 0,
-      lng: 0,
-    },
-    zoom: 4,
+    center,
+    zoom: 8,
   };
 
   loader.load().then((google) => {
-    new google.maps.Map(document.getElementById("map"), mapOptions);
+    const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    new google.maps.Marker({
+      position: center,
+      map,
+      title: "My Location",
+    });
   });
   // setMap(map);
   //   });
