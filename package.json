@@ -23,5 +23,10 @@
   "bugs": {
     "url": "https://github.com/JAllen2022/API-project/issues"
   },
-  "homepage": "https://github.com/JAllen2022/API-project#readme"
+  "homepage": "https://github.com/JAllen2022/API-project#readme",
+  "dependencies": {
+    "@googlemaps/js-api-loader": "^1.15.1",
+    "install": "^0.13.0",
+    "npm": "^9.6.6"
+  }
 }
