@@ -5,6 +5,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 // dotenv.config();
 
 // const apiKey = process.env.MAPS_KEY;
+// Adding comments
 
 const GoogleMap = ({ venue }) => {
   const [map, setMap] = useState(null);
