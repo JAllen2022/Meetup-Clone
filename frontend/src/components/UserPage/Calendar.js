@@ -67,7 +67,8 @@ export default function Calendar({ day, setDay }) {
       tempArr.push(
         <div
           key={`${i}`}
-          onClick={() => setDay(date)}
+          // onClick={() => setDay(date)}
+          style={{ cursor: "auto" }}
           className="days current active"
         >
           {i}
