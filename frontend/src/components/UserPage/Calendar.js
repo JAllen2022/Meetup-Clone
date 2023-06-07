@@ -55,9 +55,6 @@ export default function Calendar({ day, setDay }) {
   }
   for (let i = 1; i <= lastDay?.getDate(); i++) {
     // Check to see if the day is the current day, if so, we style it to highlight the day the user selected
-    console.log("checking day", day, date);
-    console.log("checking date", date);
-    console.log("checking bool", day < date);
     if (
       day &&
       month === day.getMonth() &&
@@ -65,12 +62,7 @@ export default function Calendar({ day, setDay }) {
       i === day.getDate()
     ) {
       tempArr.push(
-        <div
-          key={`${i}`}
-          // onClick={() => setDay(date)}
-          style={{ cursor: "auto" }}
-          className="days current active"
-        >
+        <div key={`${i}`} className="days current active">
           {i}
         </div>
       );
@@ -84,7 +76,7 @@ export default function Calendar({ day, setDay }) {
         <div
           key={`${i}`}
           onClick={() => setDay(date)}
-          className="days current today"
+          className={`days current today ${!day ? "active" : ""}`}
         >
           {i}
         </div>

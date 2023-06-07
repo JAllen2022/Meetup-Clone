@@ -85,4 +85,5 @@
 .days.current.active {
   background-color: #00798a;
   color: #f0f8ff;
+  cursor: auto;
 }
